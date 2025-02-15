@@ -15,5 +15,6 @@
     },
     "types": ["leaflet"],
     "moduleResolution": "node"
-  }
+  },
+  "noImplicitAny": false
 }

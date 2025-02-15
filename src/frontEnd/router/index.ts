@@ -74,7 +74,7 @@ const router = createRouter({
   },
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   if (!localStorage.getItem("authToken") && to.name !== "home" && to.name !== "login" && to.name !== "signup" && to.name !== "notFound") {
     next({ name: "home" });
   } else {
