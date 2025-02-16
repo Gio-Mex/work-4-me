@@ -6,7 +6,7 @@ import { toast } from "../components/ui/toast";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const port = import.meta.env.VITE_PORT;
-const url = `${baseUrl}:${port}`;
+const url = `${baseUrl}`;
 console.log(url);
 
 const showToast = (description: string, variant: any, duration: number) => {

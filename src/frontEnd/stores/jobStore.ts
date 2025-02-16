@@ -37,7 +37,7 @@ export const useJobStore = defineStore("job", {
   actions: {
     async fetchActiveJobs() {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {
