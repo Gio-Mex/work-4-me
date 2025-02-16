@@ -51,7 +51,7 @@ export const useJobStore = defineStore("job", {
     },
     async fetchArchivedJobs(id: string) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/${id}/archived`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/${id}/archived`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {
@@ -62,7 +62,7 @@ export const useJobStore = defineStore("job", {
     },
     async createJob(job: Job) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/new`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/new`;
         const response = await axios.post(
           url,
           job
@@ -83,7 +83,7 @@ export const useJobStore = defineStore("job", {
     },
     async updateJob(job: Job) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/edit/${job._id}`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/edit/${job._id}`;
         const response = await axios.put(
           url,
           job
@@ -105,7 +105,7 @@ export const useJobStore = defineStore("job", {
 
     async newOffer(job: Job) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/${job._id}`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/${job._id}`;
         const response = await axios.patch(
           url,
           job
@@ -123,7 +123,7 @@ export const useJobStore = defineStore("job", {
     },
     async deleteJob(jobId: string) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/${jobId}`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/${jobId}`;
         const response = await axios.delete(url);
         const status = response.status;
         console.log("Risposta dal server:", {
@@ -142,7 +142,7 @@ export const useJobStore = defineStore("job", {
     },
     async updateChat(chat: Chat) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/${chat.jobId}`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/${chat.jobId}`;
         const response = await axios.post(
           url,
           chat
@@ -160,7 +160,7 @@ export const useJobStore = defineStore("job", {
     },
     async fetchChat(jobId: string) {
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}:${import.meta.env.VITE_PORT}/jobs/${jobId}`;
+        const url = `${import.meta.env.VITE_BASE_URL}/jobs/${jobId}`;
         const response = await axios.get(url);
         return response.data;
       } catch (error: any) {

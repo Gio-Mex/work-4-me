@@ -27,7 +27,7 @@ export const useUserStore = defineStore(
     actions: {
       async login(form : User) {
         try {
-          const url = `${baseUrl}:${port}/user/login`;
+          const url = `${baseUrl}/user/login`;
           const response = await axios.post(
             url,
             form
@@ -50,7 +50,7 @@ export const useUserStore = defineStore(
       },
       async signup(form : User) {
         try {
-          const url = `${baseUrl}:${port}/user/signup`;
+          const url = `${baseUrl}/user/signup`;
           const response = await axios.post(
             url,
             form
@@ -73,7 +73,7 @@ export const useUserStore = defineStore(
       },
       async fetchUser() {
         try {
-          const url = `${baseUrl}:${port}/user/${this.user!._id}`;
+          const url = `${baseUrl}/user/${this.user!._id}`;
           const response = await axios.get(url);
           this.user = response.data as User;
         } catch (error) {
@@ -82,7 +82,7 @@ export const useUserStore = defineStore(
       },
       async updateUser(user: User) {
         try {
-          const url = `${baseUrl}:${port}/user/${this.user!._id}`;
+          const url = `${baseUrl}/user/${this.user!._id}`;
           const response = await axios.put(
             url,
             user
@@ -103,7 +103,7 @@ export const useUserStore = defineStore(
       },
       async deleteUser() {
         try {
-          const url = `${baseUrl}:${port}/user`;
+          const url = `${baseUrl}/user`;
           const response = await axios.delete(
             url,
             {
