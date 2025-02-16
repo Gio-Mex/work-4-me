@@ -14,7 +14,7 @@
       "@/*": ["./src/*"]
     },
     "types": ["leaflet"],
-    "moduleResolution": "node"
-  },
-  "noImplicitAny": false
+    "moduleResolution": "node",
+    "strict": false
+  }
 }

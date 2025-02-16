@@ -14,6 +14,10 @@ const delegatedProps = computed(() => {
 })
 
 const forwarded = useForwardProps(delegatedProps)
+
+defineSlots<{
+  default: (slotProps: Record<string, unknown>) => void;
+}>();
 </script>
 
 <template>
