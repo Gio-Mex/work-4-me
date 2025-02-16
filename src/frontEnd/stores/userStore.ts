@@ -5,7 +5,6 @@ import type { User } from "../interfaces/user";
 import { toast } from "../components/ui/toast";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const port = import.meta.env.VITE_PORT;
 const url = `${baseUrl}`;
 console.log(url);
 
