@@ -51,7 +51,7 @@ export const useUserStore = defineStore(
       },
       async signup(form : User) {
         try {
-          const url = `${baseUrl}:${port}/user/signup`;
+          const url = `https://${baseUrl}:${port}/user/signup`;
           const response = await axios.post(
             url,
             form
