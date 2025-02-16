@@ -9,7 +9,6 @@ const port = import.meta.env.VITE_PORT;
 const url = `${baseUrl}:${port}`;
 console.log(url);
 
-
 const showToast = (description: string, variant: any, duration: number) => {
   toast({
     description: description,
