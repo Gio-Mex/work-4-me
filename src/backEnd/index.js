@@ -40,6 +40,7 @@ const io = new Server(server, {
     origin: ["https://work-4-me.netlify.app", "http://localhost:5173"], // Configurare secondo le necessità
     methods: ["GET", "POST"],
   },
+  transports: ["websocket"],
 });
 
 // Socket.IO event handler
