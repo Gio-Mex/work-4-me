@@ -63,6 +63,7 @@ let formattedDate = ref("" as string);
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
 let socket: SocketIOClient;
+const wsUrl =import.meta.env.VITE_WS_URL;
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let workerQualityRate = ref(0);
@@ -149,9 +150,12 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
-  socket = io("http://localhost:3000");
+  socket = io(wsUrl);
   socket.on("message", (message) => {
     chat.messages.push(message);
+    setInterval(() => {
+  socket.emit("ping", "keep-alive");
+}, 5000);
   });
 });
 

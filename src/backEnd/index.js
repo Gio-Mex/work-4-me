@@ -43,10 +43,7 @@ const io = new Server(server, {
 
 // Evento di connessione Socket.IO
 io.on("connection", (socket) => {
-  console.log("Utente connesso");
-
-  socket.on("message", (message) => {
-    console.log("Messaggio ricevuto:", message);
+  console.log("New WebSocket connection:", socket.id);
 
     // Invia il messaggio a tutti i client tranne il mittente
     socket.broadcast.emit("message", message);
@@ -55,10 +52,9 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("Utente disconnesso");
   });
-});
 
 // Avvio del server HTTP e WebSocket
 const PORT = process.env.VITE_PORT; // Porta configurabile tramite variabile d'ambiente
-server.listen(PORT, () => {
-  console.log(`Server in ascolto sulla porta ${PORT}`);
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
 });

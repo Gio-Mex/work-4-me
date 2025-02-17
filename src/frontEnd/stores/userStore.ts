@@ -5,8 +5,6 @@ import type { User } from "../interfaces/user";
 import { toast } from "../components/ui/toast";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const url = `${baseUrl}`;
-console.log(url);
 
 const showToast = (description: string, variant: any, duration: number) => {
   toast({
