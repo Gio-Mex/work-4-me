@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { reactive, ref, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
+import { reactive, ref, onBeforeMount, onMounted, onBeforeUnmount, nextTick, watch } from "vue";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from "vue-router";
-import axios from "axios"
+import axios from "axios";
 import { io } from "socket.io-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
@@ -60,9 +60,10 @@ const jobId = router.currentRoute.value.params.id as string;
 let newOffer = reactive({} as Offer);
 let selectedOffer = ref({} as Offer);
 let formattedDate = ref("" as string);
+const chatContainer = ref(null);
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
-const wsUrl =import.meta.env.VITE_BASE_URL;
+const wsUrl = import.meta.env.VITE_BASE_URL;
 const socket = io(wsUrl, {
   transports: ["websocket"],
 });
@@ -73,8 +74,8 @@ let workerReliabilityRate = ref(0);
 const mapOptions = ref({
   center: [0, 0],
   zoom: 15,
-  isLoading:false,
-  notFound:true
+  isLoading: false,
+  notFound: true,
 });
 const tilesOptions = ref({
   name: "OpenStreetMap",
@@ -83,8 +84,8 @@ const tilesOptions = ref({
 });
 
 const geocodeAddress = async () => {
-  mapOptions.value.isLoading=true
-  mapOptions.value.notFound=true
+  mapOptions.value.isLoading = true;
+  mapOptions.value.notFound = true;
   const address = `${job.userDetails?.address}, ${job.userDetails?.city}`;
   try {
     const response = await axios.get(
@@ -94,13 +95,15 @@ const geocodeAddress = async () => {
     );
     const data = response.data;
     if (data.length !== 0) {
-      
-      console.log(data)
-      mapOptions.value.center = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-      mapOptions.value.isLoading = false
-      mapOptions.value.notFound = false
+      console.log(data);
+      mapOptions.value.center = [
+        parseFloat(data[0].lat),
+        parseFloat(data[0].lon),
+      ];
+      mapOptions.value.isLoading = false;
+      mapOptions.value.notFound = false;
     } else {
-      mapOptions.value.isLoading = false
+      mapOptions.value.isLoading = false;
     }
   } catch (error) {
     console.error("Errore nella geocodifica:", error);
@@ -131,31 +134,6 @@ const formatDate = (date: number | string) => {
       .replace(/\//g, "-");
   }
 };
-
-onBeforeMount(async () => {
-  job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-  formattedDate.value = formatDate(job.date);
-
-  if (job.status !== "Aperto" && job.status !== "Offerta") {
-    const fetchedChat = await jobStore.fetchChat(job._id as string);
-
-    if (fetchedChat) {
-      Object.assign(chat, fetchedChat);
-    } else {
-      const newChatData = newChat();
-      Object.assign(chat, newChatData);
-      await jobStore.updateChat(chat);
-    }
-  }
-   geocodeAddress();
-
-});
-
-onMounted(() => {
-  socket.on("message", (message) => {
-    chat.messages.push(message);
-  });
-});
 
 const qualityAvg = (offer: Offer) => {
   if (offer.workerRatings) {
@@ -214,29 +192,6 @@ const acceptOffer = async (id: number) => {
   });
 };
 
-const newChat = () => {
-  chat.jobId = job._id as string;
-  chat.userId = job.userId as string;
-  chat.workerId = job.workerId as string;
-  chat.messages = [];
-  return chat;
-};
-
-const sendMessage = async () => {
-  const chatInput = document.getElementById("message") as HTMLInputElement;
-  if (message.value.content.trim()) {
-    const newMessage = {
-      senderId: userStore.user!._id,
-      content: chatInput.value,
-      date: Date.now(),
-    } as Message;
-    socket.emit("message", newMessage);
-    chat.messages.push(newMessage);
-    await jobStore.updateChat(chat);
-    message.value.content = "";
-  }
-};
-
 const startJob = async () => {
   job.status = "In lavorazione";
   await jobStore.updateJob(job);
@@ -262,6 +217,70 @@ const setRate = async () => {
   });
   router.push("/jobs");
 };
+const newChat = () => {
+  chat.jobId = job._id as string;
+  chat.userId = job.userId as string;
+  chat.workerId = job.workerId as string;
+  chat.messages = [];
+  return chat;
+};
+
+const sendMessage = async () => {
+  const chatInput = document.getElementById("message") as HTMLInputElement;
+  if (message.value.content.trim()) {
+    const newMessage = {
+      senderId: userStore.user!._id,
+      content: chatInput.value,
+      date: Date.now(),
+    } as Message;
+    socket.emit("message", newMessage);
+    chat.messages.push(newMessage);
+    await jobStore.updateChat(chat);
+    message.value.content = "";
+  }
+};
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (chatContainer.value) {
+      (chatContainer.value as HTMLElement).scrollTop = (chatContainer.value as HTMLElement).scrollHeight;
+    }
+  });
+};
+
+// Guarda quando i messaggi cambiano e scrolla in basso
+watch(
+  () => chat.messages,
+  () => {
+    scrollToBottom();
+  },
+  { deep: true }
+);
+
+onBeforeMount(async () => {
+  job = jobStore.jobs.find((job) => job._id === jobId) as Job;
+  formattedDate.value = formatDate(job.date);
+
+  if (job.status !== "Aperto" && job.status !== "Offerta") {
+    const fetchedChat = await jobStore.fetchChat(job._id as string);
+
+    if (fetchedChat) {
+      Object.assign(chat, fetchedChat);
+    } else {
+      const newChatData = newChat();
+      Object.assign(chat, newChatData);
+      await jobStore.updateChat(chat);
+    }
+  }
+  geocodeAddress();
+});
+
+onMounted(() => {
+  socket.on("message", (message) => {
+    chat.messages.push(message);
+  });
+  scrollToBottom();
+});
 
 onBeforeUnmount(() => {
   socket.disconnect();
@@ -316,30 +335,49 @@ onBeforeUnmount(() => {
             <p class="font-normal text-sm opacity-80">{{ job?.status }}</p>
           </div>
         </div>
-        <div v-if="job.userId !== userStore.user?._id && job.status === 'Accettato'" class="grid bg-sky-50 gap-2 p-4 md:p-5 rounded-md shadow-sm">
-            <Label class="text-sky-900">Indirizzo</Label>
-            <p class="font-normal text-sm opacity-80">
-              {{ job?.userDetails?.address }}
-            </p>
-          </div>
+        <div
+          v-if="
+            job.userId !== userStore.user?._id && job.status === 'Accettato'
+          "
+          class="grid bg-sky-50 gap-2 p-4 md:p-5 rounded-md shadow-sm"
+        >
+          <Label class="text-sky-900">Indirizzo</Label>
+          <p class="font-normal text-sm opacity-80">
+            {{ job?.userDetails?.address }}
+          </p>
+        </div>
         <div class="w-full h-[200px] md:h-[400px] flex">
-          <span v-if="mapOptions.isLoading" class="mx-auto my-auto text-sky-950">
+          <span
+            v-if="mapOptions.isLoading"
+            class="mx-auto my-auto text-sky-950"
+          >
             Ricerca indirizzo...🔍
-           </span>
-          <LMap v-if="!mapOptions.notFound" :zoom="mapOptions.zoom" :center="mapOptions.center" class="w-full h-400 z-0 rounded">            
+          </span>
+          <LMap
+            v-if="!mapOptions.notFound"
+            :zoom="mapOptions.zoom"
+            :center="mapOptions.center"
+            class="w-full h-400 z-0 rounded"
+          >
             <LTileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               :attribution="tilesOptions.attribution"
               :name="tilesOptions.name"
             />
           </LMap>
-           <span v-else-if="!mapOptions.isLoading &&mapOptions.notFound" class="mx-auto my-auto text-sky-950">
+          <span
+            v-else-if="!mapOptions.isLoading && mapOptions.notFound"
+            class="mx-auto my-auto text-sky-950"
+          >
             Indirizzo non trovato sulla mappa ❌
-           </span>
+          </span>
         </div>
-       <div v-if="!mapOptions.notFound">
-          <p class="text-center text-xs text-sky-950 opacity-55">Questa posizione è approssimativa, l'indirizzo completo sarà visibile al Worker una volta accettata l'offerta. </p>
-       </div>
+        <div v-if="!mapOptions.notFound">
+          <p class="text-center text-xs text-sky-950 opacity-55">
+            Questa posizione è approssimativa, l'indirizzo completo sarà
+            visibile al Worker una volta accettata l'offerta.
+          </p>
+        </div>
         <div class="flex justify-center pt-4 gap-2">
           <Button
             v-if="
@@ -405,7 +443,9 @@ onBeforeUnmount(() => {
           Le proposte dei Workers appariranno qui
         </p>
         <p
-          v-else-if="job.offers?.length === 0 && job.userId !== userStore.user?._id"
+          v-else-if="
+            job.offers?.length === 0 && job.userId !== userStore.user?._id
+          "
           class="text-center text-xs italic opacity-50 mt-4"
         >
           Non ci sono ancora offerte, fai tu la prima proposta!
@@ -602,6 +642,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <div
+              ref="chatContainer"
               class="h-[250px] md:h-[350px] bg-sky-50 flex flex-col rounded-t-md shadow-sm mx-auto gap-3 p-3 overflow-scroll"
             >
               <p
