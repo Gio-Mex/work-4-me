@@ -63,7 +63,9 @@ let formattedDate = ref("" as string);
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
 const wsUrl =import.meta.env.VITE_WS_URL;
-const socket = io(wsUrl);
+const socket = io(wsUrl, {
+  transports: ["websocket"],
+});
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let workerQualityRate = ref(0);
@@ -152,10 +154,10 @@ onBeforeMount(async () => {
 onMounted(() => {
   socket.on("message", (message) => {
     chat.messages.push(message);
-    setInterval(() => {
+  });
+  setInterval(() => {
   socket.emit("ping", "keep-alive");
 }, 5000);
-  });
 });
 
 const qualityAvg = (offer: Offer) => {
