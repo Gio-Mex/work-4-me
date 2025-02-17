@@ -155,9 +155,6 @@ onMounted(() => {
   socket.on("message", (message) => {
     chat.messages.push(message);
   });
-  setInterval(() => {
-  socket.emit("ping", "keep-alive");
-}, 5000);
 });
 
 const qualityAvg = (offer: Offer) => {
