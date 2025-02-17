@@ -20,41 +20,45 @@ app.use(urlencoded({ extended: false }));
 app.use("/user", userRoute);
 app.use("/jobs", jobRoute);
 
-// Connessione al database
+// Database connection
 const dbUrl = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=W4M`;
 
 connect(dbUrl)
   .then(() => {
-    console.log("Connessione al database avvenuta con successo.");
+    console.log("Database connected");
   })
   .catch((err) => {
-    console.error("Errore di connessione al database:", err);
+    console.error("Database connection error:", err);
   });
 
-// Creazione del server HTTP
+// HTTP server
 const server = http.createServer(app);
 
-// Configurazione di Socket.IO
+// Socket.IO configuration
 const io = new Server(server, {
   cors: {
-    origin: "*", // Configurare secondo le necessità
+    origin: ["https://work-4-me.netlify.app", "http://localhost:5173"], // Configurare secondo le necessità
+    methods: ["GET", "POST"],
   },
 });
 
-// Evento di connessione Socket.IO
+// Socket.IO event handler
 io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
 
-    // Invia il messaggio a tutti i client tranne il mittente
+  socket.on("message", (message) => {
+    console.log("Message received:", message);
+
     socket.broadcast.emit("message", message);
   });
 
   socket.on("disconnect", () => {
-    console.log("Utente disconnesso");
+    console.log("WebSocket connection closed:", socket.id);
   });
+});
 
-// Avvio del server HTTP e WebSocket
-const PORT = process.env.VITE_PORT; // Porta configurabile tramite variabile d'ambiente
+// Start HTTP server
+const PORT = process.env.VITE_PORT || 3000; 
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server listening on port ${PORT}`);
 });
