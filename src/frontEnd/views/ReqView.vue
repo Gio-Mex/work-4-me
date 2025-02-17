@@ -62,7 +62,7 @@ let selectedOffer = ref({} as Offer);
 let formattedDate = ref("" as string);
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
-const wsUrl =import.meta.env.BASE_URL;
+const wsUrl =import.meta.env.VITE_BASE_URL;
 const socket = io(wsUrl, {
   transports: ["websocket"],
 });
