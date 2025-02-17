@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
 });
 
 // Start HTTP server
-const PORT = process.env.VITE_PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server listening on port ${PORT}`);
 });
