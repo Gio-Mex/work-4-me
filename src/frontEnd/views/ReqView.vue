@@ -4,7 +4,7 @@ import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from "vue-router";
 import axios from "axios"
-import { io, Socket as SocketIOClient } from "socket.io-client";
+import { io } from "socket.io-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -62,8 +62,8 @@ let selectedOffer = ref({} as Offer);
 let formattedDate = ref("" as string);
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
-let socket: SocketIOClient;
 const wsUrl =import.meta.env.VITE_WS_URL;
+const socket = io(wsUrl);
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let workerQualityRate = ref(0);
@@ -150,7 +150,6 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
-  socket = io(wsUrl);
   socket.on("message", (message) => {
     chat.messages.push(message);
     setInterval(() => {

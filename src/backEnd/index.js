@@ -47,11 +47,11 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
 
-  // socket.on("message", (message) => {
-  //   console.log("Message received:", message);
+  socket.on("message", (message) => {
+    console.log("Message received:", message);
 
-  //   socket.broadcast.emit("message", message);
-  // });
+    socket.broadcast.emit("message", message);
+  });
 
   socket.on("ping", (msg) => {
     console.log("Ping received:", msg);
