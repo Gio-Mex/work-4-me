@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
+import { useAppStore } from "../stores/appStore";
 import { onMounted, reactive, watch, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
@@ -35,6 +36,7 @@ import {
 const router = useRouter();
 const jobStore = useJobStore();
 const userStore = useUserStore();
+const appStore = useAppStore();
 
 const reqsList = reactive([]) as Job[];
 const jobList = reactive([]) as Job[];
@@ -45,7 +47,7 @@ let searchCity = ref("" as string);
 let searchCategory = ref("" as string);
 
 const statusContent = `
-    <div class="text-xs flex gap-4 mt-2 justify-center">
+    <div class="text-[10px] flex gap-5 justify-center">
       <section class="flex flex-col">
         <span class="material-symbols-outlined scale-75">pending</span> Aperto
       </section>
@@ -64,12 +66,11 @@ const statusContent = `
     </div>
   `;
 
-const accordionContent = 
-  {
-    value: "Status",
-    title: "Stato:",
-    content: statusContent,
-  };
+const accordionContent = {
+  value: "Status",
+  title: "Stato:",
+  content: statusContent,
+};
 
 const showReqsList: () => void = () => {
   reqsList.splice(
@@ -167,7 +168,16 @@ const handleRouteChange = async () => {
 </script>
 
 <template>
+  <div v-if="appStore.isLoading" class="flex flex-col justify-center items-center h-96">
+    <div
+      class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
+    ></div>
+    <span class="text-sky-950 text-center mt-10 mx-3"
+      >Questa piattaforma si avvale di servizi basilari di terze parti. Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+    >
+  </div>
   <div
+    v-else
     class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 xl:gap-20"
   >
     <div class="w-full md:max-w-2xl lg:w-1/2 p-4 mb-4 mt-20 md:mt-24">
@@ -177,14 +187,17 @@ const handleRouteChange = async () => {
         </h2>
       </div>
       <Table v-if="reqsList.length > 0" class="mt-0 table-fixed w-full">
-        <TableCaption
-          class="bg-sky-900 rounded-b p-3 mt-0"
-        >
-          <Accordion type="single" class="text-sky-200 text-opacity-80" collapsible>
+        <TableCaption class="bg-sky-900 rounded-b mt-0">
+          <Accordion
+            type="single"
+            class="text-sky-200 text-opacity-80"
+            collapsible
+          >
             <AccordionItem value="accordionContent" class="!text-xs border-0">
-              <AccordionTrigger class="text-sky-200 mx-36 md:mx-64 lg:mx-52 xl:mx-64">{{
-                accordionContent.title
-              }}</AccordionTrigger>
+              <AccordionTrigger
+                class="text-sky-200 mx-28 md:mx-64 lg:mx-52 xl:mx-64"
+                >{{ accordionContent.title }}</AccordionTrigger
+              >
               <AccordionContent v-html="accordionContent.content">
               </AccordionContent>
             </AccordionItem>
@@ -246,9 +259,16 @@ const handleRouteChange = async () => {
       >
     </div>
 
-    <div v-if="userStore.user?.isWorker" class="w-full  md:max-w-2xl lg:w-1/2 p-4 mb-4 lg:mt-24">
+    <div
+      v-if="userStore.user?.isWorker"
+      class="w-full md:max-w-2xl lg:w-1/2 p-4 mb-4 lg:mt-24"
+    >
       <div class="mb-0 bg-sky-950 border-b border-b-sky-200 rounded-t">
-        <h2 class="text-4xl font-light text-center text-sky-200 p-3 border-b border-b-sky-200">Lavori</h2>
+        <h2
+          class="text-4xl font-light text-center text-sky-200 p-3 border-b border-b-sky-200"
+        >
+          Lavori
+        </h2>
         <div
           v-if="
             userStore.user?.skills.some((skill) =>
@@ -309,15 +329,20 @@ const handleRouteChange = async () => {
         <Table v-if="jobList.length > 0" class="table-fixed w-full">
           <TableCaption
             class="text-xs text-sky-200 text-opacity-60 bg-sky-950 rounded-b p-3 mt-0"
-            ><Accordion type="single" class="text-sky-200 text-opacity-80" collapsible>
-            <AccordionItem value="accordionContent" class="!text-xs border-0">
-              <AccordionTrigger class="text-sky-200 mx-36 md:mx-64 lg:mx-52 xl:mx-64">{{
-                accordionContent.title
-              }}</AccordionTrigger>
-              <AccordionContent v-html="accordionContent.content">
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+            ><Accordion
+              type="single"
+              class="text-sky-200 text-opacity-80"
+              collapsible
+            >
+              <AccordionItem value="accordionContent" class="!text-xs border-0">
+                <AccordionTrigger
+                class="text-sky-200 mx-28 md:mx-64 lg:mx-52 xl:mx-64"
+                  >{{ accordionContent.title }}</AccordionTrigger
+                >
+                <AccordionContent v-html="accordionContent.content">
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </TableCaption>
           <TableHeader>
             <TableRow class="bg-sky-950 pointer-events-none">

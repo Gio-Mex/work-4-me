@@ -3,9 +3,9 @@ import bcrypt from "bcrypt";
 const saltRounds = 10;
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import { Trophy } from "lucide-vue-next";
+import { exit } from "process";
 config();
-
-const emailPattern = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 //Signup user
 const createUser = async (req, res) => {
@@ -21,27 +21,25 @@ const createUser = async (req, res) => {
       avatar,
       isWorker,
     } = req.body;
-    if (!emailPattern.test(email)) {
-      return res.status(400).json({ message: "Email non valida" });
-    }
     let newUser = await User.findOne({ email: email });
     if (newUser) {
       return res.status(400).json({ message: "L'account esiste già" });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      const userData = {
+        name,
+        lastName,
+        address,
+        city,
+        province,
+        email,
+        password: hashedPassword,
+        avatar,
+        isWorker,
+      };
+      newUser = await User.create(userData);
+      res.status(201).json(newUser);
     }
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const userData = {
-      name,
-      lastName,
-      address,
-      city,
-      province,
-      email,
-      password: hashedPassword,
-      avatar,
-      isWorker,
-    };
-    newUser = await User.create(userData);
-    res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

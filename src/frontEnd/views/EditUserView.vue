@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onBeforeMount, onBeforeUnmount } from "vue";
+import { ref, computed, reactive, onBeforeMount } from "vue";
 import router from "../router";
 import axios from "axios";
 import { Cloudinary } from "@cloudinary/url-gen";
@@ -124,11 +124,6 @@ const handleSubmit = async () => {
     router.push({ path: "/user" });
   });
 };
-
-onBeforeUnmount(() => {
-  console.log("form", form);
-  userStore.user = form;
-});
 </script>
 
 <template>

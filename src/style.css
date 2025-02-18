@@ -73,14 +73,19 @@
     @apply border-border;
   }
 
+  html {
+    font-size: 18px;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Poppins", sans-serif;
   }
+
   h1,
   h2,
   h3 {
-    @apply text-sky-950
+    @apply text-sky-950;
   }
 
   .primary-btn {
@@ -89,10 +94,23 @@
   }
 
   .avatar {
-    @apply !w-20 !h-20 rounded-full !bg-sky-200;
+    @apply !w-20 !h-20 rounded-full object-cover !bg-sky-200;
   }
 
   .avatar .content {
     @apply text-sky-900 text-2xl font-medium;
+  }
+
+    .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }

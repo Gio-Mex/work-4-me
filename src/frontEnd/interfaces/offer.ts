@@ -4,7 +4,7 @@ export interface Offer {
   id: number;
   workerId: string;
   worker: string;
-  workerRatings: Ratings | null;
+  workerRatings: Ratings;
   date: number;
   amount: number;
 }

@@ -69,17 +69,17 @@ const menuLinks = [
 
 <template>
   <div
-    class="w-full fixed flex items-center justify-between p-2 px-4 text-sky-950 bg-white z-50"
+    class="w-full fixed flex items-center justify-between p-2 pb-3 md:pt-3.5 md:pb-4 px-4 text-sky-950 bg-white z-50"
   >
     <!-- Logo -->
     <a href="/" class="flex items-center">
-      <img src="../assets/img/logo.png" class="!mr-0 h-16 sm:h-20" alt="Logo" />
+      <img src="../assets/img/logo.png" class="!mr-0 h-14 md:h-16" alt="Logo" />
     </a>
 
     <!-- Mobile hamburger icon -->
     <div
       v-if="windowWidth < 768"
-      class="relative flex flex-col gap-1 cursor-pointer w-8 h-8 z-50 mt-6"
+      class="relative flex flex-col gap-1 cursor-pointer w-8 h-8 z-50 mt-4"
       @click.stop="toggleMenu"
     >
       <span

@@ -12,5 +12,5 @@ export interface User {
   password: string;
   isWorker: boolean;
   skills: Array<string>;
-  ratings: Ratings | null;
+  ratings: Ratings;
 }

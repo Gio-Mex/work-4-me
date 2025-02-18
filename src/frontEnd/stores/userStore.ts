@@ -1,18 +1,10 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import type { User } from "../interfaces/user";
-
-import { toast } from "../components/ui/toast";
+import { useAppStore } from "./appStore";
+import { ref } from "vue";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-
-const showToast = (description: string, variant: any, duration: number) => {
-  toast({
-    description: description,
-    variant: variant,
-    duration: duration,
-  });
-};
 
 export const useUserStore = defineStore(
   "user",
@@ -23,6 +15,8 @@ export const useUserStore = defineStore(
     }),
     actions: {
       async login(form : User) {
+        const appStore = useAppStore();
+        appStore.startLoading();
         try {
           const url = `${baseUrl}/user/login`;
           const response = await axios.post(
@@ -35,17 +29,21 @@ export const useUserStore = defineStore(
             status,
             message: response.statusText,
           });
-          showToast(response.data.message, "default", 3000);
+          appStore.showToast(response.data.message);
           this.user = user;
           localStorage.setItem("authToken", token);
           this.isLoggedIn = true;
         } catch (error: any) {
           console.error("Errore durante il login:", error);
-          showToast(error.response.data.message, "destructive", 3000);
+          appStore.showToast(error.response.data.message);
           throw error;
+        } finally {
+          appStore.stopLoading();
         }
       },
       async signup(form : User) {
+        const appStore = useAppStore();
+        appStore.startLoading();
         try {
           const url = `${baseUrl}/user/signup`;
           const response = await axios.post(
@@ -57,27 +55,46 @@ export const useUserStore = defineStore(
           );
       
           if (response.status === 201) {
-            showToast("Account creato con successo", "success", 3000);
+            appStore.showToast("Account creato con successo");
           }
         } catch (error : any) {
           console.error("Errore durante la registrazione:", error);
-          showToast(error.response.data.message, "destructive", 3000);
+          appStore.showToast(error.response.data.message);
+        } finally {
+          appStore.stopLoading();
         }
       },
       logout() {
+        const appStore = useAppStore();
         this.resetUser();
-        showToast("Logout effettuato con successo", "default", 3000);
+        appStore.showToast("Logout effettuato");
       },
       async fetchUser() {
+        const appStore = useAppStore();
+        appStore.startLoading();
         try {
           const url = `${baseUrl}/user/${this.user!._id}`;
           const response = await axios.get(url);
           this.user = response.data as User;
         } catch (error) {
           console.error(error);
+        } finally {
+          appStore.stopLoading();
+        }
+      },
+      ratingsAvg (ratings: number[] ) {
+        const rate = ref(0);
+        if (ratings.length > 0) {
+          rate.value =
+            (ratings.reduce((a, b) => a + b, 0) / ratings.length);
+          return rate.value;
+        } else {
+          return;
         }
       },
       async updateUser(user: User) {
+        const appStore = useAppStore();
+        appStore.startLoading();
         try {
           const url = `${baseUrl}/user/${this.user!._id}`;
           const response = await axios.put(
@@ -90,15 +107,19 @@ export const useUserStore = defineStore(
             status,
             message: response.statusText,
           });
-          showToast(response.data.message, "default", 3000);
+          appStore.showToast(response.data.message);
           this.user = updatedUser;
         } catch (error: any) {
           console.error("Errore durante l'aggiornamento:", error);
-          showToast(error.response.data.message, "destructive", 3000);
+          appStore.showToast(error.response.data.message);
           throw error;
+        } finally {
+          appStore.stopLoading();
         }
       },
       async deleteUser() {
+        const appStore = useAppStore();
+        appStore.startLoading();
         try {
           const url = `${baseUrl}/user`;
           const response = await axios.delete(
@@ -115,11 +136,13 @@ export const useUserStore = defineStore(
             message: response.statusText,
           });
           this.resetUser();
-          showToast(response.data.message, "default", 3000);
+          appStore.showToast(response.data.message);
       } catch (error: any) {
           console.error("Errore durante la cancellazione:", error);
-          showToast(error.response.data.message, "destructive", 3000);
+          appStore.showToast(error.response.data.message);
           throw error;
+        } finally {
+          appStore.stopLoading();
         }
       },
       resetUser() {

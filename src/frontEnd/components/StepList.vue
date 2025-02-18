@@ -13,7 +13,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row justify-center items-start mt-10">
+  <div class="flex flex-col md:flex-row justify-center items-start mt-10 px-4">
     <div v-for="item in steps" :key="item.step" class="flex flex-col md:flex-row md:items-baseline">
       <div class="flex flex-row md:flex-col items-center gap-3">
         <div

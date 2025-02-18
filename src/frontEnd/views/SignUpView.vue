@@ -6,6 +6,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/vue";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { Gravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import { useAppStore } from "../stores/appStore";
 import { useUserStore } from "../stores/userStore";
 import type { User } from "../interfaces/user";
 
@@ -22,8 +23,6 @@ import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
 
-const userStore = useUserStore();
-
 type SignUpForm = Omit<User, "_id" | "isWorker" | "skills" | "ratings">;
 const form = reactive<SignUpForm>({
   name: "",
@@ -35,8 +34,12 @@ const form = reactive<SignUpForm>({
   password: "",
   avatar: "",
 });
-const confirmPassword = ref<string>("");
 
+const appStore = useAppStore();
+const userStore = useUserStore();
+const emailPattern = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+const emailValid = ref<boolean>(true);
+const confirmPassword = ref<string>("");
 const avatarId = ref<string>("");
 const avatarContent = computed(() => {
   return form.name.slice(0, 1) + form.lastName.slice(0, 1);
@@ -106,14 +109,31 @@ const handleSubmit = async () => {
   if (!form.avatar) {
     form.avatar = avatarContent.value;
   }
-  await userStore.signup(form as User).then(() => {
+  emailValid.value = emailPattern.test(form.email);
+  if (emailValid.value && form.password === confirmPassword.value) {
+    form.province = form.province.toUpperCase();
+    await userStore.signup(form as User).then(() => {
     router.push({ path: "/user/login" });
   });
+  } else if (!emailValid.value) {
+    return
+  }
 };
 </script>
 
 <template>
-  <form class="pt-20" @submit.prevent="handleSubmit">
+  <div
+    v-if="appStore.isLoading"
+    class="flex flex-col justify-center items-center h-96"
+  >
+    <div
+      class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
+    ></div>
+    <span class="text-sky-950 text-center mt-10 mx-3"
+      >Questa piattaforma si avvale di servizi basilari di terze parti. Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+    >
+  </div>
+  <form v-else class="pt-20" @submit.prevent="handleSubmit">
     <Card class="m-2 md:mx-auto md:mt-5 mb-8 max-w-2xl">
       <CardHeader>
         <CardTitle class="text-2xl text-sky-950"> Sign Up </CardTitle>
@@ -174,6 +194,7 @@ const handleSubmit = async () => {
                 id="province"
                 v-model="form.province"
                 placeholder="MI"
+                maxlength="2"
                 required
               />
             </div>
@@ -187,6 +208,11 @@ const handleSubmit = async () => {
               placeholder="m@example.com"
               required
             />
+            <span
+              v-if="!emailValid"
+              class="text-red-500 text-xs"
+              >Email non valida</span
+            >
           </div>
           <div class="grid gap-2">
             <Label for="password" class="text-sky-950">Password</Label>
@@ -250,7 +276,6 @@ const handleSubmit = async () => {
             variant="default"
             type="submit"
             class="primary-btn w-auto mx-auto"
-            :disabled="form.password !== confirmPassword"
           >
             Crea account
           </Button>

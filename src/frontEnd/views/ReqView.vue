@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref, onBeforeMount, onMounted, onBeforeUnmount, nextTick, watch } from "vue";
+import {
+  reactive,
+  ref,
+  onBeforeMount,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  watch,
+} from "vue";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from "vue-router";
@@ -69,8 +77,7 @@ const socket = io(wsUrl, {
 });
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
-let workerQualityRate = ref(0);
-let workerReliabilityRate = ref(0);
+let rate = ref(0);
 const mapOptions = ref({
   center: [0, 0],
   zoom: 15,
@@ -135,43 +142,20 @@ const formatDate = (date: number | string) => {
   }
 };
 
-const qualityAvg = (offer: Offer) => {
-  if (offer.workerRatings) {
-    const qualityRatings = offer.workerRatings.quality as number[];
-    workerQualityRate.value =
-      (qualityRatings.reduce((a, b) => a + b, 0) / qualityRatings.length) * 20;
-    console.log(workerQualityRate.value);
-    return workerQualityRate.value;
-  } else {
-    return;
-  }
-};
-
-const reliabilityAvg = (offer: Offer) => {
-  if (offer.workerRatings) {
-    const reliabilityRatings = offer.workerRatings.reliability as number[];
-    workerReliabilityRate.value =
-      (reliabilityRatings.reduce((a, b) => a + b, 0) /
-        reliabilityRatings.length) *
-      20;
-    return workerReliabilityRate.value;
-  } else {
-    return;
-  }
+const workerRate = (ratings: number[]) => {
+  return (rate.value = (userStore.ratingsAvg(ratings)! / 5) * 100);
 };
 
 const setOffer = async () => {
   const offer = (document.getElementById("price") as HTMLInputElement)
     .value as unknown as number;
 
-  const workerRatings = userStore.user!.ratings;
-
   newOffer = {
     id: job.offers!.length + 1,
     workerId: userStore.user!._id,
     worker:
       userStore.user!.name + " " + userStore.user!.lastName.slice(0, 1) + ".",
-    workerRatings,
+    workerRatings: userStore.user!.ratings,
     amount: offer,
     date: Date.now(),
   };
@@ -243,12 +227,13 @@ const sendMessage = async () => {
 const scrollToBottom = () => {
   nextTick(() => {
     if (chatContainer.value) {
-      (chatContainer.value as HTMLElement).scrollTop = (chatContainer.value as HTMLElement).scrollHeight;
+      (chatContainer.value as HTMLElement).scrollTop = (
+        chatContainer.value as HTMLElement
+      ).scrollHeight;
     }
   });
 };
 
-// Guarda quando i messaggi cambiano e scrolla in basso
 watch(
   () => chat.messages,
   () => {
@@ -256,6 +241,11 @@ watch(
   },
   { deep: true }
 );
+
+const deleteReq = async () => {
+  await jobStore.deleteJob(job._id as string);
+  router.push("/jobs");
+};
 
 onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
@@ -400,21 +390,21 @@ onBeforeUnmount(() => {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle class="text-sky-950"
+                <AlertDialogTitle class="text-center"
                   >Confermi di voler eliminare questa
                   richiesta?</AlertDialogTitle
                 >
-                <AlertDialogDescription class="text-red-500">
+                <AlertDialogDescription class="text-red-500 text-center">
                   Attenzione, questa azione è irreversibile!
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter class="grid grid-cols-2 space-x-2">
-                <AlertDialogCancel class="mt-0 primary-btn w-full"
+                <AlertDialogCancel class="mt-0 primary-btn w-full hover:!text-red-500"
                   >Annulla</AlertDialogCancel
                 >
                 <AlertDialogAction
-                  @click="jobStore.deleteJob(jobId), router.replace('/jobs')"
-                  class="bg-red-500 text-sky-950 hover:text-red-500 hover:bg-sky-950"
+                  @click="deleteReq"
+                  class="primary-btn w-full hover:!text-green-500"
                   >Continua</AlertDialogAction
                 >
               </AlertDialogFooter>
@@ -494,17 +484,17 @@ onBeforeUnmount(() => {
                 attraverso la chat</TableCaption
               >
               <TableHeader>
-                <TableRow class="bg-sky-950 pointer-events-none">
-                  <TableHead class="text-sky-200 rounded-tl md:text-center">
+                <TableRow class="bg-sky-950 text-[12.5px] md:text-sm pointer-events-none">
+                  <TableHead class="text-sky-200 rounded-tl text-center p-2">
                     Data
                   </TableHead>
-                  <TableHead class="text-sky-200 md:text-center">
+                  <TableHead class="text-sky-200 text-center p-2">
                     Worker
                   </TableHead>
-                  <TableHead class="text-sky-200 md:text-center">
+                  <TableHead class="text-sky-200 text-center p-2">
                     Valutazioni
                   </TableHead>
-                  <TableHead class="text-sky-200 rounded-tr md:text-center">
+                  <TableHead class="text-sky-200 rounded-tr p-2 md:text-center">
                     Offerta(€)
                   </TableHead>
                 </TableRow>
@@ -514,17 +504,17 @@ onBeforeUnmount(() => {
                   v-for="offer in job.offers"
                   :key="offer.id"
                   @click="selectedOffer = offer"
-                  class="md:text-center bg-sky-50"
+                  class="text-[13px] md:text-sm md:text-center bg-sky-50"
                 >
-                  <TableCell>
+                  <TableCell class="p-2 text-center">
                     {{ formatDate(offer.date) }}
                   </TableCell>
-                  <TableCell>{{ offer.worker }}</TableCell>
-                  <TableCell class="p-0 md:py-1 text-center">
+                  <TableCell class="p-2 text-center">{{ offer.worker }}</TableCell>
+                  <TableCell class="p-0 py-2 text-center">
                     <span>
                       Qualità
                       <Progress
-                        :model-value="qualityAvg(offer) as unknown as number"
+                        :model-value="workerRate(offer.workerRatings.quality)"
                         class="scale-50 bg-sky-200 w-full"
                       />
                     </span>
@@ -532,13 +522,15 @@ onBeforeUnmount(() => {
                     <span>
                       Affidabilità
                       <Progress
-                        :model-value="reliabilityAvg(offer) as unknown as number"
+                        :model-value="
+                          workerRate(offer.workerRatings.reliability)
+                        "
                         class="scale-50 bg-sky-200"
                       />
                     </span>
                   </TableCell>
                   <TableCell
-                    class="flex flex-col items-center justify-center gap-1 md:flex-row md:gap-4"
+                    class="p-2 self-center text-center"
                   >
                     {{ offer.amount }}.00
                     <span
@@ -546,17 +538,43 @@ onBeforeUnmount(() => {
                       class="material-symbols-outlined scale-75"
                       >handshake</span
                     >
-                    <Button
-                      v-if="
-                        userStore.user?._id === job.userId &&
-                        (job.status === 'Aperto' || job.status === 'Offerta')
-                      "
-                      size="sm"
-                      class="h-6 bg-sky-950 text-green-500"
-                      @click="acceptOffer(offer.id as number)"
-                    >
-                      Ok
-                    </Button>
+
+                    <AlertDialog>
+                      <AlertDialogTrigger as-child>
+                        <Button
+                          v-if="
+                            userStore.user?._id === job.userId &&
+                            (job.status === 'Aperto' ||
+                              job.status === 'Offerta')
+                          "
+                          size="sm"
+                          class="h-6 bg-sky-950 text-green-500 mt-2 md:ms-4"
+                        >
+                          Ok
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle class="text-center"
+                            >Confermi di voler accettare questa
+                            offerta?</AlertDialogTitle
+                          >
+                          <AlertDialogDescription class="text-red-500 text-center">
+                            Attenzione, questa azione è irreversibile!
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter class="grid grid-cols-2 space-x-2">
+                          <AlertDialogCancel class="mt-0 w-full primary-btn hover:!text-red-500"
+                            >Annulla</AlertDialogCancel
+                          >
+                          <AlertDialogAction
+                            @click="acceptOffer(offer.id as number)"
+                            class="w-full primary-btn hover:!text-green-500"
+                            >Continua</AlertDialogAction
+                          >
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -648,7 +666,7 @@ onBeforeUnmount(() => {
               <p
                 v-for="message in chat.messages"
                 :key="message._id"
-                class="max-w-60 min-w-[120px] md:max-w-96 flex flex-col p-2 shadow rounded-xl text-xs md:text-sm break-words whitespace-normal gap-1"
+                class="max-w-60 min-w-[120px] md:max-w-96 flex flex-col p-2 shadow rounded-xl text-sm break-words whitespace-normal gap-1"
                 :class="
                   message.senderId === userStore.user?._id
                     ? 'self-end bg-sky-200 rounded-br-none'
@@ -821,8 +839,7 @@ onBeforeUnmount(() => {
             >Valuta</Button
           >
           <p class="text-center text-sm italic text-sky-950 opacity-70 mt-4">
-            <b>N.B.</b> <Link></Link>Le valutazioni non potranno essere
-            modificate. <br />
+            <b>N.B.</b> Le valutazioni non potranno essere modificate. <br />
             Indica valutazioni coerenti, poiché incideranno sulla scelta del
             Worker da parte degli altri utenti.
           </p>

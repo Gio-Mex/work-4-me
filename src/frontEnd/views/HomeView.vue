@@ -2,14 +2,18 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/userStore";
+import { useAppStore } from "../stores/appStore";
 import StepList from "../components/StepList.vue";
 
 import { Button } from "../components/ui/button";
 
 const router = useRouter();
 const userStore = useUserStore();
+const appStore = useAppStore();
 const currentImage = ref(0);
 const imageLoaded = ref(true);
+const workerQualityRate = ref(0);
+const workerReliabilityRate = ref(0);
 
 const heroImgs = Object.values(
   import.meta.glob<{ default: string }>("@/frontEnd/assets/img/hero/*.jpg", {
@@ -41,7 +45,7 @@ const userSteps = reactive(
     { title: "Registrati", description: "Crea un account", icon: "person" },
     {
       title: "Richiedi",
-      description: "Fai la tua richiesta nella sezione dedicata",
+      description: "Fai la tua richiesta",
       icon: "work",
     },
     {
@@ -88,10 +92,6 @@ const selectStep = (steps: typeof userSteps, step: number) => {
   }
 };
 
-const getAverageRating = (ratings: number[]) => {
-  return (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(2);
-};
-
 const goToNextPage = () => {
   router.push(userStore.user === null ? "/user/signup" : "/jobs");
 };
@@ -99,27 +99,46 @@ const goToNextPage = () => {
 onMounted(() => {
   showImg();
   console.log(userStore.user);
+  if (userStore.user !== null && userStore.user.ratings) {
+    workerQualityRate.value = Number(
+      userStore.ratingsAvg(userStore.user!.ratings.quality as number[])?.toFixed(1)
+    );
+    workerReliabilityRate.value = Number(
+      userStore.ratingsAvg(userStore.user!.ratings.reliability as number[])?.toFixed(1)
+    );
+  }
 });
 </script>
 
 <template>
-  <div class="flex flex-row">
+  <div
+    v-if="appStore.isLoading"
+    class="flex flex-col justify-center items-center h-96"
+  >
     <div
-      class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-24 mb-4"
+      class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
+    ></div>
+    <span class="text-sky-950 text-center mt-10 mx-3"
+      >Questa piattaforma si avvale di servizi basilari di terze parti. Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+    >
+  </div>
+  <div v-else class="flex flex-row">
+    <div
+      class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-20 mb-4"
     >
       <div
         class="absolute w-full h-full opacity-75 bg-gradient-to-r from-sky-100 via-sky-100 to-transparent z-10"
       ></div>
       <div
-        class="absolute top-0 xl:top-[15%] left-0 w-1/2 ps-4 mt-8 flex flex-col gap-4 md:my-auto z-10"
+        class="absolute top-0 xl:top-[15%] left-0 w-1/2 ps-4 mt-6 md:mt-10 flex flex-col gap-4 md:my-auto z-10"
       >
-        <h1 class="text-6xl md:text-9xl text-sky-500 font-semibold">Work</h1>
+        <h1 class="text-5xl md:text-7xl text-sky-500 font-semibold">Work</h1>
         <span
-          class="text-7xl md:text-9xl text-sky-700 font-semibold scale-125 ms-6 md:ms-16 lg:ms-28 xl:ms-80"
+          class="text-6xl md:text-8xl text-sky-700 font-semibold scale-125 ms-6 md:ms-16 lg:ms-28 xl:ms-80"
           >4</span
         >
         <h1
-          class="text-7xl md:text-9xl text-sky-950 font-semibold scale-150 self-center mt-4"
+          class="text-6xl md:text-8xl text-sky-950 font-semibold scale-150 self-center mt-4"
         >
           Me
         </h1>
@@ -148,9 +167,7 @@ onMounted(() => {
       </p>
     </div>
     <div class="p-5 md:p-8 mt-4">
-      <h2 class="text-2xl font-semibold mb-4">
-        Che tipo di aiuto?
-      </h2>
+      <h2 class="text-2xl font-semibold mb-4">Che tipo di aiuto?</h2>
       <p class="md:text-lg">
         <span class="text-sky-400 font-semibold text-lg md:text-xl"
           >Qualsiasi</span
@@ -167,7 +184,7 @@ onMounted(() => {
     <h2 class="text-2xl font-semibold">Come funziona Work4Me?</h2>
     <p class="md:text-lg mt-3">
       <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile!</span>
-      Segui questi passaggi.
+      Consulta i seguenti passi.
     </p>
     <StepList
       :steps="userSteps"
@@ -206,9 +223,7 @@ onMounted(() => {
       </p>
     </div>
     <div class="p-5 md:p-8 mt-4 bg-sky-50">
-      <h2 class="text-2xl font-semibold mb-4">
-        Posso guadagnare come Worker?
-      </h2>
+      <h2 class="text-2xl font-semibold mb-4">Posso guadagnare come Worker?</h2>
       <p class="md:text-lg">
         <span class="text-sky-400 font-semibold text-lg md:text-xl">Certo</span
         >, quando trovi una richiesta di lavoro che ti piace, prova a fare una
@@ -223,12 +238,10 @@ onMounted(() => {
     class="p-5 md:p-8 mt-6 mb-12 md:mb-0 text-center"
     :class="userStore.user !== null ? 'mb-12' : 'mb-4'"
   >
-    <h2 class="text-2xl font-semibold">
-      Come usa la piattaforma un Worker?
-    </h2>
+    <h2 class="text-2xl font-semibold">Come usa la piattaforma un Worker?</h2>
     <p class="md:text-lg mt-3">
       <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile</span>
-      anche questo. Segui questi passi.
+      anche questo. Consulta questi passi.
     </p>
     <StepList
       :steps="workerSteps"
@@ -248,7 +261,7 @@ onMounted(() => {
 
         <section class="my-2">
           <span class="text-5xl text-sky-400 font-bold">{{
-            getAverageRating(userStore.user?.ratings?.quality)
+            workerQualityRate
           }}</span>
           <span class="text-3xl text-sky-900 font-semibold">/5</span>
         </section>
@@ -258,7 +271,7 @@ onMounted(() => {
         <p class="md:text-xl font-medium text-sky-950">Affidabilità</p>
         <section class="my-2">
           <span class="text-5xl text-sky-400 font-bold"
-            >{{ getAverageRating(userStore.user?.ratings?.reliability) }}
+            >{{ workerReliabilityRate }}
           </span>
           <span class="text-3xl text-sky-900 font-semibold">/5</span>
         </section>
@@ -273,7 +286,7 @@ onMounted(() => {
   </div>
 
   <Button
-    class="primary-btn w-full max-w-96 p-10 mt-14 mb-14 text-lg md:text-2xl font-bold transition-all duration-250 ease-in-out flex mx-auto"
+    class="primary-btn w-full max-w-[350px] p-10 mt-14 mb-14 text-lg md:text-2xl font-bold transition-all duration-250 ease-in-out flex mx-auto"
     @click="goToNextPage"
   >
     <span v-if="userStore.user === null">Mi hai convinto, iniziamo! 🚀</span>
