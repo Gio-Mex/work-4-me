@@ -7,10 +7,10 @@ import {
   nextTick,
   watch,
 } from "vue";
+import { useAppStore } from "../stores/appStore";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from "vue-router";
-import { socket } from "../../socket";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
@@ -59,6 +59,7 @@ import {
 } from "../components/ui/number-field";
 import { Progress } from "../components/ui/progress";
 
+const appStore = useAppStore();
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const router = useRouter();
@@ -68,6 +69,7 @@ let newOffer = reactive({} as Offer);
 let selectedOffer = ref({} as Offer);
 let formattedDate = ref("" as string);
 const chatContainer = ref(null);
+const socket = appStore.socket;
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
 let qualityRate = ref(1);
