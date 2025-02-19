@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch } from "vue";
 import { RouterView } from "vue-router";
+import { useAppStore } from "./frontEnd/stores/appStore";
 import { useUserStore } from "./frontEnd/stores/userStore";
-import { socket } from "./socket"; // Importiamo il singleton
+
 import Navbar from "./frontEnd/components/Navbar.vue";
 import Toaster from "./frontEnd/components/ui/toast/Toaster.vue";
 
+const appStore = useAppStore();
+const socket = appStore.socket;
 const userStore = useUserStore();
 
 onMounted(() => {
