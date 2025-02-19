@@ -1,5 +1,6 @@
 import Job from "../models/job.model.js";
 import Chat from "../models/chat.model.js";
+import { notifyUser } from "../index.js";
 
 const createJob = async (req, res) => {
   try {
@@ -137,6 +138,8 @@ const updateJob = async (req, res) => {
     if (!updatedJob) {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
+    const recipientUserId = updatedJob.userId || updatedJob.workerId;
+    notifyUser(recipientUserId, updatedJob);
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });

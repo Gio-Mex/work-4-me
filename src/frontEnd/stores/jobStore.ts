@@ -1,10 +1,13 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { io } from "socket.io-client";
+import { useUserStore } from "./userStore";
 import { useAppStore } from "./appStore";
 import type { Job } from "../interfaces/job";
 import type { Chat } from "../interfaces/chat";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const socket = io(baseUrl);
 
 export const useJobStore = defineStore("job", {
   state: () => ({
@@ -32,7 +35,7 @@ export const useJobStore = defineStore("job", {
       const appStore = useAppStore();
       appStore.startLoading();
       try {
-        const url = `${import.meta.env.VITE_BASE_URL}/jobs`;
+        const url = `${baseUrl}/jobs`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {
@@ -66,10 +69,7 @@ export const useJobStore = defineStore("job", {
       appStore.startLoading();
       try {
         const url = `${baseUrl}/jobs/new`;
-        const response = await axios.post(
-          url,
-          job
-        );
+        const response = await axios.post(url, job);
         this.jobs.push(response.data);
         appStore.showToast(response.data.message);
       } catch (error: any) {
@@ -91,11 +91,8 @@ export const useJobStore = defineStore("job", {
       appStore.startLoading();
       try {
         const url = `${baseUrl}/jobs/edit/${job._id}`;
-        const response = await axios.put(
-          url,
-          job
-        );
-        job = this.getJobById(job._id as string);
+        const response = await axios.put(url, job);
+        //job = this.getJobById(job._id as string);
         job = response.data;
         const status = response.status;
         console.log("Risposta dal server:", {
@@ -117,10 +114,7 @@ export const useJobStore = defineStore("job", {
       appStore.startLoading();
       try {
         const url = `${baseUrl}/jobs/${job._id}`;
-        const response = await axios.patch(
-          url,
-          job
-        );
+        const response = await axios.patch(url, job);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,
@@ -161,10 +155,7 @@ export const useJobStore = defineStore("job", {
       const appStore = useAppStore();
       try {
         const url = `${baseUrl}/jobs/${chat.jobId}`;
-        const response = await axios.post(
-          url,
-          chat
-        );
+        const response = await axios.post(url, chat);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,
@@ -195,10 +186,7 @@ export const useJobStore = defineStore("job", {
       appStore.startLoading();
       try {
         const url = `${baseUrl}/user/${workerId}`;
-        const response = await axios.patch(
-          url,
-          {ratings}
-        );
+        const response = await axios.patch(url, { ratings });
         console.log(response.data);
         const status = response.status;
         console.log("Risposta dal server:", {
@@ -213,7 +201,7 @@ export const useJobStore = defineStore("job", {
       } finally {
         appStore.stopLoading();
       }
-    }
+    },
   },
   getters: {
     getJobById:

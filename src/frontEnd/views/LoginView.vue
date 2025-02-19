@@ -36,7 +36,7 @@ const handleSubmit = async () => {
       class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
     ></div>
     <span class="text-sky-950 text-center mt-10 mx-3"
-      >Questa piattaforma si avvale di servizi basilari di terze parti. Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+      >Questa piattaforma si avvale di servizi basilari di terze parti.<br/> Dopo un lungo periodo di inattività le performance potrebbero variare.</span
     >
   </div>
   <form v-else class="pt-20" @submit.prevent="handleSubmit">

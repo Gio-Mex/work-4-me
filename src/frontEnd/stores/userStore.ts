@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { io } from "socket.io-client";
+import { ref } from "vue";
 import type { User } from "../interfaces/user";
 import { useAppStore } from "./appStore";
-import { ref } from "vue";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+const socket = io(baseUrl);
 
 export const useUserStore = defineStore(
   "user",
@@ -65,6 +67,7 @@ export const useUserStore = defineStore(
         }
       },
       logout() {
+        socket.disconnect();
         const appStore = useAppStore();
         this.resetUser();
         appStore.showToast("Logout effettuato");

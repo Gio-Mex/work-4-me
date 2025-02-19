@@ -10,6 +10,7 @@ import jobRoute from "./routes/job.route.js";
 config();
 
 const app = express();
+const userSockets = new Map();
 
 // Middleware
 app.use(cors());
@@ -46,21 +47,49 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
 
-  socket.on("message", (message) => {
-    console.log("Message received:", message);
+  // Associare un utente alla socket
+  socket.on("registerUser", (userId) => {
+    // Se l'utente aveva già una connessione, la rimuoviamo
+    if (userSockets.has(userId)) {
+      const oldSocketId = userSockets.get(userId);
+      if (oldSocketId !== socket.id) {
+        console.log(`🔄 Utente ${userId} riconnesso, rimuovo la vecchia socket ${oldSocketId}`);
+      }
+    }
 
+    // Registriamo la nuova socket
+    userSockets.set(userId, socket.id);
+    console.log(`✅ Utente ${userId} registrato con socket ${socket.id}`);
+  });
+
+  // Quando riceviamo un messaggio
+  socket.on("message", (message) => {
+    console.log("📩 Messaggio ricevuto:", message);
     socket.broadcast.emit("message", message);
   });
 
-  socket.on("ping", (msg) => {
-    console.log("Ping received:", msg);
-    socket.emit("pong", "still-alive");
-  });
-
+  // Quando un utente si disconnette
   socket.on("disconnect", () => {
-    console.log("WebSocket connection closed:", socket.id);
+    for (const [userId, socketId] of userSockets.entries()) {
+      if (socketId === socket.id) {
+        userSockets.delete(userId);
+        console.log(`❌ Utente ${userId} disconnesso`);
+        break;
+      }
+    }
   });
 });
+
+// Funzione per notificare un utente specifico
+export const notifyUser = (userId, updatedJob) => {
+  const socketId = userSockets.get(userId);
+  if (socketId) {
+    io.to(socketId).emit("jobUpdated", updatedJob);
+    console.log(`📢 Notifica inviata all'utente ${userId}`);
+  } else {
+    console.log(`⚠️ Utente ${userId} non connesso`);
+  }
+};
 
 // Start HTTP server
 const PORT = process.env.PORT || 3000;

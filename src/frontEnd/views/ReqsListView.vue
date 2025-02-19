@@ -173,14 +173,14 @@ const handleRouteChange = async () => {
       class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
     ></div>
     <span class="text-sky-950 text-center mt-10 mx-3"
-      >Questa piattaforma si avvale di servizi basilari di terze parti. Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+      >Questa piattaforma si avvale di servizi basilari di terze parti.<br/> Dopo un lungo periodo di inattività le performance potrebbero variare.</span
     >
   </div>
   <div
     v-else
-    class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 xl:gap-20"
+    class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
   >
-    <div class="w-full md:max-w-2xl lg:w-1/2 p-4 mb-4 mt-20 md:mt-24">
+    <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-20 md:mt-24">
       <div class="mb-0 bg-sky-900 rounded-t border-b border-b-sky-200">
         <h2 class="text-4xl font-light text-center text-sky-200 p-3">
           Richieste
@@ -195,7 +195,7 @@ const handleRouteChange = async () => {
           >
             <AccordionItem value="accordionContent" class="!text-xs border-0">
               <AccordionTrigger
-                class="text-sky-200 mx-28 md:mx-64 lg:mx-52 xl:mx-64"
+                class="text-sky-200 mx-28 md:mx-64 lg:mx-44 xl:mx-64"
                 >{{ accordionContent.title }}</AccordionTrigger
               >
               <AccordionContent v-html="accordionContent.content">
@@ -261,7 +261,7 @@ const handleRouteChange = async () => {
 
     <div
       v-if="userStore.user?.isWorker"
-      class="w-full md:max-w-2xl lg:w-1/2 p-4 mb-4 lg:mt-24"
+      class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 lg:mt-24"
     >
       <div class="mb-0 bg-sky-950 border-b border-b-sky-200 rounded-t">
         <h2
@@ -336,7 +336,7 @@ const handleRouteChange = async () => {
             >
               <AccordionItem value="accordionContent" class="!text-xs border-0">
                 <AccordionTrigger
-                class="text-sky-200 mx-28 md:mx-64 lg:mx-52 xl:mx-64"
+                class="text-sky-200 mx-28 md:mx-64 lg:mx-44 xl:mx-64"
                   >{{ accordionContent.title }}</AccordionTrigger
                 >
                 <AccordionContent v-html="accordionContent.content">

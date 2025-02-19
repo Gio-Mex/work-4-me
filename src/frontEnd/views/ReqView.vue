@@ -4,15 +4,14 @@ import {
   ref,
   onBeforeMount,
   onMounted,
-  onBeforeUnmount,
   nextTick,
   watch,
 } from "vue";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from "vue-router";
+import { socket } from "../../socket";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -71,10 +70,6 @@ let formattedDate = ref("" as string);
 const chatContainer = ref(null);
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
-const wsUrl = import.meta.env.VITE_BASE_URL;
-const socket = io(wsUrl, {
-  transports: ["websocket"],
-});
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let rate = ref(0);
@@ -272,9 +267,6 @@ onMounted(() => {
   scrollToBottom();
 });
 
-onBeforeUnmount(() => {
-  socket.disconnect();
-});
 </script>
 
 <template>
@@ -288,14 +280,14 @@ onBeforeUnmount(() => {
     Proposta di lavoro
   </h1>
 
-  <Card class="mx-2 md:mx-6 lg:mx-auto mb-4 max-w-4xl px-1 md:px-4">
+  <Card class="mx-2 md:mx-6 lg:mx-auto mb-4 max-w-4xl md:px-4">
     <CardHeader>
       <CardDescription class="text-center text-lg font-normal">
         <h2>Dettagli richiesta</h2>
       </CardDescription>
     </CardHeader>
     <hr class="mb-6 md:mb-0 md:mt-4 w-3/4 mx-auto" />
-    <CardContent>
+    <CardContent class="px-2.5 lg:px-3.5">
       <div class="space-y-4">
         <div
           class="grid grid-cols-2 gap-4 bg-sky-50 p-4 md:p-5 rounded-md shadow-sm"
@@ -422,7 +414,7 @@ onBeforeUnmount(() => {
           </p>
         </div>
 
-        <CardDescription class="text-center text-lg font-normal pt-4">
+        <CardDescription class="text-center text-lg font-normal md:pt-4">
           <h2>Dettagli proposte</h2>
           <hr class="mb-0 mt-4 w-3/4 mx-auto" />
         </CardDescription>
@@ -661,7 +653,7 @@ onBeforeUnmount(() => {
             </div>
             <div
               ref="chatContainer"
-              class="h-[250px] md:h-[350px] bg-sky-50 flex flex-col rounded-t-md shadow-sm mx-auto gap-3 p-3 overflow-scroll"
+              class="h-[400px] bg-sky-50 flex flex-col rounded-t-md shadow-sm mx-auto gap-3 p-3 overflow-scroll"
             >
               <p
                 v-for="message in chat.messages"
@@ -772,7 +764,7 @@ onBeforeUnmount(() => {
                   job.status === 'In lavorazione'
                 "
                 @click="closeJob()"
-                class="primary-btn my-6"
+                class="w-auto primary-btn my-6"
               >
                 Termina lavoro
               </Button>
