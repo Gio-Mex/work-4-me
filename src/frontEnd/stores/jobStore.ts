@@ -1,13 +1,10 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { io } from "socket.io-client";
-import { useUserStore } from "./userStore";
 import { useAppStore } from "./appStore";
 import type { Job } from "../interfaces/job";
 import type { Chat } from "../interfaces/chat";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const socket = io(baseUrl);
 
 export const useJobStore = defineStore("job", {
   state: () => ({
