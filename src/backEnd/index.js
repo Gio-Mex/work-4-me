@@ -48,6 +48,8 @@ io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
 
   socket.on("registerUser", (userId) => {
+    console.log(`📌 registerUser event received for userId: ${userId} with socket ${socket.id}`);
+
     // Se l'utente è già registrato con un altro socket, lo aggiorniamo
     if (userSockets.has(userId)) {
       console.log(`🔄 Updating connection for user ${userId}`);
@@ -83,7 +85,7 @@ export const notifyUser = (userId, updatedJob) => {
   const socketId = userSockets.get(userId);
   if (socketId) {
     io.to(socketId).emit("jobUpdated", updatedJob);
-    console.log(`✅ Notification sent to user ${userId} with socket ${socketId}`);
+    console.log(`✅ Notification sent to user ${userId} on socket ${socketId}`);
   } else {
     console.log(`⚠️ User ${userId} not connected. Sockets available:`, [...userSockets.entries()]);
   }
