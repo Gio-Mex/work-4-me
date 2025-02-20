@@ -83,23 +83,21 @@ io.on("connection", (socket) => {
 
 // Funzione per notificare un utente specifico
 export const notifyUser = (userId, updatedJob) => {
-  console.log(`📢 Trying to notify user ${userId}`);
-  console.log("Current userSockets map:", userSockets);
-
   const socketId = userSockets.get(userId);
-  if (socketId) {
-    console.log(`🔍 Checking if socket ${socketId} exists in io.sockets.sockets`);
-    console.log("All active sockets:", [...io.sockets.sockets.keys()]);
+  console.log(`📢 Trying to notify user ${userId}`);
 
+  console.log("🔍 Current userSockets map:", userSockets);
+  console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
+
+  if (socketId) {
     if (io.sockets.sockets.has(socketId)) {
-      console.log(`✅ Sending notification to user ${userId} on socket ${socketId}`);
       io.to(socketId).emit("jobUpdated", updatedJob);
+      console.log(`📢 Notification sent to user ${userId}`);
     } else {
-      console.log(`⚠️ Socket ${socketId} is registered but does NOT exist in io.sockets.sockets!`);
+      console.log(`❌ Socket ID ${socketId} is not active.`);
     }
   } else {
     console.log(`⚠️ User ${userId} not connected.`);
-    console.log("Sockets available:", [...userSockets.entries()]);
   }
 };
 
