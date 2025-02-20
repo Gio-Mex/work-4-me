@@ -48,15 +48,11 @@ io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
 
   socket.on("registerUser", (userId) => {
-    // Rimuoviamo eventuali connessioni precedenti dell'utente
-    for (const [storedUserId, storedSocketId] of userSockets.entries()) {
-      if (storedUserId === userId) {
-        userSockets.delete(storedUserId);
-        console.log(`🔄 User ${userId} had a previous connection ${storedSocketId}, removed.`);
-      }
+    // Se l'utente è già registrato con un altro socket, lo aggiorniamo
+    if (userSockets.has(userId)) {
+      console.log(`🔄 Updating connection for user ${userId}`);
     }
-
-    // Registriamo la nuova socket
+  
     userSockets.set(userId, socket.id);
     console.log(`✅ User ${userId} registered with socket ${socket.id}`);
   });
@@ -81,12 +77,15 @@ io.on("connection", (socket) => {
 
 // Funzione per notificare un utente specifico
 export const notifyUser = (userId, updatedJob) => {
+  console.log(`📢 Trying to notify user ${userId}`);
+  console.log("Current userSockets map:", userSockets);
+
   const socketId = userSockets.get(userId);
   if (socketId) {
     io.to(socketId).emit("jobUpdated", updatedJob);
-    console.log(`📢 Notification sent to user ${userId}`);
+    console.log(`✅ Notification sent to user ${userId} with socket ${socketId}`);
   } else {
-    console.log(`⚠️ User ${userId} not connected`);
+    console.log(`⚠️ User ${userId} not connected. Sockets available:`, [...userSockets.entries()]);
   }
 };
 

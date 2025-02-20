@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { RouterView } from "vue-router";
 import { useAppStore } from "./frontEnd/stores/appStore";
 import { useUserStore } from "./frontEnd/stores/userStore";
@@ -12,26 +12,13 @@ const socket = appStore.socket;
 const userStore = useUserStore();
 
 onMounted(() => {
-  watch(
-    () => userStore.user,
-    (newUser) => {
-      if (newUser) {
-        socket.connect(); // Connetti WebSocket solo dopo il login
-        socket.emit("registerUser", newUser._id);
-        console.log(`✅ Utente ${newUser._id} registrato nel WebSocket`);
-      }
-    },
-    { immediate: true } // Esegui subito se l'utente è già loggato
-  );
-
-  socket.on("jobUpdated", (updatedJob) => {
-    console.log("🔄 Aggiornamento ricevuto:", updatedJob);
-  });
+  if (userStore.user) {
+    socket.emit("registerUser", userStore.user._id);
+  }
 });
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("❌ WebSocket disconnesso");
 });
 </script>
 
