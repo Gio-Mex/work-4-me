@@ -34,8 +34,7 @@ const createJob = async (req, res) => {
 const getActiveJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
-      { $match: { evaluated: { $ne: true } }
-     },
+      { $match: { evaluated: { $ne: true } } },
       {
         $lookup: {
           from: "users",
@@ -76,8 +75,7 @@ const getActiveJobs = async (req, res) => {
 const getArchivedJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
-      { $match: { evaluated: true }
-     },
+      { $match: { evaluated: true } },
       {
         $lookup: {
           from: "users",
@@ -115,7 +113,6 @@ const getArchivedJobs = async (req, res) => {
   }
 };
 
-
 const getJob = async (req, res) => {
   try {
     const { jobId } = req.body;
@@ -138,8 +135,10 @@ const updateJob = async (req, res) => {
     if (!updatedJob) {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
-    const recipientUsersId = updatedJob.userId && updatedJob.workerId;
-    notifyUser(recipientUsersId, updatedJob);
+    const recipientUsers = [updatedJob.userId, updatedJob.workerId];
+    recipientUsers.forEach((userId) => {
+      if (userId) notifyUser(userId, updatedJob);
+    });
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -151,11 +150,17 @@ const setOffer = async (req, res) => {
     const { _id, ...props } = req.body;
     const job = await Job.findById(_id);
     if (job.status === "Accettato") {
-      return res.status(400).json({ message: "Un'altra proposta è stata già accettata" });
+      return res
+        .status(400)
+        .json({ message: "Un'altra proposta è stata già accettata" });
     } else {
       job.status = props.status;
       job.offers.push(props.offers[props.offers.length - 1]);
       await job.save();
+      const recipientUsers = [updatedJob.userId, updatedJob.workerId];
+      recipientUsers.forEach((userId) => {
+        if (userId) notifyUser(userId, updatedJob);
+      });
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {
@@ -191,17 +196,17 @@ const updateChat = async (req, res) => {
       const updatedChat = await Chat.updateOne(
         { jobId: jobId },
         { $set: chat },
-        { new: true },
+        { new: true }
       );
       res.status(200).json({ message: "Chat aggiornata", updatedChat });
     } else {
-       const newChat = new Chat({
-      jobId: req.body.jobId,
-      userId: req.body.userId,
-      workerId: req.body.workerId,
-    });
-    await newChat.save();
-    res.status(201).json({ message: "Chat creata", newChat }); 
+      const newChat = new Chat({
+        jobId: req.body.jobId,
+        userId: req.body.userId,
+        workerId: req.body.workerId,
+      });
+      await newChat.save();
+      res.status(201).json({ message: "Chat creata", newChat });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -210,7 +215,7 @@ const updateChat = async (req, res) => {
 
 const findChat = async (req, res) => {
   try {
-      const { id } = req.params;
+    const { id } = req.params;
     const chat = await Chat.findOne({ jobId: id });
 
     if (!chat) {
@@ -222,4 +227,14 @@ const findChat = async (req, res) => {
   }
 };
 
-export { createJob, getArchivedJobs, updateChat, findChat, getActiveJobs, getJob, updateJob, setOffer, deleteJob };
+export {
+  createJob,
+  getArchivedJobs,
+  updateChat,
+  findChat,
+  getActiveJobs,
+  getJob,
+  updateJob,
+  setOffer,
+  deleteJob,
+};
