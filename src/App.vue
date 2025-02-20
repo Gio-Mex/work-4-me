@@ -2,24 +2,28 @@
 import { onMounted, onUnmounted } from "vue";
 import { RouterView } from "vue-router";
 import { useAppStore } from "./frontEnd/stores/appStore";
-import { useUserStore } from "./frontEnd/stores/userStore";
 
 import Navbar from "./frontEnd/components/Navbar.vue";
 import Toaster from "./frontEnd/components/ui/toast/Toaster.vue";
 
 const appStore = useAppStore();
 const socket = appStore.socket;
-const userStore = useUserStore();
 
 onMounted(() => {
-  if (userStore.user) {
-    socket.on("jobUpdated", (data) => {
-      console.log("📩 Job update received:", data);
-    });
+  if (!socket) {
+    console.warn("⚠️ Socket not initialized!");
+    return;
   }
+
+  console.log("✅ Socket connected, listening for jobUpdated events");
+
+  socket.on("jobUpdated", (data) => {
+    console.log("📩 Job update received:", data);
+  });
 });
 
 onUnmounted(() => {
+  socket.off("jobUpdated");
   socket.disconnect();
 });
 </script>
