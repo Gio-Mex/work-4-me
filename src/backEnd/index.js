@@ -49,16 +49,20 @@ io.on("connection", (socket) => {
 
   socket.on("registerUser", (userId) => {
     console.log(`📌 registerUser event received for userId: ${userId} with socket ${socket.id}`);
-
-    // Se l'utente è già registrato con un altro socket, lo aggiorniamo
+  
+    // Rimuoviamo eventuali connessioni precedenti
     if (userSockets.has(userId)) {
-      console.log(`🔄 Updating connection for user ${userId}`);
+      const oldSocketId = userSockets.get(userId);
+      if (oldSocketId !== socket.id) {
+        console.log(`🔄 Removing previous socket ${oldSocketId} for user ${userId}`);
+        io.sockets.sockets.get(oldSocketId)?.disconnect(true);
+      }
     }
   
+    // Registriamo la nuova socket
     userSockets.set(userId, socket.id);
     console.log(`✅ User ${userId} registered with socket ${socket.id}`);
   });
-
   // Quando riceviamo un messaggio
   socket.on("message", (message) => {
     console.log("📩 Message received:", message);
