@@ -86,24 +86,24 @@ export const notifyUser = (userId, updatedJob) => {
   console.log(`📢 Trying to notify user ${userId}`);
   console.log("🔍 Current userSockets map:", userSockets);
   console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
-
-  // Controlliamo che l'ID utente sia scritto correttamente
   console.log("🔍 Checking userSockets keys:", Array.from(userSockets.keys()));
 
-  const socketId = userSockets.get(userId);
+  // Forziamo userId a essere una stringa
+  const userIdStr = String(userId); 
 
-  if (socketId) {
-    console.log(`✅ Found socket ${socketId} for user ${userId}`);
-    
+  if (userSockets.has(userIdStr)) {
+    const socketId = userSockets.get(userIdStr);
+    console.log(`✅ Found socket ${socketId} for user ${userIdStr}`);
+
     if (io.sockets.sockets.has(socketId)) {
       console.log(`🚀 Sending notification to ${socketId}`);
       io.to(socketId).emit("jobUpdated", updatedJob);
-      console.log(`📢 Notification sent to user ${userId}`);
+      console.log(`📢 Notification sent to user ${userIdStr}`);
     } else {
       console.log(`⚠️ Socket ${socketId} found in map but not in connected sockets!`);
     }
   } else {
-    console.log(`❌ User ${userId} not found in userSockets.`);
+    console.log(`❌ User ${userIdStr} not found in userSockets.`);
   }
 };
 
