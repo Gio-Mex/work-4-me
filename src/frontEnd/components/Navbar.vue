@@ -72,8 +72,8 @@ const menuLinks = [
     class="w-full fixed flex items-center justify-between p-2 pb-3 md:pt-3.5 md:pb-4 px-4 text-sky-950 bg-white z-50"
   >
     <!-- Logo -->
-    <a href="/" class="flex items-center">
-      <img src="../assets/img/logo.png" class="!mr-0 h-14 md:h-16" alt="Logo" />
+    <a class="flex items-center">
+      <img src="../assets/img/logo.png" class="!mr-0 h-14 md:h-16" alt="Logo" @click="navigateTo('/')"/>
     </a>
 
     <!-- Mobile hamburger icon -->
