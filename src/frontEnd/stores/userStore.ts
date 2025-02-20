@@ -17,6 +17,7 @@ export const useUserStore = defineStore(
       async login(form : User) {
         const appStore = useAppStore();
         appStore.startLoading();
+        const socket = appStore.socket;
         try {
           const url = `${baseUrl}/user/login`;
           const response = await axios.post(
@@ -33,6 +34,7 @@ export const useUserStore = defineStore(
           this.user = user;
           localStorage.setItem("authToken", token);
           this.isLoggedIn = true;
+          socket.emit("registerUser", user._id);
         } catch (error: any) {
           console.error("Errore durante il login:", error);
           appStore.showToast(error.response.data.message);

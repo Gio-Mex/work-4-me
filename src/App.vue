@@ -13,7 +13,6 @@ const userStore = useUserStore();
 
 onMounted(() => {
   if (userStore.user) {
-    socket.emit("registerUser", userStore.user._id);
     socket.on("jobUpdated", (data) => {
       console.log("📩 Job update received:", data);
     });
