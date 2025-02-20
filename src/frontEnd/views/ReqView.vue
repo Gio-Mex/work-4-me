@@ -8,15 +8,14 @@ import {
   watch,
   onUnmounted,
 } from "vue";
-import { useAppStore } from "../stores/appStore";
-import { useJobStore } from "../stores/jobStore";
-import { useUserStore } from "../stores/userStore";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-
+import { useAppStore } from "../stores/appStore";
+import { useJobStore } from "../stores/jobStore";
+import { useUserStore } from "../stores/userStore";
 import type { Job } from "../interfaces/job";
 import type { Offer } from "../interfaces/offer";
 import type { Chat } from "../interfaces/chat";
@@ -157,7 +156,6 @@ const setOffer = async () => {
     amount: offer,
     date: Date.now(),
   };
-
   job.offers!.push(newOffer);
   job.status = "Offerta";
   await jobStore.newOffer(job);
@@ -168,7 +166,6 @@ const acceptOffer = async (id: number) => {
   job.status = "Accettato";
   job.workerId = job.offers!.find((offer) => offer.id === id)!.workerId;
   job.amount = job.offers!.find((offer) => offer.id === id)!.amount;
-  //await userStore.updateUser(job.workerId);
   await jobStore.updateJob(job).then(() => {
     router.push("/jobs");
   });

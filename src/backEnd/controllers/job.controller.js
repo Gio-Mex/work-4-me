@@ -138,8 +138,8 @@ const updateJob = async (req, res) => {
     if (!updatedJob) {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
-    const recipientUserId = updatedJob.userId || updatedJob.workerId;
-    notifyUser(recipientUserId, updatedJob);
+    const recipientUsersId = updatedJob.userId && updatedJob.workerId;
+    notifyUser(recipientUsersId, updatedJob);
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
