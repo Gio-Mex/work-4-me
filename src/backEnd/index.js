@@ -91,7 +91,7 @@ export const notifyUser = (userId, updatedJob) => {
       console.log(`✅ Sending notification to user ${userId} on socket ${socketId}`);
       io.to(socketId).emit("jobUpdated", updatedJob);
     } else {
-      console.log(`⚠️ Socket ${socketId} found in userSockets but is not active in io.sockets.sockets`);
+      console.log(`⚠️ Socket ${socketId} is registered but does NOT exist in io.sockets.sockets!`);
     }
   } else {
     console.log(`⚠️ User ${userId} not connected.`);
