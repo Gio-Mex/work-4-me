@@ -168,7 +168,7 @@ const acceptOffer = async (id: number) => {
   job.status = "Accettato";
   job.workerId = job.offers!.find((offer) => offer.id === id)!.workerId;
   job.amount = job.offers!.find((offer) => offer.id === id)!.amount;
-  await userStore.updateUser(job.workerId);
+  //await userStore.updateUser(job.workerId);
   await jobStore.updateJob(job).then(() => {
     router.push("/jobs");
   });
