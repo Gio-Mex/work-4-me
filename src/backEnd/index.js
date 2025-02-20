@@ -85,19 +85,21 @@ io.on("connection", (socket) => {
 export const notifyUser = (userId, updatedJob) => {
   const socketId = userSockets.get(userId);
   console.log(`📢 Trying to notify user ${userId}`);
-
   console.log("🔍 Current userSockets map:", userSockets);
   console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
 
   if (socketId) {
+    console.log(`✅ Found socket ${socketId} for user ${userId}`);
+    
     if (io.sockets.sockets.has(socketId)) {
+      console.log(`🚀 Sending notification to ${socketId}`);
       io.to(socketId).emit("jobUpdated", updatedJob);
       console.log(`📢 Notification sent to user ${userId}`);
     } else {
-      console.log(`❌ Socket ID ${socketId} is not active.`);
+      console.log(`⚠️ Socket ${socketId} found in map but not in connected sockets!`);
     }
   } else {
-    console.log(`⚠️ User ${userId} not connected.`);
+    console.log(`❌ User ${userId} not found in userSockets.`);
   }
 };
 
