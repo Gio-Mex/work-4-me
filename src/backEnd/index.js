@@ -83,10 +83,14 @@ io.on("connection", (socket) => {
 
 // Funzione per notificare un utente specifico
 export const notifyUser = (userId, updatedJob) => {
-  const socketId = userSockets.get(userId);
   console.log(`📢 Trying to notify user ${userId}`);
   console.log("🔍 Current userSockets map:", userSockets);
   console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
+
+  // Controlliamo che l'ID utente sia scritto correttamente
+  console.log("🔍 Checking userSockets keys:", Array.from(userSockets.keys()));
+
+  const socketId = userSockets.get(userId);
 
   if (socketId) {
     console.log(`✅ Found socket ${socketId} for user ${userId}`);
