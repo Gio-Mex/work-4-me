@@ -84,10 +84,18 @@ export const notifyUser = (userId, updatedJob) => {
 
   const socketId = userSockets.get(userId);
   if (socketId) {
-    io.to(socketId).emit("jobUpdated", updatedJob);
-    console.log(`✅ Notification sent to user ${userId} on socket ${socketId}`);
+    console.log(`🔍 Checking if socket ${socketId} exists in io.sockets.sockets`);
+    console.log("All active sockets:", [...io.sockets.sockets.keys()]);
+
+    if (io.sockets.sockets.has(socketId)) {
+      console.log(`✅ Sending notification to user ${userId} on socket ${socketId}`);
+      io.to(socketId).emit("jobUpdated", updatedJob);
+    } else {
+      console.log(`⚠️ Socket ${socketId} found in userSockets but is not active in io.sockets.sockets`);
+    }
   } else {
-    console.log(`⚠️ User ${userId} not connected. Sockets available:`, [...userSockets.entries()]);
+    console.log(`⚠️ User ${userId} not connected.`);
+    console.log("Sockets available:", [...userSockets.entries()]);
   }
 };
 
