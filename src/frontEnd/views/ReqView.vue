@@ -6,6 +6,7 @@ import {
   onMounted,
   nextTick,
   watch,
+  onUnmounted,
 } from "vue";
 import { useAppStore } from "../stores/appStore";
 import { useJobStore } from "../stores/jobStore";
@@ -263,12 +264,18 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
-  socket.on("message", (message) => {
+  const messageListener = (message: Message) => {
     chat.messages.push(message);
+  };
+
+  socket.on("message", messageListener);
+
+  onUnmounted(() => {
+    socket.off("message", messageListener); // 🔥 Rimuove il listener per evitare duplicati!
   });
+
   scrollToBottom();
 });
-
 </script>
 
 <template>
@@ -393,7 +400,8 @@ onMounted(() => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter class="grid grid-cols-2 space-x-2">
-                <AlertDialogCancel class="mt-0 primary-btn w-full hover:!text-red-500"
+                <AlertDialogCancel
+                  class="mt-0 primary-btn w-full hover:!text-red-500"
                   >Annulla</AlertDialogCancel
                 >
                 <AlertDialogAction
@@ -478,7 +486,9 @@ onMounted(() => {
                 attraverso la chat</TableCaption
               >
               <TableHeader>
-                <TableRow class="bg-sky-950 text-[12.5px] md:text-sm pointer-events-none">
+                <TableRow
+                  class="bg-sky-950 text-[12.5px] md:text-sm pointer-events-none"
+                >
                   <TableHead class="text-sky-200 rounded-tl text-center p-2">
                     Data
                   </TableHead>
@@ -503,7 +513,9 @@ onMounted(() => {
                   <TableCell class="p-2 text-center">
                     {{ formatDate(offer.date) }}
                   </TableCell>
-                  <TableCell class="p-2 text-center">{{ offer.worker }}</TableCell>
+                  <TableCell class="p-2 text-center">{{
+                    offer.worker
+                  }}</TableCell>
                   <TableCell class="p-0 py-2 text-center">
                     <span>
                       Qualità
@@ -523,9 +535,7 @@ onMounted(() => {
                       />
                     </span>
                   </TableCell>
-                  <TableCell
-                    class="p-2 self-center text-center"
-                  >
+                  <TableCell class="p-2 self-center text-center">
                     {{ offer.amount }}.00
                     <span
                       v-if="offer.workerId === job.workerId"
@@ -553,12 +563,15 @@ onMounted(() => {
                             >Confermi di voler accettare questa
                             offerta?</AlertDialogTitle
                           >
-                          <AlertDialogDescription class="text-red-500 text-center">
+                          <AlertDialogDescription
+                            class="text-red-500 text-center"
+                          >
                             Attenzione, questa azione è irreversibile!
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter class="grid grid-cols-2 space-x-2">
-                          <AlertDialogCancel class="mt-0 w-full primary-btn hover:!text-red-500"
+                          <AlertDialogCancel
+                            class="mt-0 w-full primary-btn hover:!text-red-500"
                             >Annulla</AlertDialogCancel
                           >
                           <AlertDialogAction
