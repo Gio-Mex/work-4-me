@@ -46,6 +46,7 @@ onBeforeMount(() => {
       date: Date.now(),
       userId: userStore.user!._id,
       status: "Aperto",
+      notification: true,
       workerId: null,
     });
   }

@@ -12,6 +12,7 @@ export interface Job {
   userId: any;
   userDetails?: User;
   status: string;
+  notification: boolean;
   workerId?: any;
   workerDetails?: User;
   evaluated?: boolean;

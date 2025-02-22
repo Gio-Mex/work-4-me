@@ -141,9 +141,12 @@ const clearSearch: () => void = () => {
   showJobsList();
 };
 
-onMounted(async () => {
-  handleRouteChange();
-});
+const selectRequest = async (job: Job) => {
+  if (job.notification === true) {
+    await jobStore.deleteNotification(job);
+  }
+  router.push(`/jobs/${job._id}`)
+};
 
 watch(
   () => router.currentRoute.value.path,
@@ -165,6 +168,10 @@ const handleRouteChange = async () => {
     });
   }
 };
+
+onMounted(async () => {
+  handleRouteChange();
+});
 </script>
 
 <template>
@@ -215,7 +222,7 @@ const handleRouteChange = async () => {
             v-for="req in reqsList"
             :key="req._id"
             class="cursor-pointer"
-            @click="$router.push(`/jobs/${req._id}`)"
+            @click="selectRequest(req)"
           >
             <TableCell class="font-medium text-center">
               {{ req.category }}
@@ -356,7 +363,7 @@ const handleRouteChange = async () => {
               v-for="job in jobList"
               :key="job._id"
               class="cursor-pointer"
-              @click="$router.push(`/jobs/${job._id}`)"
+              @click="selectRequest(job)"
             >
               <TableCell class="font-medium text-center">
                 {{ job.userDetails?.city }}

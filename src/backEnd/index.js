@@ -97,6 +97,7 @@ export const notifyUser = (userId, updatedJob) => {
 
     if (io.sockets.sockets.has(socketId)) {
       console.log(`🚀 Sending notification to ${socketId}`);
+      io.to(socketId).emit("jobCreated", newJob);
       io.to(socketId).emit("jobUpdated", updatedJob);
       console.log(`📢 Notification sent to user ${userIdStr}`);
     } else {

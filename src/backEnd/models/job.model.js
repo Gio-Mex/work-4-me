@@ -31,6 +31,11 @@ const jobSchema = new Schema({
     type: String,
     required: true
   },
+  notification: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   workerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

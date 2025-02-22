@@ -25,7 +25,7 @@ export const useJobStore = defineStore("job", {
       "Nail art",
       "Altro",
     ] as string[],
-    notify: false as boolean,
+    notifications: 0 as number,
   }),
   actions: {
     async fetchActiveJobs() {
@@ -123,6 +123,20 @@ export const useJobStore = defineStore("job", {
         appStore.showToast(error.response.data.message);
       } finally {
         appStore.stopLoading();
+      }
+    },
+    async deleteNotification(job: Job) {
+      try {
+        job.notification = false;
+        const url = `${baseUrl}/jobs`;
+        const response = await axios.patch(url, job);
+        const status = response.status;
+        console.log("Risposta dal server:", {
+          status,
+          message: response.statusText,
+        });
+      } catch (error: any) {
+        console.error("Errore durante la cancellaizone della notifica:", error);
       }
     },
     async deleteJob(jobId: string) {

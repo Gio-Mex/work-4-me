@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import { useUserStore } from "../stores/userStore";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useJobStore } from "../stores/jobStore";
+import { useUserStore } from "../stores/userStore";
+import { useAppStore } from "../stores/appStore";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+
+const appStore = useAppStore();
 const userStore = useUserStore();
+const jobStore = useJobStore();
 const router = useRouter();
 const route = useRoute();
 const windowWidth = ref(window.innerWidth);
@@ -29,6 +34,11 @@ const closeMenuOnClickOutside = (event: Event) => {
 onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
+  if (userStore.user) {
+    appStore.socket.on("jobUpdated", () => {
+      jobStore.notifications ++;
+    });
+  }
 });
 
 // Remove event listeners
@@ -50,21 +60,30 @@ const logout = () => {
 
 // Navigation function
 const navigateTo = (path: string) => {
+  if (path === "/jobs") {
+    jobStore.notifications = 0;
+  }
   router.push(path);
   menuOpen.value = false;
 };
 
 // Menu links
-const menuLinks = [
+const menuLinks = computed(() => [
   { id: 1, path: "/", icon: "home", label: "Home" },
-  { id: 2, path: "/jobs", icon: "work", label: "Richieste" },
+  { 
+    id: 2, 
+    path: "/jobs", 
+    icon: "work", 
+    label: "Richieste", 
+    notify: jobStore.notifications 
+  },
   {
     id: 3,
     path: "/user",
     src: `${userStore.user?.avatar?.toString()}`,
     label: "Account",
   },
-];
+]);
 </script>
 
 <template>
@@ -73,7 +92,12 @@ const menuLinks = [
   >
     <!-- Logo -->
     <a class="flex items-center">
-      <img src="../assets/img/logo.png" class="!mr-0 h-14 md:h-16" alt="Logo" @click="navigateTo('/')"/>
+      <img
+        src="../assets/img/logo.png"
+        class="!mr-0 h-14 md:h-16"
+        alt="Logo"
+        @click="navigateTo('/')"
+      />
     </a>
 
     <!-- Mobile hamburger icon -->
@@ -82,6 +106,8 @@ const menuLinks = [
       class="relative flex flex-col gap-1 cursor-pointer w-8 h-8 z-50 mt-4"
       @click.stop="toggleMenu"
     >
+      <span v-if="jobStore.notifications > 0" class="h-5 w-5 absolute top-0 right-0 -translate-y-3 translate-x-2 bg-red-500 text-white rounded-full text-[12px] flex justify-center items-center z-30 transition-all   duration-300 ease-in-out"
+        :class="{ '!opacity-0': menuOpen }">{{ jobStore.notifications }}</span>
       <span
         class="menu-bar bg-sky-200"
         :class="{ 'rotate-45 translate-y-2 bg-sky-400': menuOpen }"
@@ -103,13 +129,14 @@ const menuLinks = [
           <a
             v-for="link in menuLinks"
             :key="link.path"
-            class="flex flex-col text-xs text-center font-medium cursor-pointer hover:text-sky-700"
+            class="relative flex flex-col text-xs text-center font-medium cursor-pointer hover:text-sky-700"
             :class="{ 'text-sky-500 font-bold': route.path === link.path }"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
               link.icon
             }}</span>
+            <span v-if="link.notify && jobStore.notifications > 0" class="h-4 w-4 absolute top-0 right-0 -translate-y-1 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center">{{ link.notify }}</span>
             <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
               <AvatarImage
                 :src="userStore.user!.avatar?.toString()"
@@ -168,7 +195,7 @@ const menuLinks = [
           <div class="flex flex-col gap-4">
             <section v-for="link in menuLinks" :key="link.path">
               <a
-                class="flex flex-col text-xs text-center font-medium cursor-pointer"
+                class="relative flex flex-col text-xs text-center font-medium cursor-pointer"
                 @click="navigateTo(link.path)"
               >
                 <span
@@ -176,15 +203,16 @@ const menuLinks = [
                   class="material-symbols-outlined mx-auto"
                   >{{ link.icon }}</span
                 >
+                <span v-if="link.notify && jobStore.notifications > 0" class="h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center">{{ link.notify }}</span>
                 <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
-              <AvatarImage
-                :src="userStore.user!.avatar?.toString()"
-                alt="Avatar"
-              />
-              <AvatarFallback class="content !text-[0.6rem]">
-                {{ userStore.user!.avatar }}
-              </AvatarFallback>
-            </Avatar>
+                  <AvatarImage
+                    :src="userStore.user!.avatar?.toString()"
+                    alt="Avatar"
+                  />
+                  <AvatarFallback class="content !text-[0.6rem]">
+                    {{ userStore.user!.avatar }}
+                  </AvatarFallback>
+                </Avatar>
                 {{ link.label }}
               </a>
               <hr

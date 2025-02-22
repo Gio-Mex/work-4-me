@@ -25,6 +25,11 @@ const createJob = async (req, res) => {
       workerId,
     });
     await newJob.save();
+    const workers = await User.find({
+      skills: newJob.category,
+      _id: { $ne: req.user.id },
+    });
+    workers.forEach((worker) => notifyUser(worker._id, newJob));
     res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -132,13 +137,31 @@ const updateJob = async (req, res) => {
     const updatedJob = await Job.findOneAndUpdate({ _id: _id }, props, {
       new: true,
     });
+
     if (!updatedJob) {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
-    const recipientUsers = [updatedJob.userId, updatedJob.workerId];
-    recipientUsers.forEach((userId) => {
-      if (userId) notifyUser(userId, updatedJob);
-    });
+
+    if (props.status === "Offerta") {
+      // Notificare l'utente e gli altri worker con la stessa skill
+      notifyUser(updatedJob.userId, updatedJob);
+      const workers = await User.find({
+        skills: updatedJob.category,
+        _id: { $ne: req.user.id },
+      });
+      workers.forEach((worker) => notifyUser(worker._id, updatedJob));
+    }
+
+    if (props.status === "Accettato") {
+      // Notificare solo il worker che ha fatto l'offerta
+      notifyUser(updatedJob.workerId, updatedJob);
+    }
+
+    if (props.status === "In corso" || props.status === "Chiuso") {
+      // Notificare l'utente
+      notifyUser(updatedJob.userId, updatedJob);
+    }
+
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
