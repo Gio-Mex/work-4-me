@@ -1,4 +1,5 @@
 import Job from "../models/job.model.js";
+import User from "../models/user.model.js";
 import Chat from "../models/chat.model.js";
 import { notifyUser } from "../index.js";
 
@@ -180,10 +181,6 @@ const setOffer = async (req, res) => {
       job.status = props.status;
       job.offers.push(props.offers[props.offers.length - 1]);
       await job.save();
-      const recipientUsers = [updatedJob.userId, updatedJob.workerId];
-      recipientUsers.forEach((userId) => {
-        if (userId) notifyUser(userId, updatedJob);
-      });
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {
