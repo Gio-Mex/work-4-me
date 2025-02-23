@@ -148,7 +148,7 @@ const updateJob = async (req, res) => {
       notifyUser(updatedJob.workerId, updatedJob);
     }
 
-    if (props.status === "In corso" || props.status === "Chiuso") {
+    if (props.status === "In lavorazione" || props.status === "Chiuso") {
       // Notificare l'utente
       notifyUser(updatedJob.userId, updatedJob);
     }
