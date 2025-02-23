@@ -30,8 +30,8 @@ const createJob = async (req, res) => {
       skills: { $in: category },
       _id: { $ne: userId },
     });
-    workers.forEach((worker) => notifyUser(worker._id, newJob));
-    res.status(201).json({ message: "Richiesta creata", job: newJob });
+    workers.forEach((worker) => notifyUser(worker._id));
+    res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
