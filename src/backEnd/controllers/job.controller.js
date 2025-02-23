@@ -31,7 +31,7 @@ const createJob = async (req, res) => {
       _id: { $ne: userId },
     });
     workers.forEach((worker) => notifyUser(worker._id, newJob));
-    res.status(201).json({ message: "Richiesta creata", newJob });
+    res.status(201).json({ message: "Richiesta creata", job: newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
