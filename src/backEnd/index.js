@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
 });
 
 // Funzione per notificare un utente specifico
-export const notifyUser = (userId, updatedJob) => {
+export const notifyUser = (userId, job) => {
   console.log(`📢 Trying to notify user ${userId}`);
   console.log("🔍 Current userSockets map:", userSockets);
   console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
@@ -97,8 +97,8 @@ export const notifyUser = (userId, updatedJob) => {
 
     if (io.sockets.sockets.has(socketId)) {
       console.log(`🚀 Sending notification to ${socketId}`);
-      io.to(socketId).emit("jobCreated", newJob);
-      io.to(socketId).emit("jobUpdated", updatedJob);
+      io.to(socketId).emit("jobCreated", job);
+      io.to(socketId).emit("jobUpdated", job);
       console.log(`📢 Notification sent to user ${userIdStr}`);
     } else {
       console.log(`⚠️ Socket ${socketId} found in map but not in connected sockets!`);
