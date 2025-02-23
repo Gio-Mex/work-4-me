@@ -26,11 +26,11 @@ const createJob = async (req, res) => {
       workerId,
     });
     await newJob.save();
-    // const workers = await User.find({
-    //   skills: newJob.category,
-    //   _id: { $ne: req.body.userId },
-    // });
-    // workers.forEach((worker) => notifyUser(worker._id, newJob));
+    const workers = await User.find({
+      skills: { $in: category },
+      _id: { $ne: userId },
+    });
+    workers.forEach((worker) => notifyUser(worker._id, newJob));
     res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
