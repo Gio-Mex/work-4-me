@@ -2,6 +2,7 @@ import Job from "../models/job.model.js";
 import User from "../models/user.model.js";
 import Chat from "../models/chat.model.js";
 import { notifyUser } from "../index.js";
+import { j } from "vite/dist/node/types.d-aGj9QkWt.js";
 
 const createJob = async (req, res) => {
   try {
@@ -143,16 +144,6 @@ const updateJob = async (req, res) => {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
 
-    if (props.status === "Offerta") {
-      // Notificare l'utente e gli altri worker con la stessa skill
-      notifyUser(updatedJob.userId, updatedJob);
-      const workers = await User.find({
-        skills: updatedJob.category,
-        _id: { $ne: req.body._id },
-      });
-      workers.forEach((worker) => notifyUser(worker._id, updatedJob));
-    }
-
     if (props.status === "Accettato") {
       // Notificare solo il worker che ha fatto l'offerta
       notifyUser(updatedJob.workerId, updatedJob);
@@ -181,6 +172,12 @@ const setOffer = async (req, res) => {
       job.status = props.status;
       job.offers.push(props.offers[props.offers.length - 1]);
       await job.save();
+      notifyUser(job.userId, job);
+      const workers = await User.find({
+        skills: { $in: job.category },
+        _id: { $ne: job.userId },
+      });
+      workers.forEach((worker) => notifyUser(worker._id, job));
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {

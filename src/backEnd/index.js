@@ -97,8 +97,7 @@ export const notifyUser = (userId, job) => {
 
     if (io.sockets.sockets.has(socketId)) {
       console.log(`🚀 Sending notification to ${socketId}`);
-      io.to(socketId).emit("jobCreated", job);
-      io.to(socketId).emit("jobUpdated", job);
+      io.to(socketId).emit("jobNotification", job);
       console.log(`📢 Notification sent to user ${userIdStr}`);
     } else {
       console.log(`⚠️ Socket ${socketId} found in map but not in connected sockets!`);

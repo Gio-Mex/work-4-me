@@ -19,13 +19,8 @@ onMounted(() => {
 
   console.log("✅ Socket connected, listening for jobUpdated events");
 
-  socket.on("jobCreated", (data) => {
-    console.log("📩 New job created:", data);
-    jobStore.notifications ++;
-  });
-
-  socket.on("jobUpdated", (data) => {
-    console.log("📩 Job update received:", data);
+  socket.on("jobNotification", (data) => {
+    console.log("📩 New job notification:", data);
     jobStore.notifications ++;
   });
 });
