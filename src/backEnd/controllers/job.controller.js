@@ -2,7 +2,6 @@ import Job from "../models/job.model.js";
 import User from "../models/user.model.js";
 import Chat from "../models/chat.model.js";
 import { notifyUser } from "../index.js";
-import { j } from "vite/dist/node/types.d-aGj9QkWt.js";
 
 const createJob = async (req, res) => {
   try {
