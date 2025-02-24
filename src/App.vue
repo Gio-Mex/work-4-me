@@ -35,7 +35,7 @@ onMounted(() => {
       console.log("Socket disconnected! Attempting to reconnect...");
       setTimeout(() => {
         appStore.socket.connect();
-      }, 1000);
+      }, 3000);
     }
   });
 });
