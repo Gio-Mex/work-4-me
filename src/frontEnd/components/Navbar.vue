@@ -60,12 +60,12 @@ const navigateTo = (path: string) => {
 // Menu links
 const menuLinks = computed(() => [
   { id: 1, path: "/", icon: "home", label: "Home" },
-  { 
-    id: 2, 
-    path: "/jobs", 
-    icon: "work", 
-    label: "Richieste", 
-    notify: jobStore.notifications.length, 
+  {
+    id: 2,
+    path: "/jobs",
+    icon: "work",
+    label: "Richieste",
+    notifications: jobStore.notifications.length,
   },
   {
     id: 3,
@@ -96,8 +96,12 @@ const menuLinks = computed(() => [
       class="relative flex flex-col gap-1 cursor-pointer w-8 h-8 z-50 mt-4"
       @click.stop="toggleMenu"
     >
-      <span v-if="jobStore.notifications.length > 0" class="h-5 w-5 absolute top-0 right-0 -translate-y-3 translate-x-2 bg-red-500 text-white rounded-full text-[12px] flex justify-center items-center z-30 transition-all   duration-300 ease-in-out"
-        :class="{ '!opacity-0': menuOpen }">{{ jobStore.notifications.length }}</span>
+      <span
+        v-if="jobStore.notifications.length > 0"
+        class="h-5 w-5 absolute top-0 right-0 -translate-y-3 translate-x-2 bg-red-500 text-white rounded-full text-[12px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
+        :class="{ '!opacity-0': menuOpen }"
+        >{{ jobStore.notifications.length }}</span
+      >
       <span
         class="menu-bar bg-sky-200"
         :class="{ 'rotate-45 translate-y-2 bg-sky-400': menuOpen }"
@@ -126,7 +130,11 @@ const menuLinks = computed(() => [
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
               link.icon
             }}</span>
-            <span v-if="link.notify && jobStore.notifications.length > 0" class="h-4 w-4 absolute top-0 right-0 -translate-y-1 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center">{{ link.notify }}</span>
+            <span
+              v-if="link.notifications && jobStore.notifications.length > 0"
+              class="h-4 w-4 absolute top-0 right-0 -translate-y-1 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center"
+              >{{ link.notifications }}</span
+            >
             <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
               <AvatarImage
                 :src="userStore.user!.avatar?.toString()"
@@ -193,7 +201,11 @@ const menuLinks = computed(() => [
                   class="material-symbols-outlined mx-auto"
                   >{{ link.icon }}</span
                 >
-                <span v-if="link.notify && jobStore.notifications.length > 0" class="h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center">{{ link.notifications }}</span>
+                <span
+                  v-if="link.notifications && jobStore.notifications.length > 0"
+                  class="h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center"
+                  >{{ link.notifications }}</span
+                >
                 <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
                   <AvatarImage
                     :src="userStore.user!.avatar?.toString()"
