@@ -109,9 +109,9 @@ export const useJobStore = defineStore("job", {
       if (index !== -1) {
         this.jobs[index] = updatedJob;
       } else {
-       return this.jobs;
+        this.jobs.push(updatedJob); 
       }
-      
+      return this.jobs;
     },
     async newOffer(job: Job) {
       const appStore = useAppStore();

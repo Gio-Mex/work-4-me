@@ -42,6 +42,7 @@ onBeforeMount(() => {
       category: "",
       title: "",
       description: "",
+      city: userStore.user!.city,
       offer: 0,
       date: Date.now(),
       userId: userStore.user!._id,
