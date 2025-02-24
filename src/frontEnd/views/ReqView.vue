@@ -495,7 +495,7 @@ onMounted(() => {
                   <TableHead class="text-sky-200 text-center p-2">
                     Valutazioni
                   </TableHead>
-                  <TableHead class="text-sky-200 rounded-tr p-2 md:text-center">
+                  <TableHead class="text-sky-200 rounded-tr p-2 text-center">
                     Offerta(€)
                   </TableHead>
                 </TableRow>
@@ -532,7 +532,7 @@ onMounted(() => {
                       />
                     </span>
                   </TableCell>
-                  <TableCell class="p-2 self-center text-center">
+                  <TableCell class="pt-6 md:pt-3 px-4 text-center">
                     {{ offer.amount }}.00
                     <span
                       v-if="offer.workerId === job.workerId"

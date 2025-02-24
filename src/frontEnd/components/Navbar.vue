@@ -98,7 +98,7 @@ const menuLinks = computed(() => [
     >
       <span
         v-if="jobStore.notifications.length > 0 && userStore.isLoggedIn"
-        class="h-5 w-5 absolute top-0 right-0 -translate-y-3 translate-x-2 bg-red-500 text-white rounded-full text-[12px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
+        class="h-4 w-4 absolute top-0 right-0 -translate-y-2.5 translate-x-2 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
         >{{ jobStore.notifications.length }}</span
       >

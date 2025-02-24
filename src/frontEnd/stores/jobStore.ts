@@ -104,7 +104,14 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
-
+    updateJobFromSocket(updatedJob: Job) {
+      const index = this.jobs.findIndex((job) => job._id === updatedJob._id);
+      if (index !== -1) {
+        this.jobs[index] = updatedJob;
+      } else {
+        this.jobs.push(updatedJob); 
+      }
+    },
     async newOffer(job: Job) {
       const appStore = useAppStore();
       appStore.startLoading();

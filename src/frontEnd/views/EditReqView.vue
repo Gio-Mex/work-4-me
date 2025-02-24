@@ -55,10 +55,12 @@ onBeforeMount(() => {
 const handleSubmit = async () => {
   if (router.currentRoute.value.path.includes("edit")) {
     jobStore.updateJob(form).then(() => {
+      jobStore.updateJobFromSocket(form);
       router.replace({ path: "/jobs" });
     })
     } else {
       jobStore.createJob(form).then(() => {
+        jobStore.updateJobFromSocket(form);
         router.replace({ path: "/jobs" });
       })
   }

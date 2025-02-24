@@ -34,6 +34,7 @@ export const useUserStore = defineStore(
           this.user = user;
           localStorage.setItem("authToken", token);
           this.isLoggedIn = true;
+          socket.connect();
           socket.emit("registerUser", user._id);
         } catch (error: any) {
           console.error("Errore durante il login:", error);

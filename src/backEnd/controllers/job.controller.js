@@ -152,6 +152,7 @@ const updateJob = async (req, res) => {
       // Notificare l'utente
       notifyUser(updatedJob.userId, updatedJob);
     }
+    io.emit("jobUpdated", updatedJob);
 
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
@@ -178,6 +179,8 @@ const setOffer = async (req, res) => {
         _id: { $ne: offer.workerId },
       });
       workers.forEach((worker) => notifyUser(worker._id, job));
+      io.emit("jobUpdated", updatedJob);
+
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {

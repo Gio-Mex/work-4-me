@@ -29,6 +29,15 @@ onMounted(() => {
     console.log("📩 New job notification:", data);
     jobStore.notifications.push(data._id);
   });
+
+  socket.on("disconnect", () => {
+    if (userStore.user) {
+      console.log("Socket disconnected! Attempting to reconnect...");
+      setTimeout(() => {
+        appStore.socket.connect();
+      }, 1000);
+    }
+  });
 });
 
 onUnmounted(() => {

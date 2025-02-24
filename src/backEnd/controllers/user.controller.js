@@ -3,8 +3,7 @@ import bcrypt from "bcrypt";
 const saltRounds = 10;
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
-import { Trophy } from "lucide-vue-next";
-import { exit } from "process";
+
 config();
 
 //Signup user
