@@ -108,8 +108,9 @@ export const useJobStore = defineStore("job", {
       const index = this.jobs.findIndex((job) => job._id === updatedJob._id);
       if (index !== -1) {
         this.jobs[index] = updatedJob;
+      } else {
+        return this.jobs;
       }
-      return this.jobs;
     },
     async newOffer(job: Job) {
       const appStore = useAppStore();
