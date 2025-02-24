@@ -178,7 +178,6 @@ const setOffer = async (req, res) => {
         _id: { $ne: offer.workerId },
       });
       workers.forEach((worker) => notifyUser(worker._id, updatedJob));
-      notifyUser(offer.workerId, updatedJob);
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {
