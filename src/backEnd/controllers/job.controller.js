@@ -172,9 +172,10 @@ const setOffer = async (req, res) => {
       job.offers.push(props.offers[props.offers.length - 1]);
       await job.save();
       notifyUser(job.userId, job);
+      const offerer = job.offers.find((offer) => offer.workerId);
       const workers = await User.find({
         skills: { $in: job.category },
-        _id: { $ne: job.workerId },
+        _id: { $ne: offerer },
       });
       workers.forEach((worker) => notifyUser(worker._id, job));
       res.status(200).json({ message: "Proposta inviata" });
