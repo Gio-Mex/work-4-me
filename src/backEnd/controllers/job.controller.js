@@ -169,13 +169,13 @@ const setOffer = async (req, res) => {
         .json({ message: "Un'altra proposta è stata già accettata" });
     } else {
       job.status = props.status;
-      job.offers.push(props.offers[props.offers.length - 1]);
+      const offer = props.offers[props.offers.length - 1];
+      job.offers.push(offer);
       await job.save();
       notifyUser(job.userId, job);
-      const offerer = job.offers.find((offer) => offer.workerId);
       const workers = await User.find({
         skills: { $in: job.category },
-        _id: { $ne: offerer },
+        _id: { $ne: offer.workerId },
       });
       workers.forEach((worker) => notifyUser(worker._id, job));
       res.status(200).json({ message: "Proposta inviata" });
