@@ -98,6 +98,12 @@ const showJobsList: () => void = () => {
   );
 };
 
+const hasNotifications: (id : string) => boolean = (id) => {
+  return jobStore.notifications.filter(
+    (notificationId) => notificationId === id
+  ).length > 0;
+}
+
 const showArchivedReqs: () => void = () => {
   reqsList.splice(
     0,
@@ -142,8 +148,8 @@ const clearSearch: () => void = () => {
 };
 
 const selectRequest = async (job: Job) => {
-  if (job.notification === true) {
-    await jobStore.deleteNotification(job);
+  if (jobStore.notifications.includes(job._id!)) {
+    jobStore.deleteNotification(job._id!);
   }
   router.push(`/jobs/${job._id}`)
 };
@@ -232,22 +238,37 @@ onMounted(async () => {
               <span
                 v-if="req.status === 'Aperto'"
                 class="material-symbols-outlined scale-110"
+                :class="{
+                    'animate-pulse' : hasNotifications(req._id!),
+                  }"
                 >pending</span
               ><span
                 v-if="req.status === 'Offerta'"
                 class="material-symbols-outlined"
+                :class="{
+                    'animate-pulse' : hasNotifications(req._id!),
+                  }"
                 >currency_exchange</span
               ><span
                 v-if="req.status === 'Accettato'"
                 class="material-symbols-outlined scale-110"
+                :class="{
+                    'animate-pulse' : hasNotifications(req._id!),
+                  }"
                 >handshake</span
               ><span
                 v-if="req.status === 'In lavorazione'"
                 class="material-symbols-outlined scale-110"
+                :class="{
+                    'animate-pulse' : hasNotifications(req._id!),
+                  }"
                 >manufacturing</span
               ><span
                 v-if="req.status === 'Chiuso'"
                 class="material-symbols-outlined scale-110"
+                :class="{
+                    'animate-pulse' : hasNotifications(req._id!),
+                  }"
                 >task_alt</span
               >
             </TableCell>
@@ -373,25 +394,40 @@ onMounted(async () => {
                 <span
                   v-if="job.status === 'Aperto'"
                   class="material-symbols-outlined scale-110"
+                  :class="{
+                    'animate-pulse' : hasNotifications(job._id!),
+                  }"
                   >pending</span
                 ><span
                   v-if="job.status === 'Offerta'"
                   class="material-symbols-outlined"
+                  :class="{
+                    'animate-pulse' : hasNotifications(job._id!),
+                  }"
                   >currency_exchange</span
                 >
                 <span
                   v-if="job.status === 'Accettato'"
                   class="material-symbols-outlined scale-110"
+                  :class="{
+                    'animate-pulse' : hasNotifications(job._id!),
+                  }"
                   >handshake</span
                 >
                 <span
                   v-if="job.status === 'In lavorazione'"
                   class="material-symbols-outlined scale-110"
+                  :class="{
+                    'animate-pulse' : hasNotifications(job._id!),
+                  }"
                   >manufacturing</span
                 >
                 <span
                   v-if="job.status === 'Chiuso'"
                   class="material-symbols-outlined scale-110"
+                  :class="{
+                    'animate-pulse' : hasNotifications(job._id!),
+                  }"
                   >task_alt</span
                 >
               </TableCell>
@@ -416,3 +452,21 @@ onMounted(async () => {
     >
   </div>
 </template>
+
+<style scoped>
+.animate-pulse {
+    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+</style>

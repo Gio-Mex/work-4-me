@@ -25,7 +25,7 @@ export const useJobStore = defineStore("job", {
       "Nail art",
       "Altro",
     ] as string[],
-    notifications: 0 as number,
+    notifications: [] as string[],
   }),
   actions: {
     async fetchActiveJobs() {
@@ -89,7 +89,6 @@ export const useJobStore = defineStore("job", {
       try {
         const url = `${baseUrl}/jobs/edit/${job._id}`;
         const response = await axios.put(url, job);
-        //job = this.getJobById(job._id as string);
         job = response.data;
         const status = response.status;
         console.log("Risposta dal server:", {
@@ -125,19 +124,11 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
-    async deleteNotification(job: Job) {
-      try {
-        job.notification = false;
-        const url = `${baseUrl}/jobs`;
-        const response = await axios.patch(url, job);
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
-      } catch (error: any) {
-        console.error("Errore durante la cancellaizone della notifica:", error);
-      }
+    
+    deleteNotification(notificationId: string) {
+      this.notifications = this.notifications.filter(
+        (notification) => notification !== notificationId
+      )
     },
     async deleteJob(jobId: string) {
       const appStore = useAppStore();
@@ -215,14 +206,25 @@ export const useJobStore = defineStore("job", {
     },
   },
   getters: {
-    getJobById:
+    // getJobById:
+    //   (state) =>
+    //   (id: string) => {
+    //     const job = state.jobs.find((job) => job._id === id);
+    //     if (!job) {
+    //       throw new Error(`Job con ID ${id} not trovato`);
+    //     }
+    //     return job;
+    //   },
+    getNotification:
       (state) =>
-      (id: string): Job => {
-        const job = state.jobs.find((job) => job._id === id);
-        if (!job) {
-          throw new Error(`Job con ID ${id} not trovato`);
+      (id: string) => {
+        const notification = state.notifications.find(
+          (notificationId) => notificationId === id
+        );
+        if (!notification) {
+          throw new Error(`Notification con ID ${id} not trovato`);
         }
-        return job;
+        return notification;
       },
   },
   persist: true,

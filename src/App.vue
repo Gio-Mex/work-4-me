@@ -19,7 +19,7 @@ onMounted(() => {
     return;
   }
 
-  console.log("✅ Socket connected, listening for jobUpdated events");
+  console.log("✅ Socket connected, listening for events");
 
   if (userStore.user) {
     socket.emit("registerUser", userStore.user._id);
@@ -27,7 +27,7 @@ onMounted(() => {
 
   socket.on("jobNotification", (data) => {
     console.log("📩 New job notification:", data);
-    jobStore.notifications++;
+    jobStore.notifications.push(data._id);
   });
 });
 

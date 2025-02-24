@@ -101,7 +101,7 @@
     @apply text-sky-900 text-2xl font-medium;
   }
 
-    .animate-spin {
+  .animate-spin {
     animation: spin 1s linear infinite;
   }
 
