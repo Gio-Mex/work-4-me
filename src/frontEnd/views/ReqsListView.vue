@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, reactive, watch, computed, ref, onUnmounted } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -37,9 +37,8 @@ const router = useRouter();
 const jobStore = useJobStore();
 const userStore = useUserStore();
 const appStore = useAppStore();
+const socket = appStore.socket;
 
-const reqsList = reactive([]) as Job[];
-const jobList = reactive([]) as Job[];
 const archivedUrl = computed(() =>
   router.currentRoute.value.path.includes("archived")
 );
@@ -72,86 +71,64 @@ const accordionContent = {
   content: statusContent,
 };
 
-const showReqsList: () => void = () => {
-  reqsList.splice(
-    0,
-    reqsList.length,
-    ...jobStore.jobs.filter(
-      (job: Job) =>
-        job.userId === userStore.user!._id && job.evaluated === false
-    )
+const hasNotifications: (id: string) => boolean = (id) => {
+  return (
+    jobStore.notifications.filter((notificationId) => notificationId === id)
+      .length > 0
   );
 };
 
-const showJobsList: () => void = () => {
-  jobList.splice(
-    0,
-    jobList.length,
-    ...jobStore.jobs.filter(
+let reqsList = computed(() => {
+  if (archivedUrl.value) {
+    return jobStore.jobs.filter(
+      (job: Job) => job.userId === userStore.user?._id && job.evaluated === true
+    );
+  } else {
+    return jobStore.jobs.filter(
       (job: Job) =>
-        ((userStore.user!.skills.includes(job.category) &&
-          job.userId !== userStore.user!._id &&
+        job.userId === userStore.user?._id && job.evaluated === false
+    );
+  }
+});
+
+let jobsList = computed(() => {
+  if (archivedUrl.value) {
+    return jobStore.jobs.filter(
+      (job: Job) =>
+        job.workerId === userStore.user?._id && job.evaluated === true
+    );
+  } else {
+    return jobStore.jobs.filter(
+      (job: Job) =>
+        ((userStore.user?.skills.includes(job.category) &&
+          job.userId !== userStore.user?._id &&
           (job.status === "Aperto" || job.status === "Offerta")) ||
-          job.workerId === userStore.user!._id) &&
+          job.workerId === userStore.user?._id) &&
         job.evaluated === false
-    )
-  );
-};
+    );
+  }
+});
 
-const hasNotifications: (id : string) => boolean = (id) => {
-  return jobStore.notifications.filter(
-    (notificationId) => notificationId === id
-  ).length > 0;
-}
-
-const showArchivedReqs: () => void = () => {
-  reqsList.splice(
-    0,
-    reqsList.length,
-    ...jobStore.jobs.filter(
-      (job: Job) => job.userId === userStore.user!._id && job.evaluated === true
-    )
-  );
-};
-
-const showArchivedJobs: () => void = () => {
-  jobList.splice(
-    0,
-    jobList.length,
-    ...jobStore.jobs.filter(
-      (job: Job) =>
-        job.workerId === userStore.user!._id && job.evaluated === true
-    )
-  );
-};
-
-const searchJobs: () => void = () => {
-  jobList.splice(
-    0,
-    jobList.length,
-    ...jobStore.jobs.filter(
-      (job: Job) =>
-        job.userId !== userStore.user!._id &&
-        job.category.includes(searchCategory.value) &&
-        userStore.user!.skills.includes(job.category) &&
-        job.userDetails?.city
-          .toLowerCase()
-          .includes(searchCity.value.toLowerCase())
-    )
-  );
+const searchJobs: (job: Job) => void = (job: Job) => {
+  () =>
+    job.userId !== userStore.user!._id &&
+    job.category.includes(searchCategory.value) &&
+    userStore.user!.skills.includes(job.category) &&
+    job.userDetails?.city
+      .toLowerCase()
+      .includes(searchCity.value.toLowerCase());
 };
 
 const clearSearch: () => void = () => {
   searchCity.value = "";
   searchCategory.value = "";
-  showJobsList();
 };
 
 const selectRequest = async (job: Job) => {
   if (jobStore.notifications.includes(job._id!)) {
     jobStore.deleteNotification(job._id!);
   }
-  router.push(`/jobs/${job._id}`)
+  router.push(`/jobs/${job._id}`);
 };
 
 watch(
@@ -163,23 +140,29 @@ watch(
 
 const handleRouteChange = async () => {
   if (archivedUrl.value) {
-    await jobStore.fetchArchivedJobs(userStore.user!._id).then(() => {
-      showArchivedReqs();
-      showArchivedJobs();
-    });
+    await jobStore.fetchArchivedJobs(userStore.user!._id);
   } else {
-    await jobStore.fetchActiveJobs().then(() => {
-      showReqsList();
-      showJobsList();
-    });
+    await jobStore.fetchActiveJobs();
   }
 };
 
 onMounted(async () => {
   handleRouteChange();
   if (userStore.user) {
-    appStore.socket.on("jobUpdated", (data) => {
+    console.log("🛜 Socket ID:", socket.id);
+    socket.on("connect", () => {
+      console.log("✅ Socket connesso:", socket.id);
+    });
+    socket.on("disconnect", () => {
+      console.log("❌ Socket disconnesso");
+    });
+    socket.on("jobCreated", (data) => {
       jobStore.updateJobFromSocket(data);
+    });
+    socket.on("jobUpdated", (data) => {
+      console.log("🟡 Prima dell'update", jobStore.jobs);
+      jobStore.updateJobFromSocket(data);
+      console.log("🟢 Dopo l'update", jobStore.jobs);
     });
   }
 });
@@ -190,12 +173,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="appStore.isLoading" class="flex flex-col justify-center items-center h-96">
+  <div
+    v-if="appStore.isLoading"
+    class="flex flex-col justify-center items-center h-96"
+  >
     <div
       class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
     ></div>
     <span class="text-sky-950 text-center mt-10 mx-3"
-      >Questa piattaforma si avvale di servizi basilari di terze parti.<br/> Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+      >Questa piattaforma si avvale di servizi basilari di terze parti.<br />
+      Dopo un lungo periodo di inattività le performance potrebbero
+      variare.</span
     >
   </div>
   <div
@@ -336,7 +324,7 @@ onUnmounted(() => {
                   <SelectLabel>Categorie</SelectLabel>
                   <SelectItem
                     v-for="category in new Set(
-                      jobList.map((job) => job.category)
+                      jobsList.map((job) => job.category)
                     )"
                     :key="category"
                     unique
@@ -363,7 +351,7 @@ onUnmounted(() => {
         </div>
       </div>
       <div>
-        <Table v-if="jobList.length > 0" class="table-fixed w-full">
+        <Table v-if="jobsList.length > 0" class="table-fixed w-full">
           <TableCaption
             class="text-xs text-sky-200 text-opacity-60 bg-sky-950 rounded-b p-3 mt-0"
             ><Accordion
@@ -373,7 +361,7 @@ onUnmounted(() => {
             >
               <AccordionItem value="accordionContent" class="!text-xs border-0">
                 <AccordionTrigger
-                class="text-sky-200 mx-28 md:mx-64 lg:mx-44 xl:mx-64"
+                  class="text-sky-200 mx-28 md:mx-64 lg:mx-44 xl:mx-64"
                   >{{ accordionContent.title }}</AccordionTrigger
                 >
                 <AccordionContent v-html="accordionContent.content">
@@ -390,7 +378,7 @@ onUnmounted(() => {
           </TableHeader>
           <TableBody class="bg-sky-50">
             <TableRow
-              v-for="job in jobList"
+              v-for="job in jobsList"
               :key="job._id"
               class="cursor-pointer"
               @click="selectRequest(job)"
@@ -464,19 +452,19 @@ onUnmounted(() => {
 
 <style scoped>
 .animate-pulse {
-    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    @apply text-sky-500
-  }
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  @apply text-sky-500;
+}
 
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
+@keyframes pulse {
+  0% {
+    transform: scale(1);
   }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 </style>

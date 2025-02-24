@@ -111,6 +111,7 @@ export const useJobStore = defineStore("job", {
       } else {
         this.jobs.push(updatedJob); 
       }
+      return this.jobs;
     },
     async newOffer(job: Job) {
       const appStore = useAppStore();

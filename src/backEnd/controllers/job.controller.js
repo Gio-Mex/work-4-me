@@ -152,7 +152,6 @@ const updateJob = async (req, res) => {
       // Notificare l'utente
       notifyUser(updatedJob.userId, updatedJob);
     }
-    io.emit("jobUpdated", updatedJob);
 
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
@@ -163,24 +162,23 @@ const updateJob = async (req, res) => {
 const setOffer = async (req, res) => {
   try {
     const { _id, ...props } = req.body;
-    const job = await Job.findById(_id);
-    if (job.status === "Accettato") {
+    const updatedJob = await Job.findById(_id);
+    if (updatedJob.status === "Accettato") {
       return res
         .status(400)
         .json({ message: "Un'altra proposta è stata già accettata" });
     } else {
-      job.status = props.status;
+      updatedJob.status = props.status;
       const offer = props.offers[props.offers.length - 1];
-      job.offers.push(offer);
-      await job.save();
-      notifyUser(job.userId, job);
+      updatedJob.offers.push(offer);
+      await updatedJob.save();
+      notifyUser(updatedJob.userId, updatedJob);
       const workers = await User.find({
-        skills: { $in: job.category },
+        skills: { $in: updatedJob.category },
         _id: { $ne: offer.workerId },
       });
-      workers.forEach((worker) => notifyUser(worker._id, job));
-      io.emit("jobUpdated", updatedJob);
-
+      workers.forEach((worker) => notifyUser(worker._id, updatedJob));
+      notifyUser(offer.workerId, updatedJob);
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {
