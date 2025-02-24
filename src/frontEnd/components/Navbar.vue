@@ -97,7 +97,7 @@ const menuLinks = computed(() => [
       @click.stop="toggleMenu"
     >
       <span
-        v-if="jobStore.notifications.length > 0"
+        v-if="jobStore.notifications.length > 0 && userStore.isLoggedIn"
         class="h-5 w-5 absolute top-0 right-0 -translate-y-3 translate-x-2 bg-red-500 text-white rounded-full text-[12px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
         >{{ jobStore.notifications.length }}</span

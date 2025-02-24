@@ -456,7 +456,7 @@ onMounted(async () => {
 <style scoped>
 .animate-pulse {
     animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    @apply text-sky-400
+    @apply text-sky-500
   }
 
   @keyframes pulse {
