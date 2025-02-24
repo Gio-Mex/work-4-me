@@ -36,7 +36,7 @@ connect(dbUrl)
 const server = http.createServer(app);
 
 // Socket.IO configuration
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: ["https://work-4-me.netlify.app", "http://localhost:5173"], // Configurare secondo le necessità
     methods: ["GET", "POST"],

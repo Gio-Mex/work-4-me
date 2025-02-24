@@ -1,6 +1,7 @@
 import Job from "../models/job.model.js";
 import User from "../models/user.model.js";
 import Chat from "../models/chat.model.js";
+import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 
 const createJob = async (req, res) => {
@@ -31,6 +32,7 @@ const createJob = async (req, res) => {
       _id: { $ne: userId },
     });
     workers.forEach((worker) => notifyUser(worker._id, newJob));
+    io.emit("jobUpdated", newJob);
     res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -152,7 +154,7 @@ const updateJob = async (req, res) => {
       // Notificare l'utente
       notifyUser(updatedJob.userId, updatedJob);
     }
-
+    io.emit("jobUpdated", updatedJob);
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -178,6 +180,7 @@ const setOffer = async (req, res) => {
         _id: { $ne: offer.workerId },
       });
       workers.forEach((worker) => notifyUser(worker._id, updatedJob));
+      io.emit("jobUpdated", updatedJob);
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {

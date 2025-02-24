@@ -146,23 +146,15 @@ const handleRouteChange = async () => {
   }
 };
 
-onMounted(async () => {
+onMounted(() => {
   handleRouteChange();
+
   if (userStore.user) {
-    console.log("🛜 Socket ID:", socket.id);
-    socket.on("connect", () => {
-      console.log("✅ Socket connesso:", socket.id);
-    });
-    socket.on("disconnect", () => {
-      console.log("❌ Socket disconnesso");
-    });
-    socket.on("jobCreated", (data) => {
-      jobStore.updateJobFromSocket(data);
-    });
+    console.log("🟢 Socket attivo?", socket.connected);
+
     socket.on("jobUpdated", (data) => {
-      console.log("🟡 Prima dell'update", jobStore.jobs);
+      console.log("📡 Ricevuto jobUpdated:", data);
       jobStore.updateJobFromSocket(data);
-      console.log("🟢 Dopo l'update", jobStore.jobs);
     });
   }
 });
