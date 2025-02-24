@@ -109,8 +109,9 @@ export const useJobStore = defineStore("job", {
       if (index !== -1) {
         this.jobs[index] = updatedJob;
       } else {
-        return this.jobs;
+       return this.jobs;
       }
+      
     },
     async newOffer(job: Job) {
       const appStore = useAppStore();
@@ -131,11 +132,11 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
-
+    
     deleteNotification(notificationId: string) {
       this.notifications = this.notifications.filter(
         (notification) => notification !== notificationId
-      );
+      )
     },
     async deleteJob(jobId: string) {
       const appStore = useAppStore();
@@ -222,15 +223,17 @@ export const useJobStore = defineStore("job", {
     //     }
     //     return job;
     //   },
-    getNotification: (state) => (id: string) => {
-      const notification = state.notifications.find(
-        (notificationId) => notificationId === id
-      );
-      if (!notification) {
-        throw new Error(`Notification con ID ${id} not trovato`);
-      }
-      return notification;
-    },
+    getNotification:
+      (state) =>
+      (id: string) => {
+        const notification = state.notifications.find(
+          (notificationId) => notificationId === id
+        );
+        if (!notification) {
+          throw new Error(`Notification con ID ${id} not trovato`);
+        }
+        return notification;
+      },
   },
   persist: true,
 });
