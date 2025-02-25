@@ -148,7 +148,7 @@ const handleRouteChange = async () => {
 
 onMounted(() => {
   handleRouteChange();
-
+  console.log(jobStore.jobs);
   if (userStore.user) {
     console.log("🟢 Socket attivo?", socket.connected);
 

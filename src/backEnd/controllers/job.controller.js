@@ -72,7 +72,7 @@ const getActiveJobs = async (req, res) => {
       {
         $lookup: {
           from: "chat",
-          localField: "workId",
+          localField: "workerId",
           foreignField: "_id",
           as: "chat",
         },

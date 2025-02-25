@@ -170,6 +170,7 @@ const acceptOffer = async (id: number) => {
     jobStore.updateJobFromSocket(job);
   });
   router.push("/jobs");
+  console.log(job);
 };
 
 const startJob = async () => {
