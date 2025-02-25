@@ -34,7 +34,7 @@ onMounted(() => {
     if (userStore.user) {
       console.log("Socket disconnected! Attempting to reconnect...");
       setTimeout(() => {
-        appStore.socket.connect();
+        appStore.socket.emit("connection");
       }, 3000);
     }
   });
