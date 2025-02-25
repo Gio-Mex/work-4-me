@@ -90,7 +90,7 @@ const tilesOptions = ref({
 const geocodeAddress = async () => {
   mapOptions.value.isLoading = true;
   mapOptions.value.notFound = true;
-  const address = `${job.userDetails?.address}, ${job.userDetails?.city}`;
+  const address = `${job.address}, ${job.city}`;
   try {
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -315,7 +315,7 @@ onMounted(() => {
           <div class="grid gap-2">
             <Label class="text-sky-900">Città</Label>
             <p class="font-normal text-sm opacity-80">
-              {{ job?.userDetails?.city }}
+              {{ job?.city }}
             </p>
           </div>
           <div class="grid gap-2">

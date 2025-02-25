@@ -17,6 +17,14 @@ const jobSchema = new Schema({
     type: Array,
     required: false
   },
+  address: {
+    type: String,
+    required: false
+  },
+  city: {
+    type: String,
+    required: false
+  },
   date: {
     type: Number,
     default: Date.now(),

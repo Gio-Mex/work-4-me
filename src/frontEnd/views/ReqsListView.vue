@@ -114,7 +114,7 @@ const searchJobs: (job: Job) => void = (job: Job) => {
     job.userId !== userStore.user!._id &&
     job.category.includes(searchCategory.value) &&
     userStore.user!.skills.includes(job.category) &&
-    job.userDetails?.city
+    job.city
       .toLowerCase()
       .includes(searchCity.value.toLowerCase());
 };
@@ -376,7 +376,7 @@ onUnmounted(() => {
               @click="selectRequest(job)"
             >
               <TableCell class="font-medium text-center">
-                {{ job.userDetails?.city }}
+                {{ job.city }}
               </TableCell>
               <TableCell class="text-center">{{ job.title }}</TableCell>
               <TableCell class="flex flex-row justify-around items-center">
