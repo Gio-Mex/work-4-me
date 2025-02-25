@@ -111,7 +111,8 @@ export const useJobStore = defineStore("job", {
       } else {
         this.jobs.push(updatedJob); 
       }
-      return this.jobs;
+      this.getJobs;
+      //return this.jobs;
     },
     async newOffer(job: Job) {
       const appStore = useAppStore();
@@ -214,15 +215,7 @@ export const useJobStore = defineStore("job", {
     },
   },
   getters: {
-    // getJobById:
-    //   (state) =>
-    //   (id: string) => {
-    //     const job = state.jobs.find((job) => job._id === id);
-    //     if (!job) {
-    //       throw new Error(`Job con ID ${id} not trovato`);
-    //     }
-    //     return job;
-    //   },
+    getJobs: (state) => state.jobs,
     getNotification:
       (state) =>
       (id: string) => {

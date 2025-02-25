@@ -167,6 +167,7 @@ const acceptOffer = async (id: number) => {
   job.workerId = job.offers!.find((offer) => offer.id === id)!.workerId;
   job.amount = job.offers!.find((offer) => offer.id === id)!.amount;
   await jobStore.updateJob(job).then(() => {
+    jobStore.updateJobFromSocket(job);
     router.push("/jobs");
   });
 };
@@ -243,20 +244,26 @@ const deleteReq = async () => {
 };
 
 onBeforeMount(async () => {
-  job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-  formattedDate.value = formatDate(job.date);
-
-  if (job.status !== "Aperto" && job.status !== "Offerta") {
-    const fetchedChat = await jobStore.fetchChat(job._id as string);
-
-    if (fetchedChat) {
-      Object.assign(chat, fetchedChat);
-    } else {
-      const newChatData = newChat();
-      Object.assign(chat, newChatData);
-      await jobStore.updateChat(chat);
-    }
+  if (!jobStore.jobs.length) {
+    await jobStore.fetchActiveJobs();
   }
+  job = jobStore.jobs.find((job) => job._id === jobId) as Job;
+  if (!job) {
+    console.error("❌ Job non trovato!");
+    return;
+  }
+  if (job.status !== "Aperto" && job.status !== "Offerta") {
+    await jobStore.fetchChat(job._id as string).then(async (fetchedChat) => {
+      if (fetchedChat) {
+        Object.assign(chat, fetchedChat);
+      } else {
+        const newChatData = newChat();
+        Object.assign(chat, newChatData);
+        await jobStore.updateChat(chat);
+      }
+    });
+  }
+  formattedDate.value = formatDate(job.date);
   geocodeAddress();
 });
 
@@ -268,7 +275,7 @@ onMounted(() => {
   socket.on("message", messageListener);
 
   onUnmounted(() => {
-    socket.off("message", messageListener); // 🔥 Rimuove il listener per evitare duplicati!
+    socket.off("message", messageListener);
   });
 
   scrollToBottom();

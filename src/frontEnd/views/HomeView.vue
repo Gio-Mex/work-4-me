@@ -153,104 +153,9 @@ onMounted(() => {
     </div>
   </div>
 
-  <hr class="mt-5 mb-8 md:mt-12 w-3/5 mx-auto border-sky-400" />
-
-  <div class="md:grid grid-cols-2 md:mt-12">
-    <div class="p-5 md:p-8 mt-4 bg-sky-50">
-      <h2 class="text-2xl font-semibold mb-4">Perché Work4Me?</h2>
-      <p class="md:text-lg">
-        <span class="text-sky-400 font-semibold text-lg md:text-xl">W4M</span> è
-        una piattaforma che cerca di mettere in contatto chi ha bisogno di aiuto
-        in casa, con chi è in grado di dare quell'aiuto. Che sia un lavoro
-        pianificato o un bisogno urgente, prova a fare la tua richiesta, così
-        che sarà visibile agli altri utenti 🤗.
-      </p>
-    </div>
-    <div class="p-5 md:p-8 mt-4">
-      <h2 class="text-2xl font-semibold mb-4">Che tipo di aiuto?</h2>
-      <p class="md:text-lg">
-        <span class="text-sky-400 font-semibold text-lg md:text-xl"
-          >Qualsiasi</span
-        >
-        lavoro si possa svolgere in casa: preparare una cena per gli ospiti o
-        riparare un tubo che perde acqua, cambiare una serratura o saldare una
-        ringhiera, restaurare un bel mobile o configurare uno smartphone, fare
-        la piega ai pantaloni o la messa in piega ai capelli 😁.
-      </p>
-    </div>
-  </div>
-
-  <div class="p-5 md:p-8 md:mt-8 text-center">
-    <h2 class="text-2xl font-semibold">Come funziona Work4Me?</h2>
-    <p class="md:text-lg mt-3">
-      <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile!</span>
-      Consulta i seguenti passi.
-    </p>
-    <StepList
-      :steps="userSteps"
-      :selectStep="(step : number) => selectStep(userSteps, step)"
-    />
-  </div>
-
-  <hr class="mt-5 mb-9 md:mt-4 md:mb-14 w-3/5 mx-auto border-sky-400" />
-
-  <div class="relative md:h-[400px] overflow-hidden my-6">
-    <div class="absolute w-full h-full bg-sky-950 opacity-75"></div>
-    <h2
-      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl lg:text-6xl font-semibold text-white text-center"
-    >
-      Diventa un Worker
-    </h2>
-
-    <img
-      src="../assets/img/home-content-img.jpg"
-      class="w-full h-full object-cover"
-      alt="Shake hands"
-    />
-  </div>
-
-  <div class="md:grid grid-cols-2 md:mt-8">
-    <div class="p-5 md:p-8 mt-4">
-      <h2 class="text-2xl font-semibold mb-4">Cos'è un Worker?</h2>
-      <p class="md:text-lg">
-        <span class="text-sky-400 font-semibold text-lg md:text-xl"
-          >Semplicemente</span
-        >
-        potresti esserlo anche tu! <br />
-        Se hai delle abilità particolari da mettere a disposizione degli altri,
-        allora puoi diventare un Worker. Ti basterà andare sul tuo account,
-        attivare la funzionalità e selezionare le tue abilità 💪.
-      </p>
-    </div>
-    <div class="p-5 md:p-8 mt-4 bg-sky-50">
-      <h2 class="text-2xl font-semibold mb-4">Posso guadagnare come Worker?</h2>
-      <p class="md:text-lg">
-        <span class="text-sky-400 font-semibold text-lg md:text-xl">Certo</span
-        >, quando trovi una richiesta di lavoro che ti piace, prova a fare una
-        proposta per il tuo compenso in base alle tue abilità. Se lavorerai bene
-        potrai ottenere ottime valutazioni e aumentare le possibilità che le tue
-        offerte siano accettate per lavori successivi 😎.
-      </p>
-    </div>
-  </div>
-
-  <div
-    class="p-5 md:p-8 mt-6 mb-12 md:mb-0 text-center"
-    :class="userStore.user !== null ? 'mb-12' : 'mb-4'"
-  >
-    <h2 class="text-2xl font-semibold">Come usa la piattaforma un Worker?</h2>
-    <p class="md:text-lg mt-3">
-      <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile</span>
-      anche questo. Consulta questi passi.
-    </p>
-    <StepList
-      :steps="workerSteps"
-      :selectStep="(step : number) => selectStep(workerSteps, step)"
-    />
-  </div>
   <div
     v-if="userStore.user?.isWorker"
-    class="w-11/12 xl:w-8/12 p-5 md:p-8 md:mt-2 mx-auto bg-sky-50 text-center rounded shadow"
+    class="md:w-10/12 xl:w-8/12 p-5 my-6 mx-auto bg-sky-50 text-center shadow rounded"
   >
     <h2 class="text-2xl md:text-3xl font-semibold">
       {{ userStore.user?.name }}, questo è il tuo punteggio da Worker!
@@ -285,8 +190,104 @@ onMounted(() => {
     </div>
   </div>
 
+  <hr class="mt-12 mb-4 md:mt-14 md:mb-10 w-3/5 mx-auto border-sky-400" />
+
+  <div class="md:grid grid-cols-2">
+    <div class="p-5 md:p-8 mt-4">
+      <h2 class="text-2xl font-semibold mb-4">Perché Work4Me?</h2>
+      <p class="md:text-lg">
+        <span class="text-sky-400 font-semibold text-lg md:text-xl">W4M</span> è
+        una piattaforma che cerca di mettere in contatto chi ha bisogno di aiuto
+        in casa, con chi è in grado di dare quell'aiuto. Che sia un lavoro
+        pianificato o un bisogno urgente, prova a fare la tua richiesta, così
+        che sarà visibile agli altri utenti 🤗.
+      </p>
+    </div>
+    <div class="p-5 md:p-8 mt-4 bg-sky-50">
+      <h2 class="text-2xl font-semibold mb-4">Che tipo di aiuto?</h2>
+      <p class="md:text-lg">
+        <span class="text-sky-400 font-semibold text-lg md:text-xl"
+          >Qualsiasi</span
+        >
+        lavoro si possa svolgere in casa: preparare una cena per gli ospiti o
+        riparare un tubo che perde acqua, cambiare una serratura o saldare una
+        ringhiera, restaurare un bel mobile o configurare uno smartphone, fare
+        la piega ai pantaloni o la messa in piega ai capelli 😁.
+      </p>
+    </div>
+  </div>
+
+  <div class="p-5 md:p-8 md:mt-8 text-center">
+    <h2 class="text-2xl font-semibold">Come funziona Work4Me?</h2>
+    <p class="md:text-lg mt-3">
+      <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile!</span>
+      Consulta i seguenti passi.
+    </p>
+    <StepList
+      :steps="userSteps"
+      :selectStep="(step : number) => selectStep(userSteps, step)"
+    />
+  </div>
+
+  <hr class="mt-7 mb-11 md:mt-3 md:mb-14 w-3/5 mx-auto border-sky-400" />
+
+  <div class="relative md:h-[400px] overflow-hidden my-6">
+    <div class="absolute w-full h-full bg-sky-950 opacity-75"></div>
+    <h2
+      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl lg:text-6xl font-semibold text-white text-center"
+    >
+      Diventa un Worker
+    </h2>
+
+    <img
+      src="../assets/img/home-content-img.jpg"
+      class="w-full h-full object-cover"
+      alt="Shake hands"
+    />
+  </div>
+
+  <div class="md:grid grid-cols-2 md:mt-8">
+    <div class="p-5 md:p-8 mt-4 bg-sky-50">
+      <h2 class="text-2xl font-semibold mb-4">Cos'è un Worker?</h2>
+      <p class="md:text-lg">
+        <span class="text-sky-400 font-semibold text-lg md:text-xl"
+          >Semplicemente</span
+        >
+        potresti esserlo anche tu! <br />
+        Se hai delle abilità particolari da mettere a disposizione degli altri,
+        allora puoi diventare un Worker. Ti basterà andare sul tuo account,
+        attivare la funzionalità e selezionare le tue abilità 💪.
+      </p>
+    </div>
+    <div class="p-5 md:p-8 mt-4">
+      <h2 class="text-2xl font-semibold mb-4">Posso guadagnare come Worker?</h2>
+      <p class="md:text-lg">
+        <span class="text-sky-400 font-semibold text-lg md:text-xl">Certo</span
+        >, quando trovi una richiesta di lavoro che ti piace, prova a fare una
+        proposta per il tuo compenso in base alle tue abilità. Se lavorerai bene
+        potrai ottenere ottime valutazioni e aumentare le possibilità che le tue
+        offerte siano accettate per lavori successivi 😎.
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="p-5 md:p-8 mt-6 mb-12 md:mb-0 text-center"
+    :class="userStore.user !== null ? 'mb-12' : 'mb-4'"
+  >
+    <h2 class="text-2xl font-semibold">Come usa la piattaforma un Worker?</h2>
+    <p class="md:text-lg mt-3">
+      <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile</span>
+      anche questo. Consulta questi passi.
+    </p>
+    <StepList
+      :steps="workerSteps"
+      :selectStep="(step : number) => selectStep(workerSteps, step)"
+    />
+  </div>
+
   <Button
-    class="primary-btn w-full max-w-[350px] p-10 mt-14 mb-14 text-lg md:text-2xl font-bold transition-all duration-250 ease-in-out flex mx-auto"
+    class="primary-btn w-full max-w-[350px] p-10 my-8 text-lg md:text-2xl font-bold transition-all duration-250 ease-in-out flex mx-auto"
     @click="goToNextPage"
   >
     <span v-if="userStore.user === null">Mi hai convinto, iniziamo! 🚀</span>
