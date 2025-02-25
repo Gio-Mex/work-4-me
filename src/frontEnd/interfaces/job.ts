@@ -1,5 +1,6 @@
 import type { User } from "./user";
 import type { Offer } from "./offer";
+import type { Chat } from "./chat";
 
 export interface Job {
   _id?: string;
@@ -14,6 +15,7 @@ export interface Job {
   userId: any;
   userDetails?: User;
   status: string;
+  chat?: Chat;
   notification: boolean;
   workerId?: any;
   workerDetails?: User;
