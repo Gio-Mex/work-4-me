@@ -110,14 +110,6 @@ const getArchivedJobs = async (req, res) => {
       {
         $unwind: { path: "$workerDetails", preserveNullAndEmptyArrays: true },
       },
-      {
-        $lookup: {
-          from: "chat",
-          localField: "jobId",
-          foreignField: "_id",
-          as: "chat",
-        },
-      },
     ]);
     res.status(200).json(jobs);
   } catch (error) {

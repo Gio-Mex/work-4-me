@@ -671,7 +671,7 @@ onMounted(() => {
               class="h-[400px] bg-sky-50 flex flex-col rounded-t-md shadow-sm mx-auto gap-3 p-3 overflow-scroll"
             >
               <p
-                v-for="message in job.chat?.messages"
+                v-for="message in chat.messages"
                 :key="message._id"
                 class="max-w-60 min-w-[120px] md:max-w-96 flex flex-col p-2 shadow rounded-xl text-sm break-words whitespace-normal gap-1"
                 :class="
