@@ -167,7 +167,7 @@ const acceptOffer = async (id: number) => {
   job.workerId = job.offers!.find((offer) => offer.id === id)!.workerId;
   job.amount = job.offers!.find((offer) => offer.id === id)!.amount;
   await jobStore.updateJob(job).then(async () => {
-    await jobStore.updateChat(newChat());
+    jobStore.updateJobFromSocket(job);
   });
   router.push("/jobs");
 };
@@ -246,15 +246,17 @@ const deleteReq = async () => {
 onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
   if (job.status !== "Aperto" && job.status !== "Offerta") {
-    await jobStore.fetchChat(job._id as string).then(async (fetchedChat) => {
-      if (!fetchedChat) {
-        const newChatData = newChat();
-        Object.assign(chat, newChatData);
-        await jobStore.updateChat(chat);
-      } else {
-        Object.assign(chat, fetchedChat);
-      }
-    });
+    await jobStore
+      .fetchChat(job._id as string)
+      .then(async (fetchedChat: Chat) => {
+        if (!fetchedChat) {
+          const newChatData = newChat();
+          Object.assign(chat, newChatData);
+          await jobStore.updateChat(chat);
+        } else {
+          Object.assign(chat, fetchedChat);
+        }
+      });
   }
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
