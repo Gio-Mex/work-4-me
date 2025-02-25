@@ -8,6 +8,8 @@ export interface Job {
   description: string;
   offers?: Array<Offer>;
   amount: number;
+  address: string;
+  city: string;
   date: number;
   userId: any;
   userDetails?: User;

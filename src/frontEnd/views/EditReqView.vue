@@ -42,8 +42,6 @@ onBeforeMount(() => {
       category: "",
       title: "",
       description: "",
-      address: job.userDetails?.address,
-      city: job.userDetails?.city,
       offer: 0,
       date: Date.now(),
       userId: userStore.user!._id,
