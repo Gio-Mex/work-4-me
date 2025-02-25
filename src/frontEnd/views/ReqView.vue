@@ -246,19 +246,32 @@ const deleteReq = async () => {
 
 onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-  if (job.status !== "Aperto" && job.status !== "Offerta") {
-    await jobStore
-      .fetchChat(job._id as string)
-      .then(async (fetchedChat: Chat) => {
-        if (!fetchedChat) {
-          const newChatData = newChat();
-          Object.assign(chat, newChatData);
-          await jobStore.updateChat(chat);
-        } else {
-          Object.assign(chat, fetchedChat);
-        }
-      });
+
+  if (!job) {
+    console.warn("⚠️ Job non trovato immediatamente, ricarico...");
+    await jobStore.fetchActiveJobs();
+    job = jobStore.jobs.find((job) => job._id === jobId) as Job;
   }
+
+  if (!job) {
+    console.error("⛔ Job ancora non trovato, uscita dal componente.");
+    return;
+  }
+
+  console.log("✅ Job trovato:", job);
+  
+  if (job.status !== "Aperto" && job.status !== "Offerta") {
+    await jobStore.fetchChat(job._id as string).then(async (fetchedChat: Chat) => {
+      if (!fetchedChat) {
+        const newChatData = newChat();
+        Object.assign(chat, newChatData);
+        await jobStore.updateChat(chat);
+      } else {
+        Object.assign(chat, fetchedChat);
+      }
+    });
+  }
+
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
 });
