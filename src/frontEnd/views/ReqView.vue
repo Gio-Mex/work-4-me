@@ -166,9 +166,10 @@ const acceptOffer = async (id: number) => {
   job.workerId = job.offers!.find((offer) => offer.id === id)!.workerId;
   job.amount = job.offers!.find((offer) => offer.id === id)!.amount;
   job.status = "Accettato";
-  await jobStore.updateJob(job).then(async () => {
-    router.push("/jobs");
-  });
+  await jobStore.updateJob(job)
+  await jobStore.fetchActiveJobs();
+  router.push("/jobs");
+  
   console.log(job);
 };
 
