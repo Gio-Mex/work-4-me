@@ -228,6 +228,7 @@ const updateChat = async (req, res) => {
         jobId: req.body.jobId,
         userId: req.body.userId,
         workerId: req.body.workerId,
+        messages: [],
       });
       await newChat.save();
       res.status(201).json({ message: "Chat creata", newChat });

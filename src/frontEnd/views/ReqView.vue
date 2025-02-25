@@ -242,22 +242,15 @@ const deleteReq = async () => {
 };
 
 onBeforeMount(async () => {
-  if (!jobStore.jobs.length) {
-    await jobStore.fetchActiveJobs();
-  }
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-  if (!job) {
-    console.error("❌ Job non trovato!");
-    return;
-  }
   if (job.status !== "Aperto" && job.status !== "Offerta") {
     await jobStore.fetchChat(job._id as string).then(async (fetchedChat) => {
-      if (fetchedChat) {
-        Object.assign(chat, fetchedChat);
-      } else {
+      if (!fetchedChat) {
         const newChatData = newChat();
         Object.assign(chat, newChatData);
         await jobStore.updateChat(chat);
+      } else {
+        Object.assign(chat, fetchedChat);
       }
     });
   }
