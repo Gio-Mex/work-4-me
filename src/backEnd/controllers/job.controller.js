@@ -113,7 +113,7 @@ const getArchivedJobs = async (req, res) => {
       {
         $lookup: {
           from: "chat",
-          localField: "workId",
+          localField: "jobId",
           foreignField: "_id",
           as: "chat",
         },
