@@ -181,7 +181,7 @@ export const useJobStore = defineStore("job", {
     async fetchChat(jobId: string) {
       try {
         const url = `${baseUrl}/jobs/${jobId}`;
-        const response = await axios.post(url, {});
+        const response = await axios.get(url);
         return response.data;
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
