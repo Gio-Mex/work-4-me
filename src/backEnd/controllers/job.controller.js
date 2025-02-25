@@ -140,6 +140,7 @@ const updateJob = async (req, res) => {
     if (!updatedJob) {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
+    io.emit("jobUpdated", updatedJob);
 
     if (props.status === "Accettato") {
       // Notificare solo il worker che ha fatto l'offerta
@@ -150,7 +151,6 @@ const updateJob = async (req, res) => {
       // Notificare l'utente
       notifyUser(updatedJob.userId, updatedJob);
     }
-    io.emit("jobUpdated", updatedJob);
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
