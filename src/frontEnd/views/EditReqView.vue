@@ -28,7 +28,7 @@ import {
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const categories = jobStore.categories;
-let form = reactive({} as any);
+let form = reactive({} as Job);
 const jobId = router.currentRoute.value.params?.id;
 let job = reactive(jobStore.jobs.find((job) => job._id === jobId) ?? {}) as Job;
 
