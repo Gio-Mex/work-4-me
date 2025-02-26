@@ -247,10 +247,18 @@ const deleteReq = async () => {
 onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
 
-  if (!job) {
-    console.warn("⚠️ Job non trovato immediatamente, ricarico...");
+  console.log("🟢 Job trovato:", job);
+  console.log("📌 userDetails:", job?.userDetails);
+  console.log("📌 Chat:", chat);
+
+  if (!job?.userDetails || chat) {
+    console.warn("⚠️ Job trovato, ma userDetails o chat sono assenti. Ricarico i dati...");
     await jobStore.fetchActiveJobs();
     job = jobStore.jobs.find((job) => job._id === jobId) as Job;
+
+    console.log("🔄 Dopo fetchActiveJobs -> Job:", job);
+    console.log("📌 userDetails dopo aggiornamento:", job?.userDetails);
+    console.log("📌 Chat dopo aggiornamento:", chat);
   }
 
   if (!job) {
@@ -258,15 +266,15 @@ onBeforeMount(async () => {
     return;
   }
 
-  console.log("✅ Job trovato:", job);
-  
   if (job.status !== "Aperto" && job.status !== "Offerta") {
     await jobStore.fetchChat(job._id as string).then(async (fetchedChat: Chat) => {
       if (!fetchedChat) {
+        console.warn("⚠️ Chat non trovata, creo nuova...");
         const newChatData = newChat();
         Object.assign(chat, newChatData);
         await jobStore.updateChat(chat);
       } else {
+        console.log("✅ Chat trovata:", fetchedChat);
         Object.assign(chat, fetchedChat);
       }
     });
@@ -275,7 +283,6 @@ onBeforeMount(async () => {
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
 });
-
 onMounted(() => {
   const messageListener = (message: Message) => {
     chat.messages.push(message);
