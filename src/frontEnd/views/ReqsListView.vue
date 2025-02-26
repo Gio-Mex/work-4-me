@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { watch, computed, ref, onUnmounted, onBeforeMount } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -146,15 +146,16 @@ const handleRouteChange = async () => {
   }
 };
 
-onBeforeMount(async () => {
+onMounted(async () => {
   await handleRouteChange();
   console.log(jobStore.jobs);
   if (userStore.user) {
     console.log("🟢 Socket attivo?", socket.connected);
 
-    socket.on("jobUpdated", (data) => {
-      console.log("📡 Ricevuto jobUpdated:", data);
-      jobStore.updateJobStore(data);
+    socket.on("jobUpdated", (job) => {
+      console.log("📡 Ricevuto jobUpdated:", job);
+      jobStore.updateJobStore(job);
+      jobStore.fetchActiveJobs();
     });
   }
 });
