@@ -90,7 +90,7 @@ const tilesOptions = ref({
 const geocodeAddress = async () => {
   mapOptions.value.isLoading = true;
   mapOptions.value.notFound = true;
-  const address = `${job.address}, ${job.city}`;
+  const address = `${job.userDetails?.address}, ${job.userDetails?.city}`;
   try {
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -283,6 +283,7 @@ onBeforeMount(async () => {
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
 });
+
 onMounted(() => {
   const messageListener = (message: Message) => {
     chat.messages.push(message);
