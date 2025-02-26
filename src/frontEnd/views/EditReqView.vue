@@ -62,7 +62,7 @@ const handleSubmit = async () => {
     } else {
       console.log(form);
       await jobStore.createJob(form).then(async() => {
-        jobStore.updateJobFromSocket(form).then(() => {
+        await jobStore.updateJobFromSocket(form).then(() => {
           router.replace({ path: "/jobs" });
         });
       })
