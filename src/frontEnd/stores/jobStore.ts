@@ -104,7 +104,7 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
-    updateJobFromSocket(updatedJob: Job) {
+    async updateJobFromSocket(updatedJob: Job) {
       const index = this.jobs.findIndex((job) => job._id === updatedJob._id);
       if (index !== -1) {
         this.jobs[index] = updatedJob;
