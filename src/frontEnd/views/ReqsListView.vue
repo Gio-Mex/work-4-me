@@ -154,7 +154,7 @@ onMounted(async () => {
 
     socket.on("jobUpdated", (data) => {
       console.log("📡 Ricevuto jobUpdated:", data);
-      jobStore.updateJobFromSocket(data);
+      jobStore.updateJobStore(data);
     });
   }
 });
