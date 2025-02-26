@@ -89,7 +89,7 @@ export const useJobStore = defineStore("job", {
       try {
         const url = `${baseUrl}/jobs/edit/${job._id}`;
         const response = await axios.put(url, job);
-        job = response.data;
+        this.updateJobStore(response.data);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,
@@ -104,15 +104,13 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
-    async updateJobFromSocket(updatedJob: Job) {
+    async updateJobStore(updatedJob: Job) {
       const index = this.jobs.findIndex((job) => job._id === updatedJob._id);
       if (index !== -1) {
         this.jobs[index] = updatedJob;
       } else {
         this.jobs.push(updatedJob); 
       }
-      this.getJobs;
-      //return this.jobs;
     },
     async newOffer(job: Job) {
       const appStore = useAppStore();

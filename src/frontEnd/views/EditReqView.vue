@@ -35,6 +35,7 @@ let job = reactive( jobStore.jobs.find((job) => job._id === jobId) ?? {}) as Job
 onBeforeMount(() => {
   if (router.currentRoute.value.path.includes("edit")) {  
     if (job) {
+      console.log("Dati inviati:", form);
       Object.assign(form, job);
     }
   } else {
