@@ -251,7 +251,7 @@ onBeforeMount(async () => {
   console.log("📌 userDetails:", job?.userDetails);
   console.log("📌 Chat:", chat);
 
-  if (!job?.userDetails || chat) {
+  if (!job?.userDetails || !chat) {
     console.warn("⚠️ Job trovato, ma userDetails o chat sono assenti. Ricarico i dati...");
     await jobStore.fetchActiveJobs();
     job = jobStore.jobs.find((job) => job._id === jobId) as Job;
