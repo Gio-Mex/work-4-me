@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref, onUnmounted } from "vue";
+import { watch, computed, ref, onUnmounted, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -146,7 +146,7 @@ const handleRouteChange = async () => {
   }
 };
 
-onMounted(async () => {
+onBeforeMount(async () => {
   await handleRouteChange();
   console.log(jobStore.jobs);
   if (userStore.user) {
