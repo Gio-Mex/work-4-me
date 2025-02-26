@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref, onUnmounted } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -152,10 +152,19 @@ onMounted(async () => {
   if (userStore.user) {
     console.log("🟢 Socket attivo?", socket.connected);
 
-    socket.on("jobUpdated", (job) => {
+    socket.on("jobUpdated", async (job) => {
       console.log("📡 Ricevuto jobUpdated:", job);
+      const listElement = document.querySelector(".list"); // Seleziona il container della lista
+      const scrollPosition = listElement ? listElement.scrollTop : 0; // Salva la posizione dello scroll
+
       jobStore.updateJobStore(job);
-      jobStore.fetchActiveJobs();
+      await jobStore.fetchActiveJobs(); // Ricarica i dati
+
+      nextTick(() => {
+        if (listElement) {
+          listElement.scrollTop = scrollPosition; // Ripristina lo scroll
+        }
+      });
     });
   }
 });
@@ -181,7 +190,7 @@ onUnmounted(() => {
   </div>
   <div
     v-else
-    class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
+    class="list flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
   >
     <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-20 md:mt-24">
       <div class="mb-0 bg-sky-900 rounded-t border-b border-b-sky-200">
