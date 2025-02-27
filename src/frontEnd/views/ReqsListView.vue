@@ -149,19 +149,19 @@ const handleRouteChange = async () => {
 onMounted(async () => {
   await handleRouteChange();
   console.log(jobStore.jobs);
-  if (userStore.user) {
-    console.log("🟢 Socket attivo?", socket.connected);
+  // if (userStore.user) {
+  //   console.log("🟢 Socket attivo?", socket.connected);
 
-    socket.on("jobUpdated", async (job) => {
-      console.log("📡 Ricevuto jobUpdated:", job);
+  //   socket.on("jobUpdated", async (job) => {
+  //     console.log("📡 Ricevuto jobUpdated:", job);
 
-      //await jobStore.fetchActiveJobs();
-    });
-  }
+  //     //await jobStore.fetchActiveJobs();
+  //   });
+  // }
 });
 
 onUnmounted(() => {
-  appStore.socket.off("jobUpdated");
+  socket.off("jobUpdated");
 });
 </script>
 
