@@ -296,6 +296,12 @@ onMounted(() => {
   });
 
   scrollToBottom();
+
+  socket.on("jobUpdated", async (job) => {
+      console.log("📡 Ricevuto jobUpdated:", job);
+      jobStore.updateJobStore(job);
+      //await jobStore.fetchActiveJobs();
+    });
 });
 </script>
 
