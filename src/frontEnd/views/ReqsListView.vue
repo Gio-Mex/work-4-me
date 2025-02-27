@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref, onUnmounted, nextTick } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -160,11 +160,9 @@ onMounted(async () => {
       jobStore.updateJobStore(job);
       await jobStore.fetchActiveJobs(); // Ricarica i dati
 
-      nextTick(() => {
         if (listElement) {
           listElement.scrollTop = scrollPosition; // Ripristina lo scroll
         }
-      });
     });
   }
 });
