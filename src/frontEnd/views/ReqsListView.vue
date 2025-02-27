@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -37,6 +37,7 @@ const router = useRouter();
 const jobStore = useJobStore();
 const userStore = useUserStore();
 const appStore = useAppStore();
+const socket = appStore.socket;
 
 const archivedUrl = computed(() =>
   router.currentRoute.value.path.includes("archived")
@@ -148,15 +149,20 @@ const handleRouteChange = async () => {
 onMounted(async () => {
   await handleRouteChange();
   console.log(jobStore.jobs);
-  // if (userStore.user) {
-  //   console.log("🟢 Socket attivo?", socket.connected);
+  if (userStore.user) {
+    console.log("🟢 Socket attivo?", socket.connected);
 
-  //   socket.on("jobUpdated", async (job) => {
-  //     console.log("📡 Ricevuto jobUpdated:", job);
+    socket.on("jobUpdated", async (job) => {
+      console.log("📡 Ricevuto jobUpdated:", job);
+      //await jobStore.updateJobStore(job);
+      await jobStore.updateJob(job);
+      //await jobStore.fetchActiveJobs();
+    });
+  }
+});
 
-  //     //await jobStore.fetchActiveJobs();
-  //   });
-  // }
+onUnmounted(() => {
+  appStore.socket.off("jobUpdated");
 });
 </script>
 
