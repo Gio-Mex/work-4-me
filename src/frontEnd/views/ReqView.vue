@@ -285,6 +285,12 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
+  socket.on("jobUpdated", async (job) => {
+      console.log("📡 Ricevuto jobUpdated:", job);
+      await jobStore.updateJob(job);
+      //await jobStore.fetchActiveJobs();
+    });
+
   const messageListener = (message: Message) => {
     chat.messages.push(message);
   };
@@ -296,12 +302,6 @@ onMounted(() => {
   });
 
   scrollToBottom();
-
-  socket.on("jobUpdated", async (job) => {
-      console.log("📡 Ricevuto jobUpdated:", job);
-      await jobStore.updateJob(job);
-      //await jobStore.fetchActiveJobs();
-    });
 });
 </script>
 
