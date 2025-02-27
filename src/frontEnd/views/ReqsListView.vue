@@ -156,7 +156,7 @@ onMounted(async () => {
       console.log("📡 Ricevuto jobUpdated:", job);
       await jobStore.updateJobStore(job);
       //await jobStore.updateJob(job);
-      //await jobStore.fetchActiveJobs();
+      await jobStore.fetchActiveJobs();
     });
   }
 });
