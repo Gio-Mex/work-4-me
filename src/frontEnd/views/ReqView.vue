@@ -279,7 +279,6 @@ onBeforeMount(async () => {
       }
     });
   }
-
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
 });
