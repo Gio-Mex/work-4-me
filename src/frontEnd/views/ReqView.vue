@@ -299,7 +299,8 @@ onMounted(() => {
 
   socket.on("jobUpdated", async (job) => {
       console.log("📡 Ricevuto jobUpdated:", job);
-      jobStore.updateJobStore(job);
+      await jobStore.updateJobStore(job);
+      await jobStore.updateJob(job);
       //await jobStore.fetchActiveJobs();
     });
 });
