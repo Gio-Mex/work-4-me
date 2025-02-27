@@ -89,7 +89,8 @@ export const useJobStore = defineStore("job", {
       try {
         const url = `${baseUrl}/jobs/edit/${job._id}`;
         const response = await axios.put(url, job);
-        this.updateJobStore(response.data);
+        job = response.data;
+        //this.updateJobStore(response.data);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,
