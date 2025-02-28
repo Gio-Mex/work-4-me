@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref, onUnmounted, nextTick } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -157,16 +157,16 @@ onMounted(async () => {
       console.log("📡 Ricevuto jobUpdated:", job);
 
       // 1️⃣ Salva la posizione dello scroll
-      const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+      //const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
 
       jobStore.updateJobStore(job);
       await jobStore.fetchActiveJobs(); // Esegue il fetch
 
       // 2️⃣ Ripristina la posizione dello scroll
-      nextTick(() => {
-        document.documentElement.scrollTop = scrollPosition;
-        document.body.scrollTop = scrollPosition;
-      });
+      // nextTick(() => {
+      //   document.documentElement.scrollTop = scrollPosition;
+      //   document.body.scrollTop = scrollPosition;
+      //});
     });
   }
 });

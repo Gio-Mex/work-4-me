@@ -284,11 +284,6 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
-  socket.on("jobUpdated", async (job) => {
-      console.log("📡 Ricevuto jobUpdated:", job);
-      await jobStore.updateJobStore(job);
-    });
-
   const messageListener = (message: Message) => {
     chat.messages.push(message);
   };
