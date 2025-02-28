@@ -109,9 +109,8 @@ let jobsList = computed(() => {
   }
 });
 
-const searchJobs: () => void = () => {
-  () =>
-    jobStore.jobs.filter((job: Job) =>
+const searchJobs = () => {
+    return jobStore.jobs.filter((job: Job) =>
     job.userId !== userStore.user!._id &&
     job.category.includes(searchCategory.value) &&
     userStore.user!.skills.includes(job.category) &&
@@ -120,7 +119,7 @@ const searchJobs: () => void = () => {
       .includes(searchCity.value.toLowerCase()));
 };
 
-const clearSearch: () => void = () => {
+const clearSearch = () => {
   searchCity.value = "";
   searchCategory.value = "";
 };
