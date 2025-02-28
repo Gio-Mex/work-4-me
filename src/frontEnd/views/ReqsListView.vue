@@ -126,6 +126,7 @@ const searchJobs = () => {
 const clearSearch = () => {
   searchCity.value = "";
   searchCategory.value = "";
+  filteredJobs.value = [];
 };
 
 const selectRequest = async (job: Job) => {
