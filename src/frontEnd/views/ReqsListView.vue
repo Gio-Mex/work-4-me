@@ -99,7 +99,7 @@ let jobsList = computed(() => {
         job.workerId === userStore.user?._id && job.evaluated === true
     );
   } else {
-    if (filteredJobs.value.length > 0) {
+    if (filteredJobs.value.length > 0 && searchCity.value !== "" && searchCategory.value !== "") {
       return filteredJobs.value;
     } else {
       return jobStore.jobs.filter(
