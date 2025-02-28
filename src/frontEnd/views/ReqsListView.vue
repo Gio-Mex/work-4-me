@@ -127,7 +127,7 @@ const searchJobs = () => {
 const clearSearch = () => {
   searchCity.value = "";
   searchCategory.value = "";
-  filteredJobs.value = [];
+  filteredJobs.value = null;
 };
 
 const selectRequest = async (job: Job) => {
@@ -334,7 +334,7 @@ onUnmounted(() => {
                   <SelectLabel>Categorie</SelectLabel>
                   <SelectItem
                     v-for="category in new Set(
-                      jobsList.map((job) => job.category)
+                      jobsList.map((job) => job?.category)
                     )"
                     :key="category"
                     unique
