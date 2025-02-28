@@ -99,7 +99,10 @@ let jobsList = computed(() => {
         job.workerId === userStore.user?._id && job.evaluated === true
     );
   } else {
-    return filteredJobs.value.filter(
+    if (filteredJobs.value.length > 0) {
+      return filteredJobs.value;
+    } else {
+      return jobStore.jobs.filter(
       (job: Job) =>
         ((userStore.user?.skills.includes(job.category) &&
           job.userId !== userStore.user?._id &&
@@ -107,6 +110,7 @@ let jobsList = computed(() => {
           job.workerId === userStore.user?._id) &&
         job.evaluated === false
     );
+    }
   }
 });
 
