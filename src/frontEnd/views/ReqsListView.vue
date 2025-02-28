@@ -113,7 +113,6 @@ const searchJobs = () => {
     return jobStore.jobs.filter((job: Job) =>
     job.userId !== userStore.user!._id &&
     job.category.includes(searchCategory.value) &&
-    userStore.user!.skills.includes(job.category) &&
     job.city
       .toLowerCase()
       .includes(searchCity.value.toLowerCase()));
