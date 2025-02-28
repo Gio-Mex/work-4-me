@@ -340,7 +340,7 @@ onUnmounted(() => {
             </Select>
             <section class="flex gap-1.5 md:gap-0">
               <Button
-                @click="searchJobs"
+                @click="searchJobs()"
                 class="w-1/2 mb-8 text-sky-200 bg-sky-700 hover:bg-sky-900 rounded-e-none md:rounded-none"
                 ><span class="material-symbols-outlined">filter_list</span>
               </Button>
