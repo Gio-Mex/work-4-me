@@ -110,7 +110,7 @@ let jobsList = computed(() => {
 });
 
 const searchJobs = () => {
-    return jobStore.jobs.filter((job: Job) =>
+    jobStore.jobs = jobStore.jobs.filter((job: Job) =>
     job.userId !== userStore.user!._id &&
     job.category.includes(searchCategory.value) &&
     job.city
