@@ -38,7 +38,7 @@ const jobStore = useJobStore();
 const userStore = useUserStore();
 const appStore = useAppStore();
 const socket = appStore.socket;
-const filteredJobs = ref([] as Job[]);
+const filteredJobs = ref(null as null | Job[]);
 
 const archivedUrl = computed(() =>
   router.currentRoute.value.path.includes("archived")
@@ -99,28 +99,29 @@ let jobsList = computed(() => {
         job.workerId === userStore.user?._id && job.evaluated === true
     );
   } else {
-    if (searchCategory.value || searchCity.value) {
+    if (filteredJobs.value !== null) {
       return filteredJobs.value;
     } else {
       return jobStore.jobs.filter(
-        (job: Job) =>
-          ((userStore.user?.skills.includes(job.category) &&
-            job.userId !== userStore.user?._id &&
-            (job.status === "Aperto" || job.status === "Offerta")) ||
-            job.workerId === userStore.user?._id) &&
-          job.evaluated === false
-      );
+      (job: Job) =>
+        ((userStore.user?.skills.includes(job.category) &&
+          job.userId !== userStore.user?._id &&
+          (job.status === "Aperto" || job.status === "Offerta")) ||
+          job.workerId === userStore.user?._id) &&
+        job.evaluated === false
+    );
     }
   }
 });
 
 const searchJobs = () => {
-  filteredJobs.value = jobStore.jobs.filter(
+  const results = jobStore.jobs.filter(
     (job) =>
       job.userId !== userStore.user!._id &&
       job.category.includes(searchCategory.value) &&
       job.city.toLowerCase().includes(searchCity.value.toLowerCase())
   );
+  filteredJobs.value = results;
 };
 
 const clearSearch = () => {
