@@ -38,6 +38,7 @@ const jobStore = useJobStore();
 const userStore = useUserStore();
 const appStore = useAppStore();
 const socket = appStore.socket;
+const filteredJobs = ref([] as Job[]);
 
 const archivedUrl = computed(() =>
   router.currentRoute.value.path.includes("archived")
@@ -98,7 +99,7 @@ let jobsList = computed(() => {
         job.workerId === userStore.user?._id && job.evaluated === true
     );
   } else {
-    return jobStore.jobs.filter(
+    return filteredJobs.value.filter(
       (job: Job) =>
         ((userStore.user?.skills.includes(job.category) &&
           job.userId !== userStore.user?._id &&
@@ -110,12 +111,12 @@ let jobsList = computed(() => {
 });
 
 const searchJobs = () => {
-    jobStore.jobs = jobStore.jobs.filter((job: Job) =>
-    job.userId !== userStore.user!._id &&
-    job.category.includes(searchCategory.value) &&
-    job.city
-      .toLowerCase()
-      .includes(searchCity.value.toLowerCase()));
+  filteredJobs.value = jobStore.jobs.filter(
+    (job) =>
+      job.userId !== userStore.user!._id &&
+      job.category.includes(searchCategory.value) &&
+      job.city.toLowerCase().includes(searchCity.value.toLowerCase())
+  );
 };
 
 const clearSearch = () => {
