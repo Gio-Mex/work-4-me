@@ -109,14 +109,15 @@ let jobsList = computed(() => {
   }
 });
 
-const searchJobs: (job: Job) => void = (job: Job) => {
+const searchJobs: () => void = () => {
   () =>
+    jobStore.jobs.filter((job: Job) =>
     job.userId !== userStore.user!._id &&
     job.category.includes(searchCategory.value) &&
     userStore.user!.skills.includes(job.category) &&
     job.city
       .toLowerCase()
-      .includes(searchCity.value.toLowerCase());
+      .includes(searchCity.value.toLowerCase()));
 };
 
 const clearSearch: () => void = () => {
@@ -357,7 +358,7 @@ onUnmounted(() => {
       <div>
         <Table v-if="jobsList.length > 0" class="table-fixed w-full">
           <TableCaption
-            class="text-xs text-sky-200 text-opacity-60 bg-sky-950 rounded-b p-3 mt-0"
+            class="text-xs text-sky-200 text-opacity-60 bg-sky-950 rounded-b mt-0"
             ><Accordion
               type="single"
               class="text-sky-200 text-opacity-80"
