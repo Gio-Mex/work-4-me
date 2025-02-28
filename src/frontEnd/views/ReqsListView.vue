@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref, onUnmounted } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 
@@ -149,14 +149,24 @@ const handleRouteChange = async () => {
 onMounted(async () => {
   await handleRouteChange();
   console.log(jobStore.jobs);
+  
   if (userStore.user) {
     console.log("🟢 Socket attivo?", socket.connected);
 
     socket.on("jobUpdated", async (job) => {
       console.log("📡 Ricevuto jobUpdated:", job);
-      await jobStore.updateJobStore(job);
-      //await jobStore.updateJob(job);
-      await jobStore.fetchActiveJobs();
+
+      // 1️⃣ Salva la posizione dello scroll
+      const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+
+      jobStore.updateJobStore(job);
+      await jobStore.fetchActiveJobs(); // Esegue il fetch
+
+      // 2️⃣ Ripristina la posizione dello scroll
+      nextTick(() => {
+        document.documentElement.scrollTop = scrollPosition;
+        document.body.scrollTop = scrollPosition;
+      });
     });
   }
 });
@@ -182,7 +192,7 @@ onUnmounted(() => {
   </div>
   <div
     v-else
-    class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
+    class="list flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
   >
     <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-20 md:mt-24">
       <div class="mb-0 bg-sky-900 rounded-t border-b border-b-sky-200">
