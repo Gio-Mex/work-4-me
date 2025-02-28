@@ -99,17 +99,17 @@ let jobsList = computed(() => {
         job.workerId === userStore.user?._id && job.evaluated === true
     );
   } else {
-    if (searchCity.value !== "" && searchCategory.value !== "") {
+    if (searchCategory.value || searchCity.value) {
       return filteredJobs.value;
     } else {
       return jobStore.jobs.filter(
-      (job: Job) =>
-        ((userStore.user?.skills.includes(job.category) &&
-          job.userId !== userStore.user?._id &&
-          (job.status === "Aperto" || job.status === "Offerta")) ||
-          job.workerId === userStore.user?._id) &&
-        job.evaluated === false
-    );
+        (job: Job) =>
+          ((userStore.user?.skills.includes(job.category) &&
+            job.userId !== userStore.user?._id &&
+            (job.status === "Aperto" || job.status === "Offerta")) ||
+            job.workerId === userStore.user?._id) &&
+          job.evaluated === false
+      );
     }
   }
 });
