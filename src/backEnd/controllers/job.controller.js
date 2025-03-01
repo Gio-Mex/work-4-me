@@ -35,7 +35,7 @@ const createJob = async (req, res) => {
       skills: { $in: category },
       _id: { $ne: userId },
     });
-    workers.forEach((worker) => notifyUser(worker._id, newJob));
+    notifyAllUsers(workers, newJob);
     io.emit("jobUpdated", newJob);
     res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
@@ -140,16 +140,15 @@ const updateJob = async (req, res) => {
     if (!updatedJob) {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
-    io.emit("jobUpdated", updatedJob);
 
     if (props.status === "Accettato") {
       // Notificare solo il worker che ha fatto l'offerta
-      notifyUser(updatedJob.workerId, updatedJob);
+      notifySingleUser(updatedJob.workerId, updatedJob);
     }
 
     if (props.status === "In lavorazione" || props.status === "Chiuso") {
       // Notificare l'utente
-      notifyUser(updatedJob.userId, updatedJob);
+      notifySingleUser(updatedJob.userId, updatedJob);
     }
     res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
@@ -170,13 +169,12 @@ const setOffer = async (req, res) => {
       const offer = props.offers[props.offers.length - 1];
       updatedJob.offers.push(offer);
       await updatedJob.save();
-      notifyUser(updatedJob.userId, updatedJob);
+      //notifyUser(updatedJob.userId, updatedJob);
       const workers = await User.find({
         skills: { $in: updatedJob.category },
         _id: { $ne: offer.workerId },
       });
-      workers.forEach((worker) => notifyUser(worker._id, updatedJob));
-      io.emit("jobUpdated", updatedJob);
+      notifyAllUsers(workers, updatedJob);
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {
@@ -242,6 +240,21 @@ const findChat = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+const notifyAllUsers = async (workers, job) => {
+  workers.forEach((worker) => {
+    notifyUser(worker._id, job);
+    worker.notifications.push(job._id);
+  });
+  io.emit("jobUpdated", job);
+};
+
+const notifySingleUser = async (userId, job) => {
+  const user = await User.findById(userId);
+  notifyUser(userId, job);
+  user.notifications.push(job._id);
+  io.emit("jobUpdated", job);
 };
 
 export {

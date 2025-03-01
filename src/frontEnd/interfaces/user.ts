@@ -13,4 +13,5 @@ export interface User {
   isWorker: boolean;
   skills: Array<string>;
   ratings: Ratings;
+  notifications: Array<string>;
 }

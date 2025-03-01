@@ -19,6 +19,7 @@ const createUser = async (req, res) => {
       password,
       avatar,
       isWorker,
+      notifications
     } = req.body;
     let newUser = await User.findOne({ email: email });
     if (newUser) {
@@ -35,6 +36,7 @@ const createUser = async (req, res) => {
         password: hashedPassword,
         avatar,
         isWorker,
+        notifications
       };
       newUser = await User.create(userData);
       res.status(201).json(newUser);

@@ -54,6 +54,10 @@ const userSchema = new Schema({
     },
     required: false,
   },
+  notifications: {
+    type: [String],
+    required: false
+  }
 });
 
 const User = model("User", userSchema);
