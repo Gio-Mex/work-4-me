@@ -23,7 +23,7 @@ import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
 
-type SignUpForm = Omit<User, "_id" | "isWorker" | "skills" | "ratings">;
+type SignUpForm = Omit<User, "_id" | "isWorker" | "skills" | "ratings" | "notifications">;
 const form = reactive<SignUpForm>({
   name: "",
   lastName: "",
