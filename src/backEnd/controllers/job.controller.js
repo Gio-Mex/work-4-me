@@ -36,7 +36,6 @@ const createJob = async (req, res) => {
       _id: { $ne: userId },
     });
     notifyAllUsers(workers, newJob);
-    io.emit("jobUpdated", newJob);
     res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -247,6 +246,7 @@ const notifyAllUsers = async (workers, job) => {
     notifyUser(worker._id, job);
     worker.notifications.push(job._id);
   });
+  await Promise.all(workers.map((worker) => worker.save()));
   io.emit("jobUpdated", job);
 };
 
@@ -254,6 +254,7 @@ const notifySingleUser = async (userId, job) => {
   const user = await User.findById(userId);
   notifyUser(userId, job);
   user.notifications.push(job._id);
+  await user.save();
   io.emit("jobUpdated", job);
 };
 
