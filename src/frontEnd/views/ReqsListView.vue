@@ -75,7 +75,7 @@ const accordionContent = {
 const hasNotifications: (id: string) => boolean = (id) => {
   return (
     jobStore.notifications.filter((notificationId) => notificationId === id)
-      .length > 0
+      .length > 0 || userStore.user!.notifications?.filter((notificationId) => notificationId === id).length > 0
   );
 };
 
