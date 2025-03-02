@@ -94,7 +94,7 @@ const menuLinks = computed(() => [
     <div
       v-if="windowWidth < 768"
       class="relative flex flex-col gap-1 cursor-pointer w-8 h-8 z-50 mt-4"
-      @click="toggleMenu"
+      @click.stop="toggleMenu"
     >
       <span
       v-if="jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0) && userStore.isLoggedIn"
