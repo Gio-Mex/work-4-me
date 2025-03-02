@@ -181,19 +181,6 @@ const setOffer = async (req, res) => {
   }
 };
 
-const deleteJob = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedJob = await Job.findOneAndDelete({ _id: id });
-    if (!deletedJob) {
-      return res.status(404).json({ message: "Lavoro non trovato" });
-    }
-    res.status(200).json({ message: "Lavoro eliminato", deletedJob });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const updateChat = async (req, res) => {
   try {
     const chat = {
@@ -258,6 +245,36 @@ const notifySingleUser = async (userId, job) => {
   io.emit("jobUpdated", job);
 };
 
+//Delete notifications
+const deleteNotifications = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { $set: { notifications: notifications.filter((n) => n !== id) } },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ message: `Notifiche del job ${id} eliminate`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const deleteJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedJob = await Job.findOneAndDelete({ _id: id });
+    if (!deletedJob) {
+      return res.status(404).json({ message: "Lavoro non trovato" });
+    }
+    res.status(200).json({ message: "Lavoro eliminato", deletedJob });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createJob,
   getArchivedJobs,
@@ -267,5 +284,6 @@ export {
   getJob,
   updateJob,
   setOffer,
+  deleteNotifications,
   deleteJob,
 };

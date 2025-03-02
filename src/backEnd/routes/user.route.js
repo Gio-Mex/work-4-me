@@ -1,5 +1,4 @@
 import { Router } from "express";
-const router = Router();
 import {
   getUser,
   loginUser,
@@ -8,6 +7,8 @@ import {
   rateWorker,
   deleteUser,
 } from "../controllers/user.controller.js";
+
+const router = Router();
 
 router.get("/:id", getUser);
 router.post("/login", loginUser);
