@@ -168,7 +168,7 @@ const setOffer = async (req, res) => {
       const offer = props.offers[props.offers.length - 1];
       updatedJob.offers.push(offer);
       await updatedJob.save();
-      //notifyUser(updatedJob.userId, updatedJob);
+      notifyUser(updatedJob.userId, updatedJob);
       const workers = await User.find({
         skills: { $in: updatedJob.category },
         _id: { $ne: offer.workerId },

@@ -75,7 +75,10 @@ const accordionContent = {
 const hasNotifications: (id: string) => boolean = (id) => {
   return (
     jobStore.notifications.filter((notificationId) => notificationId === id)
-      .length > 0 || userStore.user!.notifications?.filter((notificationId) => notificationId === id).length > 0
+      .length > 0 ||
+    userStore.user!.notifications?.filter(
+      (notificationId) => notificationId === id
+    ).length > 0
   );
 };
 
@@ -103,13 +106,13 @@ let jobsList = computed(() => {
       return filteredJobs.value;
     } else {
       return jobStore.jobs.filter(
-      (job: Job) =>
-        ((userStore.user?.skills.includes(job.category) &&
-          job.userId !== userStore.user?._id &&
-          (job.status === "Aperto" || job.status === "Offerta")) ||
-          job.workerId === userStore.user?._id) &&
-        job.evaluated === false
-    );
+        (job: Job) =>
+          ((userStore.user?.skills.includes(job.category) &&
+            job.userId !== userStore.user?._id &&
+            (job.status === "Aperto" || job.status === "Offerta")) ||
+            job.workerId === userStore.user?._id) &&
+          job.evaluated === false
+      );
     }
   }
 });
@@ -137,7 +140,7 @@ const selectRequest = async (job: Job) => {
   if (userStore.user!.notifications?.includes(job._id!)) {
     userStore.user!.notifications = userStore.user!.notifications.filter(
       (notificationId) => notificationId !== job._id
-    )
+    );
     await userStore.updateUser(userStore.user!);
   }
   router.push(`/jobs/${job._id}`);
@@ -161,7 +164,7 @@ const handleRouteChange = async () => {
 onMounted(async () => {
   await handleRouteChange();
   console.log(jobStore.jobs);
-  
+
   if (userStore.user) {
     console.log("🟢 Socket attivo?", socket.connected);
 
@@ -169,7 +172,8 @@ onMounted(async () => {
       console.log("📡 Ricevuto jobUpdated:", job);
 
       // 1️⃣ Salva la posizione dello scroll
-      const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollPosition =
+        document.documentElement.scrollTop || document.body.scrollTop;
 
       jobStore.updateJobStore(job);
       await jobStore.fetchActiveJobs(); // Esegue il fetch
