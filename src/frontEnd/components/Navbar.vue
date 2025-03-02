@@ -65,7 +65,7 @@ const menuLinks = computed(() => [
     path: "/jobs",
     icon: "work",
     label: "Richieste",
-    notifications: jobStore.notifications.length || userStore.user!.notifications?.length,
+    notifications: jobStore.notifications.length + (userStore.user!.notifications?.length || 0),
   },
   {
     id: 3,
@@ -100,7 +100,7 @@ const menuLinks = computed(() => [
       v-if="jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0) && userStore.isLoggedIn"
         class="h-4 w-4 absolute top-0 right-0 -translate-y-2.5 translate-x-2 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
-        >{{ jobStore.notifications.length }} || {{ userStore.user?.notifications.length }}</span
+        >{{ jobStore.notifications.length }} + {{ userStore.user?.notifications.length }}</span
       >
       <span
         class="menu-bar bg-sky-200"
@@ -131,9 +131,9 @@ const menuLinks = computed(() => [
               link.icon
             }}</span>
             <span
-            v-if="link.notifications && jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0)"
+            v-if="link.notifications?? 0 > 0"
               class="h-4 w-4 absolute top-0 right-0 -translate-y-1 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center"
-              >{{ link.notifications }} || {{ userStore.user?.notifications.length }}</span
+              >{{ link.notifications }}</span
             >
             <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
               <AvatarImage
@@ -202,9 +202,9 @@ const menuLinks = computed(() => [
                   >{{ link.icon }}</span
                 >
                 <span
-                  v-if="link.notifications && jobStore.notifications.length > 0 || userStore.user!.notifications?.length > 0"
+                  v-if="link.notifications ?? 0 > 0"
                   class="h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center"
-                  >{{ link.notifications }} || {{ userStore.user?.notifications.length }}</span
+                  >{{ link.notifications }}</span
                 >
                 <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
                   <AvatarImage
