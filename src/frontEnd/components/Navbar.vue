@@ -100,7 +100,7 @@ const menuLinks = computed(() => [
       v-if="jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0) && userStore.isLoggedIn"
         class="h-4 w-4 absolute top-0 right-0 -translate-y-2.5 translate-x-2 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
-        >{{ jobStore.notifications.length }} + {{ userStore.user?.notifications.length }}</span
+        >{{ jobStore.notifications.length + userStore.user!.notifications?.length || 0 }}</span
       >
       <span
         class="menu-bar bg-sky-200"
@@ -124,7 +124,7 @@ const menuLinks = computed(() => [
             v-for="link in menuLinks"
             :key="link.path"
             class="relative flex flex-col text-xs text-center font-medium cursor-pointer hover:text-sky-700"
-            :class="{ 'text-sky-500 font-bold': route.path === link.path }"
+            :class="{ 'text-sky-500 font-bold': route.path.includes(link.path) }"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
