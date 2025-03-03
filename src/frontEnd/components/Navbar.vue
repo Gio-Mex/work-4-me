@@ -124,7 +124,7 @@ const menuLinks = computed(() => [
             v-for="link in menuLinks"
             :key="link.path"
             class="relative flex flex-col text-xs text-center font-medium cursor-pointer transition-all duration-300 ease-in-out decoration-white"
-            :class="{ '!decoration-sky-500': route.path === link.path }"
+            :class="{ '!decoration-sky-500': route.path === '/user/login'}"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
@@ -150,6 +150,7 @@ const menuLinks = computed(() => [
         <span class="h-11 border border-sky-200 my-auto font-medium"></span>
         <a
           class="flex flex-col text-xs text-center font-medium cursor-pointer"
+          :class="{ '!text-sky-500': route.path === '/user/login' }"
           @click="logout"
         >
           <span class="material-symbols-outlined mx-auto">logout</span>
@@ -159,6 +160,7 @@ const menuLinks = computed(() => [
       <template v-else>
         <a
           class="flex flex-col text-xs font-medium cursor-pointer"
+          :class="{ 'text-sky-500': route.path === '/user/login' }"
           @click="navigateTo('/user/login')"
         >
           <span class="material-symbols-outlined mx-auto">login</span> Accedi
@@ -166,6 +168,7 @@ const menuLinks = computed(() => [
         <span class="h-8 border border-sky-200 mx-2 my-auto font-medium"></span>
         <a
           class="flex flex-col text-xs font-medium cursor-pointer"
+          :class="{ '!text-sky-500': route.path === '/user/signup' }"
           @click="navigateTo('/user/signup')"
         >
           <span class="material-symbols-outlined mx-auto"
@@ -238,6 +241,7 @@ const menuLinks = computed(() => [
         <div v-else class="flex flex-col items-center mt-4 gap-6">
           <a
             class="flex flex-col text-xs font-medium cursor-pointer"
+            :class="{ '!text-sky-500': route.path === '/user/login' }"
             @click="navigateTo('/user/login')"
           >
             <span class="material-symbols-outlined mx-auto">login</span> Accedi
@@ -245,6 +249,7 @@ const menuLinks = computed(() => [
           <hr class="border-1 border-sky-950 w-8/12" />
           <a
             class="flex flex-col text-xs font-medium cursor-pointer"
+            :class="{ '!text-sky-500': route.path === '/user/login' }"
             @click="navigateTo('/user/signup')"
           >
             <span class="material-symbols-outlined mx-auto">edit</span>
@@ -258,6 +263,6 @@ const menuLinks = computed(() => [
 
 <style scoped>
 .menu-bar {
-  @apply w-8 h-1 text-sky-950 hover:text-sky-700 rounded transition-all duration-300 ease-in-out;
+  @apply w-8 h-1 !text-sky-950 !hover:text-sky-700 rounded transition-all duration-300 ease-in-out;
 }
 </style>
