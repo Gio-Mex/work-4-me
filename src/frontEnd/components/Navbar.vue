@@ -123,8 +123,8 @@ const menuLinks = computed(() => [
           <a
             v-for="link in menuLinks"
             :key="link.path"
-            class="relative flex flex-col text-xs text-center font-medium cursor-pointer hover:text-sky-700"
-            :class="{ 'text-sky-500 font-bold': route.path.includes(link.path) }"
+            class="relative flex flex-col text-xs text-center font-medium cursor-pointer text-sky-950 hover:text-sky-700"
+            :class="{ 'text-sky-500 font-bold': route.path === link.path }"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
@@ -165,7 +165,7 @@ const menuLinks = computed(() => [
         </a>
         <span class="h-8 border border-sky-200 mx-2 my-auto font-medium"></span>
         <a
-          class="flex flex-col text-xs font-medium cursor-pointer"
+          class="flex flex-col text-xs font-medium cursor-pointer hover:text-sky-500"
           @click="navigateTo('/user/signup')"
         >
           <span class="material-symbols-outlined mx-auto hover:text-sky-500"
