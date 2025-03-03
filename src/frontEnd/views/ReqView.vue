@@ -562,7 +562,7 @@ onMounted(() => {
                     {{ offer.amount }}.00
                     <span
                       v-if="offer.accepted"
-                      class="material-symbols-outlined scale-75"
+                      class="material-symbols-outlined text-sky-900 ms-2"
                       >handshake</span
                     >
 

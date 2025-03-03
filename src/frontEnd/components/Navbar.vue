@@ -36,11 +36,11 @@ onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
 
-  socket.on("notificationUpdate", ({ jobId }) => {
+  socket.on("notificationUpdate", ( jobId ) => {
     // Rimuovi la notifica eliminata dallo store
     userStore.user!.notifications = userStore.user!.notifications?.filter(
       (notificationId) => notificationId !== jobId
-    ) || [];
+    );
   });
 });
 
