@@ -78,7 +78,7 @@ const menuLinks = computed(() => [
 
 <template>
   <div
-    class="w-full fixed flex items-center justify-between p-2 pb-3 md:pt-3.5 md:pb-4 px-4 text-sky-950 bg-white z-50"
+    class="w-full fixed flex items-center justify-between p-2 pb-3 md:pt-3.5 md:pb-4 px-4 bg-white z-50"
   >
     <!-- Logo -->
     <a class="flex items-center">
@@ -123,8 +123,8 @@ const menuLinks = computed(() => [
           <a
             v-for="link in menuLinks"
             :key="link.path"
-            class="relative flex flex-col text-xs text-center font-medium cursor-pointer text-sky-950 hover:text-sky-700"
-            :class="{ '!text-sky-500 !font-bold': route.path === link.path }"
+            class="relative flex flex-col text-xs text-center font-medium cursor-pointer transition-all duration-300 ease-in-out decoration-white"
+            :class="{ '!decoration-sky-500': route.path === link.path }"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
@@ -149,7 +149,7 @@ const menuLinks = computed(() => [
         </section>
         <span class="h-11 border border-sky-200 my-auto font-medium"></span>
         <a
-          class="flex flex-col text-xs text-center font-medium cursor-pointer hover:text-sky-500"
+          class="flex flex-col text-xs text-center font-medium cursor-pointer"
           @click="logout"
         >
           <span class="material-symbols-outlined mx-auto">logout</span>
@@ -158,17 +158,17 @@ const menuLinks = computed(() => [
       </template>
       <template v-else>
         <a
-          class="flex flex-col text-xs font-medium cursor-pointer hover:text-sky-500"
+          class="flex flex-col text-xs font-medium cursor-pointer"
           @click="navigateTo('/user/login')"
         >
           <span class="material-symbols-outlined mx-auto">login</span> Accedi
         </a>
         <span class="h-8 border border-sky-200 mx-2 my-auto font-medium"></span>
         <a
-          class="flex flex-col text-xs font-medium cursor-pointer hover:text-sky-500"
+          class="flex flex-col text-xs font-medium cursor-pointer"
           @click="navigateTo('/user/signup')"
         >
-          <span class="material-symbols-outlined mx-auto hover:text-sky-500"
+          <span class="material-symbols-outlined mx-auto"
             >edit</span
           >
           Registrati
@@ -258,6 +258,6 @@ const menuLinks = computed(() => [
 
 <style scoped>
 .menu-bar {
-  @apply w-8 h-1 rounded transition-all duration-300 ease-in-out;
+  @apply w-8 h-1 text-sky-950 hover:text-sky-700 rounded transition-all duration-300 ease-in-out;
 }
 </style>
