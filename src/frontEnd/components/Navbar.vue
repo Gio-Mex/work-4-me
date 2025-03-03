@@ -124,7 +124,7 @@ const menuLinks = computed(() => [
             v-for="link in menuLinks"
             :key="link.path"
             class="relative flex flex-col text-xs text-center font-medium cursor-pointer text-sky-950 hover:text-sky-700"
-            :class="{ 'text-sky-500 font-bold': route.path === link.path }"
+            :class="{ '!text-sky-500 !font-bold': route.path === link.path }"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{

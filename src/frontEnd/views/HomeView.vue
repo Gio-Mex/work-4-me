@@ -287,7 +287,7 @@ onMounted(() => {
   </div>
 
   <Button
-    class="primary-btn w-full p-10 my-8 text-lg md:text-2xl font-bold transition-all duration-250 ease-in-out flex mx-auto"
+    class="primary-btn w-auto p-10 my-8 text-lg md:text-2xl font-bold transition-all duration-250 ease-in-out flex mx-auto"
     @click="goToNextPage"
   >
     <span v-if="userStore.user === null">Mi hai convinto, iniziamo! 🚀</span>

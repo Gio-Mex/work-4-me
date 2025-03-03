@@ -213,19 +213,5 @@ export const useJobStore = defineStore("job", {
       }
     },
   },
-  getters: {
-    getJobs: (state) => state.jobs,
-    getNotification:
-      (state) =>
-      (id: string) => {
-        const notification = state.notifications.find(
-          (notificationId) => notificationId === id
-        );
-        if (!notification) {
-          throw new Error(`Notification con ID ${id} not trovato`);
-        }
-        return notification;
-      },
-  },
   persist: true,
 });
