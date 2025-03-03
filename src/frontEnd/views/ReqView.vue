@@ -560,7 +560,7 @@ onMounted(() => {
                   <TableCell class="pt-6 md:pt-3 px-4 text-center">
                     {{ offer.amount }}.00
                     <span
-                      v-if="offer.workerId === job.workerId"
+                      v-if="offer.accepted"
                       class="material-symbols-outlined scale-75"
                       >handshake</span
                     >
