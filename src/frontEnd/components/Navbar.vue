@@ -263,6 +263,6 @@ const menuLinks = computed(() => [
 
 <style scoped>
 .menu-bar {
-  @apply w-8 h-1 !text-sky-950 !hover:text-sky-700 rounded transition-all duration-300 ease-in-out;
+  @apply w-8 h-1 !text-sky-950 rounded transition-all duration-300 ease-in-out;
 }
 </style>
