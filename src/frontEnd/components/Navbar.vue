@@ -98,7 +98,7 @@ const menuLinks = computed(() => [
     >
       <span
       v-if="jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0) && userStore.isLoggedIn"
-        class="h-4 w-4 absolute top-0 right-0 -translate-y-2.5 translate-x-2 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center z-30 transition-all duration-300 ease-in-out"
+        class="notification !-translate-y-2.5 !translate-x-2 z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
         >{{ jobStore.notifications.length + userStore.user!.notifications?.length || 0 }}</span
       >
@@ -123,8 +123,8 @@ const menuLinks = computed(() => [
           <a
             v-for="link in menuLinks"
             :key="link.path"
-            class="relative flex flex-col text-xs text-center font-medium cursor-pointer transition-all duration-300 ease-in-out decoration-white"
-            :class="{ '!decoration-sky-500': route.path === '/user/login'}"
+            class="link"
+            :class="{ '!text-sky-500': route.path === link.path }"
             @click="navigateTo(link.path)"
           >
             <span v-if="link.icon" class="material-symbols-outlined mx-auto">{{
@@ -132,7 +132,7 @@ const menuLinks = computed(() => [
             }}</span>
             <span
             v-if="link.notifications?? 0 > 0"
-              class="h-4 w-4 absolute top-0 right-0 -translate-y-1 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center"
+              class="notification !translate-x-0"
               >{{ link.notifications }}</span
             >
             <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
@@ -149,7 +149,7 @@ const menuLinks = computed(() => [
         </section>
         <span class="h-11 border border-sky-200 my-auto font-medium"></span>
         <a
-          class="flex flex-col text-xs text-center font-medium cursor-pointer"
+          class="link"
           :class="{ '!text-sky-500': route.path === '/user/login' }"
           @click="logout"
         >
@@ -159,7 +159,7 @@ const menuLinks = computed(() => [
       </template>
       <template v-else>
         <a
-          class="flex flex-col text-xs font-medium cursor-pointer"
+          class="flex flex-col text-xs font-medium text-sky-950 hover:text-sky-700 cursor-pointer"
           :class="{ 'text-sky-500': route.path === '/user/login' }"
           @click="navigateTo('/user/login')"
         >
@@ -167,7 +167,7 @@ const menuLinks = computed(() => [
         </a>
         <span class="h-8 border border-sky-200 mx-2 my-auto font-medium"></span>
         <a
-          class="flex flex-col text-xs font-medium cursor-pointer"
+          class="flex flex-col text-xs font-medium text-sky-950 hover:text-sky-700 cursor-pointer"
           :class="{ '!text-sky-500': route.path === '/user/signup' }"
           @click="navigateTo('/user/signup')"
         >
@@ -186,7 +186,7 @@ const menuLinks = computed(() => [
       :class="{ '!right-0 !bg-opacity-50': menuOpen === true }"
     >
       <div
-        class="fixed h-full w-[150px] top-0 -right-full flex flex-col justify-between pt-20 pb-6 text-sky-950 bg-sky-50 opacity-0 z-50 transition-all duration-300 ease-in-out"
+        class="fixed h-full w-[150px] top-0 -right-full flex flex-col justify-between pt-20 pb-6 bg-sky-50 opacity-0 z-50 transition-all duration-300 ease-in-out"
         :class="{ '!right-0 !opacity-100': menuOpen === true }"
       >
         <div
@@ -196,7 +196,8 @@ const menuLinks = computed(() => [
           <div class="flex flex-col gap-4">
             <section v-for="link in menuLinks" :key="link.path">
               <a
-                class="relative flex flex-col text-xs text-center font-medium cursor-pointer"
+                class="link"
+                :class="{ '!text-sky-500': route.path === link.path }"
                 @click="navigateTo(link.path)"
               >
                 <span
@@ -206,7 +207,7 @@ const menuLinks = computed(() => [
                 >
                 <span
                   v-if="link.notifications ?? 0 > 0"
-                  class="h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center"
+                  class="notification"
                   >{{ link.notifications }}</span
                 >
                 <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
@@ -262,7 +263,13 @@ const menuLinks = computed(() => [
 </template>
 
 <style scoped>
+.link {
+  @apply relative flex flex-col text-xs text-center font-medium text-sky-950 hover:text-sky-700 cursor-pointer transition-all duration-150 ease-in-out
+}
+.notification {
+  @apply h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center
+}
 .menu-bar {
-  @apply w-8 h-1 !text-sky-950 rounded transition-all duration-300 ease-in-out;
+  @apply w-8 h-1 rounded transition-all duration-300 ease-in-out;
 }
 </style>

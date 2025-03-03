@@ -165,6 +165,7 @@ const setOffer = async () => {
 const acceptOffer = async (id: number) => {
   job.workerId = job.offers!.find((offer) => offer.id === id)!.workerId;
   job.amount = job.offers!.find((offer) => offer.id === id)!.amount;
+  job.offers![id].accepted = true;
   job.status = "Accettato";
   await jobStore.updateJob(job)
   await jobStore.fetchActiveJobs();

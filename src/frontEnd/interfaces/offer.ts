@@ -7,4 +7,5 @@ export interface Offer {
   workerRatings: Ratings;
   date: number;
   amount: number;
+  accepted?: boolean;
 }

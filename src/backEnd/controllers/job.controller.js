@@ -116,19 +116,6 @@ const getArchivedJobs = async (req, res) => {
   }
 };
 
-const getJob = async (req, res) => {
-  try {
-    const { jobId } = req.body;
-    const job = await Job.findOne({ _id: jobId });
-    if (!job) {
-      return res.status(404).json({ message: "Lavoro non trovato" });
-    }
-    res.status(200).json(job);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const updateJob = async (req, res) => {
   try {
     const { _id, ...props } = req.body;
@@ -141,12 +128,18 @@ const updateJob = async (req, res) => {
     }
 
     if (props.status === "Accettato") {
-      // Notificare solo il worker che ha fatto l'offerta
+      // Notify only the worker who made the offer
       notifySingleUser(updatedJob.workerId, updatedJob);
+
+      // Clear unnecessary notifications for other workers
+      await User.updateMany(
+        { _id: { $ne: updatedJob.workerId } },
+        { $pull: { notifications: updatedJob._id } }
+      );
     }
 
     if (props.status === "In lavorazione" || props.status === "Chiuso") {
-      // Notificare l'utente
+      // Notify the user
       notifySingleUser(updatedJob.userId, updatedJob);
     }
     res.status(200).json({ message: "Azione confermata", updatedJob });
@@ -228,6 +221,7 @@ const findChat = async (req, res) => {
   }
 };
 
+//Send notification to all users (workers)
 const notifyAllUsers = async (workers, job) => {
   workers.forEach((worker) => {
     notifyUser(worker._id, job);
@@ -237,6 +231,7 @@ const notifyAllUsers = async (workers, job) => {
   io.emit("jobUpdated", job);
 };
 
+//Send notification to a single user
 const notifySingleUser = async (userId, job) => {
   const user = await User.findById(userId);
   notifyUser(userId, job);
@@ -245,7 +240,7 @@ const notifySingleUser = async (userId, job) => {
   io.emit("jobUpdated", job);
 };
 
-//Delete notifications
+//Delete notifications of a single user
 const deleteNotifications = async (req, res) => {
   try {
     const { id } = req.params;
@@ -262,6 +257,7 @@ const deleteNotifications = async (req, res) => {
   }
 };
 
+//Delete job
 const deleteJob = async (req, res) => {
   try {
     const { id } = req.params;
@@ -281,7 +277,6 @@ export {
   updateChat,
   findChat,
   getActiveJobs,
-  getJob,
   updateJob,
   setOffer,
   deleteNotifications,
