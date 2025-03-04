@@ -42,9 +42,8 @@ onMounted(() => {
   document.addEventListener("click", closeMenuOnClickOutside);
 
   socket.on("deleteNotifications", async (jobId: string) => {
-    console.log("📡 Ricevuto deleteNotifications:", jobId);
     jobStore.deleteNotification(jobId);
-    await userStore.deleteNotifications(jobId);
+    await userStore.fetchUser();
   });
 });
 
