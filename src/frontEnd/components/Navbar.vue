@@ -38,26 +38,12 @@ const closeMenuOnClickOutside = (event: Event) => {
 onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
-
-  socket.on("notificationUpdate", ({ jobId }) => {
-    // Aggiorna userStore
-    userStore.user!.notifications = userStore.user!.notifications?.filter(
-      (notificationId) => notificationId !== jobId
-    ) || [];
-
-    // Aggiorna jobStore
-    jobStore.notifications = jobStore.notifications.filter(
-      (notificationId) => notificationId !== jobId || []
-    );
-  });
 });
 
 // Remove event listeners
 onUnmounted(() => {
   window.removeEventListener("resize", updateWindowWidth);
   document.removeEventListener("click", closeMenuOnClickOutside);
-
-  socket.off("notificationUpdate");
 });
 
 // Toggle menu function
