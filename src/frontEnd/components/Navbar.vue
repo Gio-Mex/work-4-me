@@ -15,6 +15,11 @@ const route = useRoute();
 const socket = appStore.socket;
 const windowWidth = ref(window.innerWidth);
 const menuOpen = ref(false);
+const totalNotifications = computed(() => {
+  const jobNotifications = jobStore.notifications.length;
+  const userNotifications = userStore.user?.notifications?.length || 0;
+  return jobNotifications + userNotifications;
+});
 
 // Update window width function
 const updateWindowWidth = () => {
@@ -77,7 +82,7 @@ const menuLinks = computed(() => [
     path: "/jobs",
     icon: "work",
     label: "Richieste",
-    notifications: jobStore.notifications.length + (userStore.user!.notifications?.length || 0),
+    notifications: totalNotifications.value,
   },
   {
     id: 3,
