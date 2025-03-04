@@ -15,8 +15,10 @@ const route = useRoute();
 const socket = appStore.socket;
 const windowWidth = ref(window.innerWidth);
 const menuOpen = ref(false);
-const totalNotifications = computed(() => 
-  (jobStore.notifications?.length || 0) + (userStore.user?.notifications?.length || 0)
+const totalNotifications = computed(
+  () =>
+    (jobStore.notifications?.length || 0) +
+    (userStore.user?.notifications?.length || 0)
 );
 
 // Update window width function
@@ -39,7 +41,9 @@ onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
 
-  socket.on("notificationUpdate", async () => {
+  socket.on("deleteNotifications", async (jobId: string) => {
+    console.log("📡 Ricevuto deleteNotifications:", jobId);
+    jobStore.deleteNotification(jobId);
     await userStore.fetchUser();
   });
 });
@@ -49,7 +53,7 @@ onUnmounted(() => {
   window.removeEventListener("resize", updateWindowWidth);
   document.removeEventListener("click", closeMenuOnClickOutside);
 
-  socket.off("notificationUpdate");
+  socket.off("deleteNotifications");
 });
 
 // Toggle menu function
@@ -109,7 +113,12 @@ const menuLinks = computed(() => [
       @click.stop="toggleMenu"
     >
       <span
-      v-if="jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0) && userStore.isLoggedIn"
+        v-if="
+          jobStore.notifications.length > 0 ||
+          (userStore.user?.notifications &&
+            userStore.user.notifications.length > 0 &&
+            userStore.isLoggedIn)
+        "
         class="notification !-translate-y-2.5 !translate-x-2 z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
         >{{ totalNotifications }}</span
@@ -143,7 +152,7 @@ const menuLinks = computed(() => [
               link.icon
             }}</span>
             <span
-            v-if="link.notifications?? 0 > 0"
+              v-if="link.notifications ?? 0 > 0"
               class="notification !translate-x-0"
               >{{ link.notifications }}</span
             >
@@ -183,9 +192,7 @@ const menuLinks = computed(() => [
           :class="{ '!text-sky-500': route.path === '/user/signup' }"
           @click="navigateTo('/user/signup')"
         >
-          <span class="material-symbols-outlined mx-auto"
-            >edit</span
-          >
+          <span class="material-symbols-outlined mx-auto">edit</span>
           Registrati
         </a>
       </template>
@@ -217,11 +224,9 @@ const menuLinks = computed(() => [
                   class="material-symbols-outlined mx-auto"
                   >{{ link.icon }}</span
                 >
-                <span
-                  v-if="link.notifications ?? 0 > 0"
-                  class="notification"
-                  >{{ link.notifications }}</span
-                >
+                <span v-if="link.notifications ?? 0 > 0" class="notification">{{
+                  link.notifications
+                }}</span>
                 <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
                   <AvatarImage
                     :src="userStore.user!.avatar?.toString()"
@@ -276,10 +281,10 @@ const menuLinks = computed(() => [
 
 <style scoped>
 .link {
-  @apply relative flex flex-col text-xs text-center font-medium text-sky-950 hover:text-sky-700 cursor-pointer transition-all duration-150 ease-in-out
+  @apply relative flex flex-col text-xs text-center font-medium text-sky-950 hover:text-sky-700 cursor-pointer transition-all duration-150 ease-in-out;
 }
 .notification {
-  @apply h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center
+  @apply h-4 w-4 absolute top-0 right-0 -translate-y-1 -translate-x-9 bg-red-500 text-white rounded-full text-[10px] flex justify-center items-center;
 }
 .menu-bar {
   @apply w-8 h-1 rounded transition-all duration-300 ease-in-out;

@@ -49,7 +49,6 @@ export const useUserStore = defineStore("user", {
           status: response.status,
           messaggio: response.statusText,
         });
-
         if (response.status === 201) {
           appStore.showToast("Account creato con successo");
         }

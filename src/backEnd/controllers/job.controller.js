@@ -137,8 +137,8 @@ const updateJob = async (req, res) => {
         { $pull: { notifications: updatedJob._id } }
       );
 
-      // Emit notification update event for other workers
-      io.emit("notificationUpdate", updatedJob._id);
+      // Emit a deleteNotifications event for other workers
+      io.emit("deleteNotifications", updatedJob._id);
     }
 
     if (props.status === "In lavorazione" || props.status === "Chiuso") {

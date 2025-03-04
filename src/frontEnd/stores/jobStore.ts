@@ -134,7 +134,7 @@ export const useJobStore = defineStore("job", {
     },
     
     deleteNotification(notificationId: string) {
-      this.notifications = this.notifications.filter(
+      return this.notifications = this.notifications.filter(
         (notification) => notification !== notificationId
       )
     },
