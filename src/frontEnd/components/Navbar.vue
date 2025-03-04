@@ -47,7 +47,7 @@ onMounted(() => {
 
     // Aggiorna jobStore
     jobStore.notifications = jobStore.notifications.filter(
-      (notificationId) => notificationId !== jobId
+      (notificationId) => notificationId !== jobId || []
     );
   });
 });
