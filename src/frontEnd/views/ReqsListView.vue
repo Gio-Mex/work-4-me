@@ -210,7 +210,7 @@ onUnmounted(() => {
     v-else
     class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
   >
-    <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-20 md:mt-24">
+    <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-24">
       <div class="mb-0 bg-sky-900 rounded-t border-b border-b-sky-200">
         <h2 class="text-4xl font-light text-center text-sky-200 p-3">
           Richieste
@@ -331,7 +331,7 @@ onUnmounted(() => {
               v-model="searchCity"
               type="text"
               placeholder="Luogo"
-              class="md:w-4/12 h-9 md:rounded-e-none focus:border-sky-600 focus:bg-sky-50 focus-visible:ring-0 focus-visible:ring-offset-0"
+              class="md:w-4/12 h-9 md:rounded-e-none"
             />
             <Select id="categories" v-model="searchCategory">
               <SelectTrigger

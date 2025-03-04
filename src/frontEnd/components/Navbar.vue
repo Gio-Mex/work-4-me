@@ -98,8 +98,8 @@ const menuLinks = computed(() => [
     <!-- Logo -->
     <a class="flex items-center">
       <img
-        src="../assets/img/logo.png"
-        class="!mr-0 h-14 md:h-16 cursor-pointer"
+        src="../assets/img/logo1.png"
+        class="!mr-0 h-14 md:h-16 scale-150 m-2 cursor-pointer"
         alt="Logo"
         @click="navigateTo('/')"
       />
@@ -137,7 +137,7 @@ const menuLinks = computed(() => [
     </div>
 
     <!-- Desktop menu -->
-    <div v-if="windowWidth >= 768" class="ml-10 flex items-baseline space-x-4">
+    <div v-if="windowWidth >= 768" class="ml-10 flex items-center space-x-4">
       <template v-if="userStore.isLoggedIn">
         <section class="flex flex-wrap gap-6">
           <a
@@ -155,7 +155,7 @@ const menuLinks = computed(() => [
               class="notification !translate-x-0"
               >{{ link.notifications }}</span
             >
-            <Avatar v-if="link.src" class="avatar !w-6 !h-6 mx-auto">
+            <Avatar v-if="link.src" class="avatar !w-[24px] !h-[24px] mx-auto">
               <AvatarImage
                 :src="userStore.user!.avatar?.toString()"
                 alt="Avatar"

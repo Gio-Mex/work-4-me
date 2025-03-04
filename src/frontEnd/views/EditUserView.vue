@@ -127,7 +127,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <form class="pt-24 md:pt-28" @submit.prevent="handleSubmit">
+  <form class="pt-24 md:pt-32" @submit.prevent="handleSubmit">
     <Card class="mx-2 md:mx-4 lg:mx-auto mb-16 max-w-4xl lg:p-3">
       <CardHeader>
         <CardTitle class="text-2xl text-center"> I miei dati </CardTitle>

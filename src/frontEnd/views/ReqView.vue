@@ -304,11 +304,11 @@ onMounted(() => {
 <template>
   <h1
     v-if="job.userId === userStore.user?._id"
-    class="text-4xl font-normal text-center pt-24 mb-4"
+    class="text-4xl font-normal text-center pt-28 mb-4"
   >
     La mia richiesta
   </h1>
-  <h1 v-else class="text-4xl font-normal text-center pt-24 mb-4">
+  <h1 v-else class="text-4xl font-normal text-center pt-28 mb-4">
     Proposta di lavoro
   </h1>
 
@@ -575,7 +575,7 @@ onMounted(() => {
                               job.status === 'Offerta')
                           "
                           size="sm"
-                          class="h-6 bg-sky-950 text-green-500 mt-2 md:ms-4"
+                          class="h-6 bg-sky-950 text-green-500 mt-2 mx-1 md:ms-4"
                         >
                           Ok
                         </Button>
@@ -620,7 +620,7 @@ onMounted(() => {
             <Label for="price" class="text-sky-900 text-lg">Proposta (€)</Label>
             <div class="flex gap-2 mt-1">
               <Input
-                class="font-normal text-lg text-end opacity-50 w-[60px] p-1"
+                class="font-normal text-lg text-end opacity-50 w-[80px] p-1"
                 id="price"
                 type="number"
                 v-model="newOffer.amount"

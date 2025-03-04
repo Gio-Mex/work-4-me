@@ -124,7 +124,7 @@ onMounted(() => {
   </div>
   <div v-else class="flex flex-row">
     <div
-      class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-20 mb-4"
+      class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-20 md:mt-28 mb-4"
     >
       <div
         class="absolute w-full h-full opacity-75 bg-gradient-to-r from-sky-100 via-sky-100 to-transparent z-10"
