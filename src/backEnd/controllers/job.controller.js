@@ -234,30 +234,13 @@ const notifyAllUsers = async (workers, job) => {
   io.emit("jobUpdated", job);
 };
 
-//Send notification to a single user
+//Send notification to a specific user
 const notifySingleUser = async (userId, job) => {
   const user = await User.findById(userId);
   notifyUser(userId, job);
   user.notifications.push(job._id);
   await user.save();
   io.emit("jobUpdated", job);
-};
-
-//Delete notifications of a single user
-const deleteNotifications = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findOneAndUpdate(
-      { _id: id },
-      { $set: { notifications: notifications.filter((n) => n !== id) } },
-      { new: true }
-    );
-    res
-      .status(200)
-      .json({ message: `Notifiche del job ${id} eliminate`, user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
 
 //Delete job
@@ -282,6 +265,5 @@ export {
   getActiveJobs,
   updateJob,
   setOffer,
-  deleteNotifications,
   deleteJob,
 };

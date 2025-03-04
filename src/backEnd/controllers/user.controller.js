@@ -130,6 +130,23 @@ const rateWorker = async (req, res) => {
   }
 };
 
+//Delete notifications of a specific user
+const deleteNotifications = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { $set: { notifications: notifications.filter((n) => n !== id) } },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({ message: `Notifiche del job ${id} eliminate`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 //Delete user
 const deleteUser = async (req, res) => {
   try {
@@ -146,4 +163,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { createUser, getUser, loginUser, updateUser, rateWorker, deleteUser };
+export { createUser, getUser, loginUser, updateUser, rateWorker, deleteNotifications, deleteUser };

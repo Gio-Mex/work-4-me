@@ -195,7 +195,7 @@ export const useJobStore = defineStore("job", {
       const appStore = useAppStore();
       appStore.startLoading();
       try {
-        const url = `${baseUrl}/user/${workerId}`;
+        const url = `${baseUrl}/user/ratings/${workerId}`;
         const response = await axios.patch(url, { ratings });
         console.log(response.data);
         const status = response.status;
