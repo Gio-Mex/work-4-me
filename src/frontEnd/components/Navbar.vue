@@ -39,16 +39,8 @@ onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
 
-  socket.on("notificationUpdate", ( jobId : string ) => {
-    // Aggiorna userStore
-    userStore.user!.notifications = userStore.user!.notifications?.filter(
-      (notificationId) => notificationId !== jobId
-    ) || [];
-
-    // Aggiorna jobStore
-    jobStore.notifications = jobStore.notifications.filter(
-      (notificationId) => notificationId !== jobId || []
-    );
+  socket.on("notificationUpdate", async () => {
+    await userStore.fetchUser();
   });
 });
 
