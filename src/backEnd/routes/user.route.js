@@ -8,7 +8,6 @@ import {
   rateWorker,
   deleteUser,
 } from "../controllers/user.controller.js";
-import { deleteNotifications } from "../controllers/job.controller.js";
 
 const router = Router();
 
