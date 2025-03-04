@@ -15,11 +15,9 @@ const route = useRoute();
 const socket = appStore.socket;
 const windowWidth = ref(window.innerWidth);
 const menuOpen = ref(false);
-const totalNotifications = computed(() => {
-  const jobNotifications = jobStore.notifications.length;
-  const userNotifications = userStore.user?.notifications?.length || 0;
-  return jobNotifications + userNotifications;
-});
+const totalNotifications = computed(() => 
+  (jobStore.notifications?.length || 0) + (userStore.user?.notifications?.length || 0)
+);
 
 // Update window width function
 const updateWindowWidth = () => {
@@ -41,9 +39,14 @@ onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
 
-  socket.on("notificationUpdate", ( jobId ) => {
-    // Rimuovi la notifica eliminata dallo store
+  socket.on("notificationUpdate", ({ jobId }) => {
+    // Aggiorna userStore
     userStore.user!.notifications = userStore.user!.notifications?.filter(
+      (notificationId) => notificationId !== jobId
+    ) || [];
+
+    // Aggiorna jobStore
+    jobStore.notifications = jobStore.notifications.filter(
       (notificationId) => notificationId !== jobId
     );
   });
