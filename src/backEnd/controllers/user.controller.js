@@ -145,7 +145,7 @@ const deleteNotifications = async (req, res) => {
     }
 
     res.status(200).json({
-      message: `Notifica ${jobId} eliminata per l'utente ${userId}`,
+      message: `Notifica ${jobId} eliminata per l'utente ${id}`,
       user,
     });
   } catch (error) {
