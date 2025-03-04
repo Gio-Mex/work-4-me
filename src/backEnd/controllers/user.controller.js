@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
       password,
       avatar,
       isWorker,
-      notifications
+      notifications,
     } = req.body;
     let newUser = await User.findOne({ email: email });
     if (newUser) {
@@ -36,7 +36,7 @@ const createUser = async (req, res) => {
         password: hashedPassword,
         avatar,
         isWorker,
-        notifications
+        notifications,
       };
       newUser = await User.create(userData);
       res.status(201).json(newUser);
@@ -134,11 +134,12 @@ const rateWorker = async (req, res) => {
 const deleteNotifications = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findOneAndUpdate(
-      { _id: id },
-      { $set: { notifications: notifications.filter((n) => n !== id) } },
-      { new: true }
-    );
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "Utente non trovato" });
+    }
+    user.notifications = user.notifications.filter((n) => n !== id);
+    await user.save();
     res
       .status(200)
       .json({ message: `Notifiche del job ${id} eliminate`, user });
@@ -163,4 +164,12 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { createUser, getUser, loginUser, updateUser, rateWorker, deleteNotifications, deleteUser };
+export {
+  createUser,
+  getUser,
+  loginUser,
+  updateUser,
+  rateWorker,
+  deleteNotifications,
+  deleteUser,
+};
