@@ -23,27 +23,13 @@ onMounted(() => {
 
   if (userStore.user) {
     socket.emit("registerUser", userStore.user._id);
- 
+  }
 
   socket.on("jobNotification", (data) => {
     console.log("📩 New job notification:", data);
     jobStore.notifications.push(data._id);
   });
 
-
-  socket.on("userNotification", ({ jobId }) => {
-    // Aggiorna userStore
-    userStore.user!.notifications = userStore.user!.notifications?.filter(
-      (notificationId) => notificationId !== jobId
-    ) || [];
-
-    // Aggiorna jobStore
-    jobStore.notifications = jobStore.notifications.filter(
-      (notificationId) => notificationId !== jobId || []
-    );
-  });
- }
- 
   socket.on("disconnect", () => {
     if (userStore.user) {
       console.log("Socket disconnected! Attempting to reconnect...");
@@ -55,8 +41,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  socket.off("jobNotification");
-  socket.off("userNotification");
+  socket.off("jobUpdated");
   socket.disconnect();
 });
 </script>

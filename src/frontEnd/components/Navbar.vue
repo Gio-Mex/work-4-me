@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useAppStore } from "../stores/appStore";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
+const appStore = useAppStore();
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const router = useRouter();
 const route = useRoute();
+const socket = appStore.socket;
 const windowWidth = ref(window.innerWidth);
 const menuOpen = ref(false);
 const totalNotifications = computed(() => 
@@ -35,12 +38,26 @@ const closeMenuOnClickOutside = (event: Event) => {
 onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
+
+  socket.on("notificationUpdate", ({ jobId }) => {
+    // Aggiorna userStore
+    userStore.user!.notifications = userStore.user!.notifications?.filter(
+      (notificationId) => notificationId !== jobId
+    ) || [];
+
+    // Aggiorna jobStore
+    jobStore.notifications = jobStore.notifications.filter(
+      (notificationId) => notificationId !== jobId || []
+    );
+  });
 });
 
 // Remove event listeners
 onUnmounted(() => {
   window.removeEventListener("resize", updateWindowWidth);
   document.removeEventListener("click", closeMenuOnClickOutside);
+
+  socket.off("notificationUpdate");
 });
 
 // Toggle menu function

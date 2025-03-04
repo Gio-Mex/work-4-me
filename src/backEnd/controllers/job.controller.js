@@ -138,7 +138,7 @@ const updateJob = async (req, res) => {
       );
 
       // Emit notification update event for other workers
-      io.emit("userNotification", updatedJob._id);
+      io.emit("notificationUpdate", updatedJob._id);
     }
 
     if (props.status === "In lavorazione" || props.status === "Chiuso") {
