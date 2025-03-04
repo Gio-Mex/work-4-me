@@ -117,7 +117,7 @@ const menuLinks = computed(() => [
       v-if="jobStore.notifications.length > 0 || (userStore.user?.notifications && userStore.user.notifications.length > 0) && userStore.isLoggedIn"
         class="notification !-translate-y-2.5 !translate-x-2 z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
-        >{{ jobStore.notifications.length + userStore.user!.notifications?.length || 0 }}</span
+        >{{ totalNotifications }}</span
       >
       <span
         class="menu-bar bg-sky-200"
