@@ -141,7 +141,7 @@ const selectRequest = async (job: Job) => {
     userStore.user!.notifications = userStore.user!.notifications.filter(
       (notificationId) => notificationId !== job._id
     );
-    await userStore.updateUser(userStore.user!);
+    await userStore.deleteNotifications(job._id!);
   }
   router.push(`/jobs/${job._id}`);
 };
