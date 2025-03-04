@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAppStore } from "../stores/appStore";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
-const appStore = useAppStore();
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const router = useRouter();
 const route = useRoute();
-const socket = appStore.socket;
 const windowWidth = ref(window.innerWidth);
 const menuOpen = ref(false);
 const totalNotifications = computed(() => 
