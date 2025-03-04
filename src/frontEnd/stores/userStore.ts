@@ -112,10 +112,10 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    async deleteNotifications(id: string) {
+    async deleteNotifications(jobId: string) {
       try {
-        const url = `${baseUrl}/user/notifications/${id}`;
-        const response = await axios.patch(url);
+        const url = `${baseUrl}/user/notifications/${this.user!._id}/${jobId}`;
+        const response = await axios.delete(url);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,

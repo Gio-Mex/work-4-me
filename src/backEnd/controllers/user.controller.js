@@ -133,16 +133,21 @@ const rateWorker = async (req, res) => {
 //Delete notifications of a specific user
 const deleteNotifications = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
+    const { id, jobId } = req.params; 
+    const user = await User.findOneAndUpdate(
+      { _id: id }, 
+      { $pull: { notifications: jobId } }, 
+      { new: true }
+    );
+
     if (!user) {
       return res.status(404).json({ message: "Utente non trovato" });
     }
-    user.notifications = user.notifications.filter((n) => n !== id);
-    await user.save();
-    res
-      .status(200)
-      .json({ message: `Notifiche del job ${id} eliminate`, user });
+
+    res.status(200).json({
+      message: `Notifica ${jobId} eliminata per l'utente ${userId}`,
+      user,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
