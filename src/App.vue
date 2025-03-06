@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 
 import Navbar from "./frontEnd/components/Navbar.vue";
 import Toaster from "./frontEnd/components/ui/toast/Toaster.vue";
+import router from "./frontEnd/router";
 
 const appStore = useAppStore();
 const jobStore = useJobStore();
@@ -27,15 +28,15 @@ const isTokenExpired = (token: string | null) => {
 }
 
 onMounted(() => {
-  // Controlla il token ogni 30 secondi
+  // AuthToken validity check
   tokenCheckInterval = setInterval(() => {
     const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
       localStorage.removeItem("authToken");
       userStore.isLoggedIn = false;
-      window.location.href = "/user/login";
+      router.push("/user/login");
     }
-  }, 15000); // Ogni 30 secondi
+  }, 15000);
 
   if (!socket) {
     console.warn("⚠️ Socket not initialized!");
