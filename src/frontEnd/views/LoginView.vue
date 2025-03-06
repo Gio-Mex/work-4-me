@@ -40,6 +40,7 @@ const handleSubmit = async () => {
     >
   </div>
   <form v-else class="pt-20" @submit.prevent="handleSubmit">
+    <h1 v-if ="userStore.user" class="pt-20 md:pt-24 mb-4 text-4xl text-center">Sessione scaduta</h1>
     <Card class="m-2 md:mx-auto md:mt-5 max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl text-sky-950"> Login </CardTitle>
