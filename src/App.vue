@@ -28,7 +28,7 @@ const isTokenExpired = (token: string | null) => {
 }
 
 onMounted(() => {
-  // AuthToken validity check
+  // AuthToken validity check every 15 minutes
   tokenCheckInterval = setInterval(() => {
     const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
@@ -36,7 +36,7 @@ onMounted(() => {
       userStore.isLoggedIn = false;
       router.push("/user/login");
     }
-  }, 15000);
+  }, 900000);
 
   if (!socket) {
     console.warn("⚠️ Socket not initialized!");

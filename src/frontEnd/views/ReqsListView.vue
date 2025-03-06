@@ -46,25 +46,27 @@ const archivedUrl = computed(() =>
 let searchCity = ref("" as string);
 let searchCategory = ref("" as string);
 
+const statusItems = [
+  { icon: "pending", label: "Aperto" },
+  { icon: "currency_exchange", label: "Offerta" },
+  { icon: "handshake", label: "Accettato" },
+  { icon: "manufacturing", label: "In corso" },
+  { icon: "task_alt", label: "Chiuso" }
+];
+
 const statusContent = `
-    <div class="text-[10px] flex gap-5 justify-center">
-      <section class="flex flex-col">
-        <span class="material-symbols-outlined scale-75">pending</span> Aperto
-      </section>
-      <section class="flex flex-col">
-        <span class="material-symbols-outlined scale-75">currency_exchange</span> Offerta
-      </section>
-      <section class="flex flex-col">
-        <span class="material-symbols-outlined scale-75">handshake</span> Accettato
-      </section>
-      <section class="flex flex-col">
-        <span class="material-symbols-outlined scale-75">manufacturing</span> In corso
-      </section>
-      <section class="flex flex-col">
-        <span class="material-symbols-outlined scale-75">task_alt</span> Chiuso
-      </section>
-    </div>
-  `;
+  <div class="text-[10px] flex gap-5 justify-center">
+    ${statusItems
+      .map(
+        item => `
+          <section class="flex flex-col">
+            <span class="material-symbols-outlined scale-75">${item.icon}</span> ${item.label}
+          </section>
+        `
+      )
+      .join('')}
+  </div>
+`;
 
 const accordionContent = {
   value: "Status",
@@ -72,15 +74,14 @@ const accordionContent = {
   content: statusContent,
 };
 
-const hasNotifications: (id: string) => boolean = (id) => {
-  return (
-    jobStore.notifications.filter((notificationId) => notificationId === id)
-      .length > 0 ||
-    userStore.user!.notifications?.filter(
-      (notificationId) => notificationId === id
-    ).length > 0
-  );
-};
+const hasNotifications = computed(() => {
+  return (id: string) => {
+    return (
+      jobStore.notifications.includes(id) ||
+      (userStore.user?.notifications?.includes(id) ?? false)
+    );
+  };
+});
 
 let reqsList = computed(() => {
   if (archivedUrl.value) {
