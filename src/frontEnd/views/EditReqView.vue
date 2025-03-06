@@ -73,11 +73,11 @@ const handleSubmit = async () => {
 <template>
   <h2
     v-if="router.currentRoute.value.path.includes('edit')"
-    class="text-4xl font-normal text-center p-1 pt-24 mb-4"
+    class="text-4xl font-normal text-center p-1 pt-20 md:pt-24 mb-4"
   >
     Modifica richiesta
   </h2>
-  <h2 v-else class="text-4xl font-normal text-center p-1 pt-32 md:pt-28 mb-4">
+  <h2 v-else class="text-4xl font-normal text-center p-1 pt-20 md:pt-24 mb-4">
     Nuova richiesta
   </h2>
 

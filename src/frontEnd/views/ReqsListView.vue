@@ -47,24 +47,24 @@ let searchCity = ref("" as string);
 let searchCategory = ref("" as string);
 
 const statusItems = [
-  { icon: "pending", label: "Aperto" },
-  { icon: "currency_exchange", label: "Offerta" },
-  { icon: "handshake", label: "Accettato" },
-  { icon: "manufacturing", label: "In corso" },
-  { icon: "task_alt", label: "Chiuso" }
+  { name: "Aperto", icon: "pending" },
+  { name: "Offerta", icon: "currency_exchange" },
+  { name: "Accettato", icon: "handshake" },
+  { name: "In corso", icon: "manufacturing" },
+  { name: "Chiuso", icon: "task_alt" },
 ];
 
 const statusContent = `
   <div class="text-[10px] flex gap-5 justify-center">
     ${statusItems
       .map(
-        item => `
+        (item) => `
           <section class="flex flex-col">
-            <span class="material-symbols-outlined scale-75">${item.icon}</span> ${item.label}
+            <span class="material-symbols-outlined scale-75">${item.icon}</span> ${item.name}
           </section>
         `
       )
-      .join('')}
+      .join("")}
   </div>
 `;
 
@@ -254,41 +254,12 @@ onUnmounted(() => {
             <TableCell class="text-center">{{ req.title }}</TableCell>
             <TableCell class="flex flex-row justify-around items-center">
               <span
-                v-if="req.status === 'Aperto'"
+                v-if="statusItems.find((item) => item.name === req.status)"
                 class="material-symbols-outlined scale-110"
-                :class="{
-                    'animate-pulse' : hasNotifications(req._id!),
-                  }"
-                >pending</span
-              ><span
-                v-if="req.status === 'Offerta'"
-                class="material-symbols-outlined"
-                :class="{
-                    'animate-pulse' : hasNotifications(req._id!),
-                  }"
-                >currency_exchange</span
-              ><span
-                v-if="req.status === 'Accettato'"
-                class="material-symbols-outlined scale-110"
-                :class="{
-                    'animate-pulse' : hasNotifications(req._id!),
-                  }"
-                >handshake</span
-              ><span
-                v-if="req.status === 'In lavorazione'"
-                class="material-symbols-outlined scale-110"
-                :class="{
-                    'animate-pulse' : hasNotifications(req._id!),
-                  }"
-                >manufacturing</span
-              ><span
-                v-if="req.status === 'Chiuso'"
-                class="material-symbols-outlined scale-110"
-                :class="{
-                    'animate-pulse' : hasNotifications(req._id!),
-                  }"
-                >task_alt</span
+                :class="{ 'animate-pulse': hasNotifications(req._id!) }"
               >
+                {{ statusItems.find((item) => item.name === req.status)?.icon }}
+              </span>
             </TableCell>
           </TableRow>
         </TableBody>
@@ -410,44 +381,14 @@ onUnmounted(() => {
               <TableCell class="text-center">{{ job.title }}</TableCell>
               <TableCell class="flex flex-row justify-around items-center">
                 <span
-                  v-if="job.status === 'Aperto'"
+                  v-if="statusItems.find((item) => item.name === job.status)"
                   class="material-symbols-outlined scale-110"
-                  :class="{
-                    'animate-pulse' : hasNotifications(job._id!),
-                  }"
-                  >pending</span
-                ><span
-                  v-if="job.status === 'Offerta'"
-                  class="material-symbols-outlined"
-                  :class="{
-                    'animate-pulse' : hasNotifications(job._id!),
-                  }"
-                  >currency_exchange</span
+                  :class="{ 'animate-pulse': hasNotifications(job._id!) }"
                 >
-                <span
-                  v-if="job.status === 'Accettato'"
-                  class="material-symbols-outlined scale-110"
-                  :class="{
-                    'animate-pulse' : hasNotifications(job._id!),
-                  }"
-                  >handshake</span
-                >
-                <span
-                  v-if="job.status === 'In lavorazione'"
-                  class="material-symbols-outlined scale-110"
-                  :class="{
-                    'animate-pulse' : hasNotifications(job._id!),
-                  }"
-                  >manufacturing</span
-                >
-                <span
-                  v-if="job.status === 'Chiuso'"
-                  class="material-symbols-outlined scale-110"
-                  :class="{
-                    'animate-pulse' : hasNotifications(job._id!),
-                  }"
-                  >task_alt</span
-                >
+                  {{
+                    statusItems.find((item) => item.name === job.status)?.icon
+                  }}
+                </span>
               </TableCell>
             </TableRow>
           </TableBody>
