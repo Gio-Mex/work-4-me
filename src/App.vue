@@ -32,6 +32,7 @@ onMounted(() => {
     const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
       localStorage.removeItem("authToken");
+      userStore.isLoggedIn = false;
       window.location.href = "/user/login";
     }
   }, 15000); // Ogni 30 secondi
