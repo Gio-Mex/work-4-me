@@ -210,7 +210,7 @@ onUnmounted(() => {
     v-else
     class="flex flex-col lg:flex-row lg:justify-center items-center lg:items-start gap-6 lg:gap-1 xl:gap-20"
   >
-    <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-24">
+    <div class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 mt-20">
       <div class="mb-0 bg-sky-900 rounded-t border-b border-b-sky-200">
         <h2 class="text-4xl font-light text-center text-sky-200 p-3">
           Richieste
@@ -306,7 +306,7 @@ onUnmounted(() => {
 
     <div
       v-if="userStore.user?.isWorker"
-      class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 lg:mt-24"
+      class="w-full md:max-w-2xl lg:w-1/2 p-2 md:p-4 mb-4 lg:mt-20"
     >
       <div class="mb-0 bg-sky-950 border-b border-b-sky-200 rounded-t">
         <h2

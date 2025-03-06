@@ -308,7 +308,7 @@ onMounted(() => {
   >
     La mia richiesta
   </h1>
-  <h1 v-else class="text-4xl font-normal text-center pt-28 mb-4">
+  <h1 v-else class="text-4xl font-normal text-center pt-20 md:pt-24 mb-4">
     Proposta di lavoro
   </h1>
 
@@ -372,6 +372,7 @@ onMounted(() => {
             :zoom="mapOptions.zoom"
             :center="mapOptions.center"
             class="w-full h-400 z-0 rounded"
+            :use-global-leaflet="false"
           >
             <LTileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

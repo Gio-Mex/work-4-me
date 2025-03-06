@@ -18,7 +18,6 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -120,17 +119,17 @@ const toggleSkill = (skill: string) => {
 };
 
 const handleSubmit = async () => {
-    await userStore.updateUser(form).then(() => {
+  await userStore.updateUser(form).then(() => {
     router.push({ path: "/user" });
   });
 };
 </script>
 
 <template>
-  <form class="pt-24 md:pt-32" @submit.prevent="handleSubmit">
-    <Card class="mx-2 md:mx-4 lg:mx-auto mb-16 max-w-4xl lg:p-3">
+  <h1 class="pt-20 md:pt-24 mb-4 text-4xl text-center"> I miei dati </h1>
+  <form @submit.prevent="handleSubmit">
+    <Card class="mx-2 md:mx-4 lg:mx-auto mb-16 max-w-4xl md:px-4">
       <CardHeader>
-        <CardTitle class="text-2xl text-center"> I miei dati </CardTitle>
         <CardDescription class="text-center text-lg font-normal">
           Modifica i tuoi dati o diventa un Worker
           <hr class="my-2" />
@@ -143,33 +142,33 @@ const handleSubmit = async () => {
       </CardHeader>
       <CardContent>
         <div class="grid gap-2 text-center">
-            <Label for="avatar" class="text-sky-950">Avatar</Label>
-            <Avatar v-if="isUploaded && !form.avatar" class="avatar my-2 mx-auto">
-              <AvatarFallback class="content">
-                {{ form.avatar }}
-              </AvatarFallback>
-            </Avatar>
-            <Progress
-              v-if="!isUploaded"
-              v-model="uploadProgress"
-              class="w-1/2 scale-50 transition-all duration-200 ease-in-out bg-sky-200 my-8 mx-auto opacity-0"
-              :class="{ 'opacity-100': uploadProgress > 0 }"
-            />
-            <AdvancedImage
-              v-if="isUploaded && form.avatar"
-              :src="form.avatar"
-              :cldImg="cldImg"
-              class="avatar my-2 mx-auto"
-            />
-            
-            <Input
-              id="avatar"
-              @change="handleFileUpload"
-              type="file"
-              accept="image/*"
-              class="mt-2 mb-4 cursor-pointer"
-            />
-          </div>
+          <Label for="avatar" class="text-sky-950">Avatar</Label>
+          <Avatar v-if="isUploaded && !form.avatar" class="avatar my-2 mx-auto">
+            <AvatarFallback class="content">
+              {{ form.avatar }}
+            </AvatarFallback>
+          </Avatar>
+          <Progress
+            v-if="!isUploaded"
+            v-model="uploadProgress"
+            class="w-1/2 scale-50 transition-all duration-200 ease-in-out bg-sky-200 my-8 mx-auto opacity-0"
+            :class="{ 'opacity-100': uploadProgress > 0 }"
+          />
+          <AdvancedImage
+            v-if="isUploaded && form.avatar"
+            :src="form.avatar"
+            :cldImg="cldImg"
+            class="avatar my-2 mx-auto"
+          />
+
+          <Input
+            id="avatar"
+            @change="handleFileUpload"
+            type="file"
+            accept="image/*"
+            class="mt-2 mb-4 cursor-pointer"
+          />
+        </div>
         <div class="grid gap-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="grid gap-2">
@@ -272,7 +271,11 @@ const handleSubmit = async () => {
             >
               Annulla
             </Button>
-            <Button variant="default" type="submit" class="primary-btn hover:!text-green-500">
+            <Button
+              variant="default"
+              type="submit"
+              class="primary-btn hover:!text-green-500"
+            >
               Aggiorna
             </Button>
           </div>

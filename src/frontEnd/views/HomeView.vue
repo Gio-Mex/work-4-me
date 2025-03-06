@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { jwtDecode } from "jwt-decode";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
 import StepList from "../components/StepList.vue";
 
 import { Button } from "../components/ui/button";
+import { onUnmounted } from "vue";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -14,6 +16,24 @@ const currentImage = ref(0);
 const imageLoaded = ref(true);
 const workerQualityRate = ref(0);
 const workerReliabilityRate = ref(0);
+const token = localStorage.getItem("authToken");
+let tokenCheckInterval: any;
+
+const isTokenExpired = (token: string | null) => {
+  if (!token) return true;
+  const decodedToken = jwtDecode(token);
+  if (!decodedToken || !decodedToken.exp) {
+    console.error("AuthToken non valido");
+    return true;
+  }
+  const currentTime = Date.now() / 1000;
+  console.log(decodedToken.exp);
+  console.log(currentTime);
+
+    console.log(decodedToken.exp < currentTime, currentTime);
+
+  return decodedToken.exp < currentTime;
+};
 
 const heroImgs = Object.values(
   import.meta.glob<{ default: string }>("@/frontEnd/assets/img/hero/*.jpg", {
@@ -97,6 +117,24 @@ const goToNextPage = () => {
 };
 
 onMounted(() => {
+  if (token && isTokenExpired(token)) {
+    userStore.logout();
+    localStorage.removeItem("authToken");
+    window.location.href = "/login";
+    return;
+  }
+
+  // Controlla il token ogni 30 secondi
+  tokenCheckInterval = setInterval(() => {
+    const currentToken = localStorage.getItem("authToken");
+    if (currentToken && isTokenExpired(currentToken)) {
+      console.log("🔴 Token scaduto, effettuando il logout...");
+      userStore.logout();
+      localStorage.removeItem("authToken");
+      window.location.href = "/login";
+    }
+  }, 30000); // Ogni 30 secondi
+
   showImg();
   console.log(userStore.user);
   if (userStore.user !== null && userStore.user.ratings) {
@@ -108,6 +146,10 @@ onMounted(() => {
     );
   }
 });
+
+onUnmounted(() => {
+  clearInterval(tokenCheckInterval);
+})
 </script>
 
 <template>
@@ -124,7 +166,7 @@ onMounted(() => {
   </div>
   <div v-else class="flex flex-row">
     <div
-      class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-20 md:mt-28 mb-4"
+      class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-20 md:mt-24 mb-4"
     >
       <div
         class="absolute w-full h-full opacity-75 bg-gradient-to-r from-sky-100 via-sky-100 to-transparent z-10"

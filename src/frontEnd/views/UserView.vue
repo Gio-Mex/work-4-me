@@ -29,7 +29,7 @@ const handleDeleteAccount = async () => {
 
 <template>
 <div class="py-2 px-4 md:px-8 space-y-7 mb-16">
-  <div class="flex flex-col mt-24 md:mt-28 space-y-2">
+  <div class="flex flex-col mt-20 md:mt-24 space-y-2">
     <Avatar class="avatar mx-auto">
     <AvatarImage :src="user!.avatar?.toString()" alt="Avatar" />
     <AvatarFallback class="content">

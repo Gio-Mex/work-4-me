@@ -59,10 +59,11 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Password non valida" });
     }
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { userId: user._id },
+      "secret",
+      { expiresIn: "60s" }
     );
+    console.log("Token generato:", token);
     res.status(200).json({ message: `Ciao ${user.name}!`, user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -98,8 +98,8 @@ const menuLinks = computed(() => [
     <!-- Logo -->
     <a class="flex items-center">
       <img
-        src="../assets/img/logo1.png"
-        class="!mr-0 h-14 md:h-16 scale-150 m-2 cursor-pointer"
+        src="../assets/img/logo.png"
+        class="!mr-0 h-14 md:h-16 scale-110 ms-1 cursor-pointer"
         alt="Logo"
         @click="navigateTo('/')"
       />
@@ -143,7 +143,7 @@ const menuLinks = computed(() => [
           <a
             v-for="link in menuLinks"
             :key="link.path"
-            class="link"
+            class="link scale-110"
             :class="{ '!text-sky-500': route.path === link.path }"
             @click="navigateTo(link.path)"
           >
@@ -170,7 +170,6 @@ const menuLinks = computed(() => [
         <span class="h-11 border border-sky-200 my-auto font-medium"></span>
         <a
           class="link"
-          :class="{ '!text-sky-500': route.path === '/user/login' }"
           @click="logout"
         >
           <span class="material-symbols-outlined mx-auto">logout</span>
@@ -266,7 +265,7 @@ const menuLinks = computed(() => [
           <hr class="border-1 border-sky-950 w-8/12" />
           <a
             class="flex flex-col text-xs font-medium cursor-pointer"
-            :class="{ '!text-sky-500': route.path === '/user/login' }"
+            :class="{ '!text-sky-500': route.path === '/user/signup' }"
             @click="navigateTo('/user/signup')"
           >
             <span class="material-symbols-outlined mx-auto">edit</span>
