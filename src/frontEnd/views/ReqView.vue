@@ -176,7 +176,7 @@ const acceptOffer = async (id: number) => {
 };
 
 const startJob = async () => {
-  job.status = "In lavorazione";
+  job.status = "In corso";
   await jobStore.updateJob(job);
 };
 
@@ -304,7 +304,7 @@ onMounted(() => {
 <template>
   <h1
     v-if="job.userId === userStore.user?._id"
-    class="text-4xl font-normal text-center pt-28 mb-4"
+    class="text-4xl font-normal text-center pt-20 md:pt-24 mb-4"
   >
     La mia richiesta
   </h1>
@@ -735,14 +735,14 @@ onMounted(() => {
             </div>
             <div
               v-if="
-                job.status === 'Accettato' || job.status === 'In lavorazione'
+                job.status === 'Accettato' || job.status === 'In corso'
               "
               class="flex flex-col items-center mt-10 text-center text-sm text-opacity-60 text-sky-950"
             >
               <p
                 v-if="
                   job.workerId === userStore.user?._id &&
-                  job.status !== 'In lavorazione'
+                  job.status !== 'In corso'
                 "
               >
                 Passa alla fase di lavorazione per ottenere il
@@ -751,7 +751,7 @@ onMounted(() => {
                 v-if="
                   job.workerId === userStore.user?._id &&
                   (job.status === 'Accettato' ||
-                    job.status === 'In lavorazione')
+                    job.status === 'In corso')
                 "
               >
                 <b>JOB CODE</b> da presentare a
@@ -760,7 +760,7 @@ onMounted(() => {
               <Button
                 v-if="
                   job.workerId === userStore.user?._id &&
-                  job.status !== 'In lavorazione'
+                  job.status !== 'In corso'
                 "
                 @click="startJob()"
                 class="primary-btn my-6"
@@ -770,7 +770,7 @@ onMounted(() => {
               <p
                 v-if="
                   job.userId === userStore.user?._id &&
-                  job.status === 'In lavorazione'
+                  job.status === 'In corso'
                 "
               >
                 Se visualizzi questo <b>JOB CODE</b> significa che il Worker si
@@ -782,7 +782,7 @@ onMounted(() => {
                 Attendi che il Worker avvi il lavoro...
               </p>
               <p
-                v-if="job.status === 'In lavorazione'"
+                v-if="job.status === 'In corso'"
                 class="bold text-lg bg-sky-50 text-sky-950 rounded shadow-sm p-2 px-4 mt-4"
               >
                 {{ job._id?.slice(-5).toUpperCase() }}
@@ -790,7 +790,7 @@ onMounted(() => {
               <p
                 v-if="
                   job.workerId === userStore.user?._id &&
-                  job.status === 'In lavorazione'
+                  job.status === 'In corso'
                 "
                 class="text-center text-sm text-sky-950 opacity-70 mt-8"
               >
@@ -800,7 +800,7 @@ onMounted(() => {
               <Button
                 v-if="
                   job.workerId === userStore.user?._id &&
-                  job.status === 'In lavorazione'
+                  job.status === 'In corso'
                 "
                 @click="closeJob()"
                 class="w-auto primary-btn my-6"
