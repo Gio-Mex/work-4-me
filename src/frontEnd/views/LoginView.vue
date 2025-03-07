@@ -39,8 +39,8 @@ const handleSubmit = async () => {
       >Questa piattaforma si avvale di servizi basilari di terze parti.<br/> Dopo un lungo periodo di inattività le performance potrebbero variare.</span
     >
   </div>
-  <form v-else class="pt-20" @submit.prevent="handleSubmit">
-    <h1 v-if ="userStore.user" class="text-4xl font-normal text-center pt-20 md:pt-24 mb-4">Sessione scaduta</h1>
+  <form v-else class="pt-20 md:pt-24" @submit.prevent="handleSubmit">
+    <h1 v-if ="userStore.user" class="text-4xl font-normal text-center mb-4">Sessione scaduta</h1>
     <Card class="m-2 md:mx-auto md:mt-5 max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl text-sky-950"> Login </CardTitle>

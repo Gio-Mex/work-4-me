@@ -50,7 +50,7 @@ const statusItems = [
   { name: "Aperto", icon: "pending" },
   { name: "Offerta", icon: "currency_exchange" },
   { name: "Accettato", icon: "handshake" },
-  { name: "In corso", icon: "manufacturing" },
+  { name: "In lavorazione", icon: "manufacturing" },
   { name: "Chiuso", icon: "task_alt" },
 ];
 
