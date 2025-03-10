@@ -123,7 +123,7 @@ const searchJobs = () => {
     (job) =>
       job.userId !== userStore.user!._id &&
       job.category.includes(searchCategory.value) &&
-      job.city.toLowerCase().includes(searchCity.value.toLowerCase())
+      job.city.toLowerCase().includes(searchCity.value.toLowerCase()) && (job.workerId === userStore.user?._id || job.status === "Aperto" || job.status === "Offerta")
   );
   filteredJobs.value = results;
 };
