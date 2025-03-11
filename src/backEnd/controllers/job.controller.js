@@ -240,7 +240,7 @@ const notifySingleUser = async (userId, job) => {
   notifyUser(userId, job);
   user.notifications.push(job._id);
   await user.save();
-  io.emit("jobUpdated", job);
+  io.to(user.socketId).emit("jobUpdated", job);
 };
 
 //Delete job
