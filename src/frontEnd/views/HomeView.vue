@@ -96,16 +96,23 @@ const goToNextPage = () => {
   router.push(userStore.user === null ? "/user/signup" : "/jobs");
 };
 
-onMounted(() => {
+onMounted(async () => {
   showImg();
-  console.log(userStore.user);
-  if (userStore.user !== null && userStore.user.ratings) {
-    workerQualityRate.value = Number(
-      userStore.ratingsAvg(userStore.user!.ratings.quality as number[])?.toFixed(1)
-    );
-    workerReliabilityRate.value = Number(
-      userStore.ratingsAvg(userStore.user!.ratings.reliability as number[])?.toFixed(1)
-    );
+  if (userStore.user) {
+    await userStore.fetchUser();
+    console.log(userStore.user);
+    if (userStore.user.ratings) {
+      workerQualityRate.value = Number(
+        userStore
+          .ratingsAvg(userStore.user!.ratings.quality as number[])
+          ?.toFixed(1)
+      );
+      workerReliabilityRate.value = Number(
+        userStore
+          .ratingsAvg(userStore.user.ratings.reliability as number[])
+          ?.toFixed(1)
+      );
+    }
   }
 });
 </script>
@@ -119,7 +126,8 @@ onMounted(() => {
       class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
     ></div>
     <span class="text-sky-950 text-center mt-10 mx-3"
-      >Questa piattaforma si avvale di servizi basilari di terze parti.<br/>Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+      >Questa piattaforma si avvale di servizi basilari di terze parti.<br />Dopo
+      un lungo periodo di inattività le performance potrebbero variare.</span
     >
   </div>
   <div v-else class="flex flex-row">
@@ -160,7 +168,13 @@ onMounted(() => {
     <h2 class="text-2xl md:text-3xl font-semibold">
       {{ userStore.user?.name }}, questo è il tuo punteggio da Worker!
     </h2>
-    <div v-if="userStore.user?.ratings.quality.length > 0 && userStore.user?.ratings.reliability.length > 0" class="grid grid-cols-2 mt-4 md:mt-6">
+    <div
+      v-if="
+        userStore.user?.ratings.quality.length > 0 &&
+        userStore.user?.ratings.reliability.length > 0
+      "
+      class="grid grid-cols-2 mt-4 md:mt-6"
+    >
       <div>
         <p class="md:text-xl font-medium text-sky-950">Qualità</p>
 
