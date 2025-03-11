@@ -1,6 +1,6 @@
 import express, { json, urlencoded } from "express";
 import { Server } from "socket.io";
-import http from "http";
+import http, { get } from "http";
 import cors from "cors";
 import { connect } from "mongoose";
 import { config } from "dotenv";
@@ -81,6 +81,18 @@ io.on("connection", (socket) => {
   });
 });
 
+export const getUserSocketId = (userId) => {
+  const userIdStr = String(userId); 
+
+  if (userSockets.has(userIdStr)) {
+    const socketId = userSockets.get(userIdStr);
+    console.log(`✅ Found socket ${socketId} for user ${userIdStr}`);
+  return socketId;
+} else {
+  console.log(`❌ User ${userIdStr} not found in userSockets.`);
+}
+}
+
 // Funzione per notificare un utente specifico
 export const notifyUser = (userId, job) => {
   console.log(`📢 Trying to notify user ${userId}`);
@@ -88,12 +100,7 @@ export const notifyUser = (userId, job) => {
   console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
   console.log("🔍 Checking userSockets keys:", Array.from(userSockets.keys()));
 
-  // Forziamo userId a essere una stringa
-  const userIdStr = String(userId); 
-
-  if (userSockets.has(userIdStr)) {
-    const socketId = userSockets.get(userIdStr);
-    console.log(`✅ Found socket ${socketId} for user ${userIdStr}`);
+    const socketId = getUserSocketId(userId);
 
     if (io.sockets.sockets.has(socketId)) {
       console.log(`🚀 Sending notification to ${socketId}`);
@@ -102,10 +109,7 @@ export const notifyUser = (userId, job) => {
     } else {
       console.log(`⚠️ Socket ${socketId} found in map but not in connected sockets!`);
     }
-  } else {
-    console.log(`❌ User ${userIdStr} not found in userSockets.`);
-  }
-};
+  };
 
 // Start HTTP server
 const PORT = process.env.PORT || 3000;

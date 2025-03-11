@@ -49,9 +49,9 @@ onMounted(() => {
     socket.emit("registerUser", userStore.user._id);
   }
 
-  socket.on("jobNotification", (data) => {
-    console.log("📩 New job notification:", data);
-    jobStore.notifications.push(data._id);
+  socket.on("jobNotification", (job) => {
+    console.log("📩 New job notification:", job);
+    jobStore.notifications.push(job._id);
   });
 
   socket.on("disconnect", () => {
