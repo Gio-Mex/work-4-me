@@ -168,10 +168,7 @@ const menuLinks = computed(() => [
           </a>
         </section>
         <span class="h-11 border border-sky-200 my-auto font-medium"></span>
-        <a
-          class="link"
-          @click="logout"
-        >
+        <a class="link" @click="logout">
           <span class="material-symbols-outlined mx-auto">logout</span>
           Logout
         </a>
@@ -210,6 +207,7 @@ const menuLinks = computed(() => [
           v-if="userStore.isLoggedIn"
           class="h-full flex flex-col justify-between"
         >
+          <!-- Menu links -->
           <div class="flex flex-col gap-4">
             <section v-for="link in menuLinks" :key="link.path">
               <a

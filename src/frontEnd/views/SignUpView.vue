@@ -9,7 +9,7 @@ import { Gravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { useAppStore } from "../stores/appStore";
 import { useUserStore } from "../stores/userStore";
 import type { User } from "../interfaces/user";
-
+// ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -22,8 +22,11 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
-
-type SignUpForm = Omit<User, "_id" | "isWorker" | "skills" | "ratings" | "notifications">;
+// ----
+type SignUpForm = Omit<
+  User,
+  "_id" | "isWorker" | "skills" | "ratings" | "notifications"
+>;
 const form = reactive<SignUpForm>({
   name: "",
   lastName: "",
@@ -46,7 +49,7 @@ const avatarContent = computed(() => {
 });
 const isUploaded = ref<boolean>(true);
 const uploadProgress = ref<number>(0);
-
+// Cloudinary details
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const cld = new Cloudinary({
   cloud: {
@@ -62,7 +65,7 @@ const cldImg = computed(() => {
     .format("auto")
     .resize(fill().width(120).height(120).gravity(Gravity.autoGravity()));
 });
-
+// Upload file function
 const handleFileUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
@@ -70,7 +73,7 @@ const handleFileUpload = (event: Event) => {
     uploadOnCloudinary();
   }
 };
-
+// Upload on cloudinary function
 const uploadOnCloudinary = async () => {
   isUploaded.value = false;
   uploadProgress.value = 0;
@@ -104,7 +107,7 @@ const uploadOnCloudinary = async () => {
     console.error("Errore nell'upload:", error);
   }
 };
-
+// Submit function
 const handleSubmit = async () => {
   if (!form.avatar) {
     form.avatar = avatarContent.value;
@@ -113,15 +116,16 @@ const handleSubmit = async () => {
   if (emailValid.value && form.password === confirmPassword.value) {
     form.province = form.province.toUpperCase();
     await userStore.signup(form as User).then(() => {
-    router.push({ path: "/user/login" });
-  });
+      router.push({ path: "/user/login" });
+    });
   } else if (!emailValid.value) {
-    return
+    return;
   }
 };
 </script>
 
 <template>
+  <!-- Loader -->
   <div
     v-if="appStore.isLoading"
     class="flex flex-col justify-center items-center h-96"
@@ -130,7 +134,9 @@ const handleSubmit = async () => {
       class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
     ></div>
     <span class="text-sky-950 text-center mt-10 mx-3"
-      >Questa piattaforma si avvale di servizi basilari di terze parti.<br/> Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+      >Questa piattaforma si avvale di servizi basilari di terze parti.<br />
+      Dopo un lungo periodo di inattività le performance potrebbero
+      variare.</span
     >
   </div>
   <form v-else class="pt-20" @submit.prevent="handleSubmit">
@@ -208,9 +214,7 @@ const handleSubmit = async () => {
               placeholder="m@example.com"
               required
             />
-            <span
-              v-if="!emailValid"
-              class="text-red-500 text-xs"
+            <span v-if="!emailValid" class="text-red-500 text-xs"
               >Email non valida</span
             >
           </div>

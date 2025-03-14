@@ -5,6 +5,7 @@ import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
 
+// Create job function
 const createJob = async (req, res) => {
   try {
     const {
@@ -32,6 +33,7 @@ const createJob = async (req, res) => {
       workerId,
     });
     await newJob.save();
+    // Send notification to all workers with created job category
     const workers = await User.find({
       skills: { $in: category },
       _id: { $ne: userId },
@@ -43,6 +45,7 @@ const createJob = async (req, res) => {
   }
 };
 
+// Get all active jobs (not evaluated) function. Use aggregate to get user, worker and chat details.
 const getActiveJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
@@ -84,6 +87,7 @@ const getActiveJobs = async (req, res) => {
   }
 };
 
+// Get all archived jobs (evaluated). Use aggregate to get user, worker and chat details.
 const getArchivedJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
@@ -117,6 +121,7 @@ const getArchivedJobs = async (req, res) => {
   }
 };
 
+// Update job function
 const updateJob = async (req, res) => {
   try {
     const { _id, ...props } = req.body;
@@ -129,6 +134,7 @@ const updateJob = async (req, res) => {
     }
 
     if (props.status === "Accettato") {
+      // Emit a jobUpdated event via socket
       io.emit("jobUpdated", updatedJob);
       // Notify only the worker who made the offer
       notifySingleUser(updatedJob.workerId, updatedJob);
@@ -139,7 +145,7 @@ const updateJob = async (req, res) => {
         { $pull: { notifications: updatedJob._id } }
       );
 
-      // Emit a deleteNotifications event for other workers
+      // Emit a deleteNotifications event for other workers via socket
       io.emit("deleteNotifications", updatedJob._id);
     }
 
@@ -153,6 +159,7 @@ const updateJob = async (req, res) => {
   }
 };
 
+// Set offer function
 const setOffer = async (req, res) => {
   try {
     const { _id, ...props } = req.body;
@@ -166,7 +173,11 @@ const setOffer = async (req, res) => {
       const offer = props.offers[props.offers.length - 1];
       updatedJob.offers.push(offer);
       await updatedJob.save();
+
+      // Notify the user who made the offer via socket
       notifyUser(updatedJob.userId, updatedJob);
+
+      // Notify all other workers via socket
       const workers = await User.find({
         skills: { $in: updatedJob.category },
         _id: { $ne: offer.workerId },
@@ -179,6 +190,7 @@ const setOffer = async (req, res) => {
   }
 };
 
+// Update chat function
 const updateChat = async (req, res) => {
   try {
     const chat = {
@@ -198,6 +210,7 @@ const updateChat = async (req, res) => {
       );
       res.status(200).json({ message: "Chat aggiornata", updatedChat });
     } else {
+      // Create new chat
       const newChat = new Chat({
         jobId: req.body.jobId,
         userId: req.body.userId,
@@ -212,11 +225,11 @@ const updateChat = async (req, res) => {
   }
 };
 
+// Find chat function
 const findChat = async (req, res) => {
   try {
     const { id } = req.params;
     const chat = await Chat.findOne({ jobId: id });
-
     if (!chat) {
       return res.status(404).json({ message: "Chat non trovata" });
     }
@@ -226,28 +239,33 @@ const findChat = async (req, res) => {
   }
 };
 
-//Send notification to all users (workers)
+// Send notification to all users (workers) function
 const notifyAllUsers = async (workers, job) => {
+  // Notify all workers via socket
   workers.forEach((worker) => {
     notifyUser(worker._id, job);
     worker.notifications.push(job._id);
   });
   await Promise.all(workers.map((worker) => worker.save()));
+  // Emit a jobUpdated event for workers via socket
   io.emit("jobUpdated", job);
 };
 
-//Send notification to a specific user
+// Send notification to a specific user function
 const notifySingleUser = async (userId, job) => {
   const user = await User.findById(userId);
+  // Notify the user via socket
   notifyUser(userId, job);
   user.notifications.push(job._id);
   await user.save();
+  // Get the socketId of the user
   const socketUser = getUserSocketId(userId);
   console.log(socketUser);
+  // Emit a jobUpdated event for the user via socket
   io.to(socketUser).emit("jobUpdated", job);
 };
 
-//Delete job
+// Delete job
 const deleteJob = async (req, res) => {
   try {
     const { id } = req.params;

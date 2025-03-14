@@ -6,7 +6,7 @@ import { config } from "dotenv";
 
 config();
 
-//Signup user
+// Create user function
 const createUser = async (req, res) => {
   try {
     const {
@@ -25,6 +25,7 @@ const createUser = async (req, res) => {
     if (newUser) {
       return res.status(400).json({ message: "L'account esiste già" });
     } else {
+      // Generate hash password
       const hashedPassword = await bcrypt.hash(password, saltRounds);
       const userData = {
         name,
@@ -46,7 +47,7 @@ const createUser = async (req, res) => {
   }
 };
 
-//Login user
+// Login function
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -58,11 +59,10 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Password non valida" });
     }
-    const token = jwt.sign(
-      { userId: user._id },
-      "secret",
-      { expiresIn: "30m" }
-    );
+    // Generate token
+    const token = jwt.sign({ userId: user._id }, "secret", {
+      expiresIn: "30m",
+    });
     console.log("Token generato:", token);
     res.status(200).json({ message: `Ciao ${user.name}!`, user, token });
   } catch (error) {
@@ -70,7 +70,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-//Get user by id
+// Get user by id function
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -84,7 +84,7 @@ const getUser = async (req, res) => {
   }
 };
 
-//Update user
+// Update user function
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -101,7 +101,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-//Rate user
+// Rate worker function
 const rateWorker = async (req, res) => {
   try {
     const { id } = req.params;
@@ -131,13 +131,13 @@ const rateWorker = async (req, res) => {
   }
 };
 
-//Delete notifications of a specific user
+// Delete notifications of a specific user
 const deleteNotifications = async (req, res) => {
   try {
-    const { id, jobId } = req.params; 
+    const { id, jobId } = req.params;
     const user = await User.findOneAndUpdate(
-      { _id: id }, 
-      { $pull: { notifications: jobId } }, 
+      { _id: id },
+      { $pull: { notifications: jobId } },
       { new: true }
     );
 
@@ -154,7 +154,7 @@ const deleteNotifications = async (req, res) => {
   }
 };
 
-//Delete user
+// Delete user
 const deleteUser = async (req, res) => {
   try {
     const { _id } = req.query;

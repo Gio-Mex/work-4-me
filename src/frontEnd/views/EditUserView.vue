@@ -9,7 +9,7 @@ import { Gravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { useUserStore } from "../stores/userStore";
 import { useJobStore } from "../stores/jobStore";
 import type { User } from "../interfaces/user";
-
+// ---- ShadCn Components
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
 import { Button } from "../components/ui/button";
@@ -22,13 +22,13 @@ import {
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Switch } from "../components/ui/switch";
-
+// ----
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const skills = jobStore.categories;
 
-onBeforeMount(() => {
-  userStore.fetchUser();
+onBeforeMount(async () => {
+  await userStore.fetchUser();
 });
 
 const form = reactive({
@@ -47,7 +47,7 @@ const form = reactive({
 const avatarId = ref<string>("");
 const isUploaded = ref<boolean>(true);
 const uploadProgress = ref<number>(0);
-
+// ---- Cloudinary details
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const cld = new Cloudinary({
   cloud: {
@@ -63,7 +63,8 @@ const cldImg = computed(() => {
     .format("auto")
     .resize(fill().width(120).height(120).gravity(Gravity.autoGravity()));
 });
-
+// ----
+// Upload avatar handler
 const handleFileUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
@@ -71,7 +72,7 @@ const handleFileUpload = (event: Event) => {
     uploadOnCloudinary();
   }
 };
-
+// Upload avatar on cloudinary function
 const uploadOnCloudinary = async () => {
   isUploaded.value = false;
   uploadProgress.value = 0;
@@ -94,22 +95,20 @@ const uploadOnCloudinary = async () => {
         },
       }
     );
-
     form.avatar = response.data.secure_url;
     avatarId.value = response.data.public_id;
     isUploaded.value = true;
     uploadProgress.value = 100;
-
     console.log("Upload riuscito:", response.data);
   } catch (error) {
     console.error("Errore nell'upload:", error);
   }
 };
-
+// Toggle worker function
 const toggleWorker = () => {
   form.isWorker = !form.isWorker;
 };
-
+// Toggle skill function
 const toggleSkill = (skill: string) => {
   if (form.skills.includes(skill)) {
     form.skills = form.skills.filter((s: string) => s !== skill);
@@ -117,7 +116,7 @@ const toggleSkill = (skill: string) => {
     form.skills.push(skill);
   }
 };
-
+// Handle submit function
 const handleSubmit = async () => {
   await userStore.updateUser(form).then(() => {
     router.push({ path: "/user" });
@@ -126,7 +125,8 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <h1 class="pt-20 md:pt-24 mb-4 text-4xl text-center"> I miei dati </h1>
+  <h1 class="pt-20 md:pt-24 mb-4 text-4xl text-center">I miei dati</h1>
+  <!-- Form -->
   <form @submit.prevent="handleSubmit">
     <Card class="mx-2 md:mx-4 lg:mx-auto mb-16 max-w-4xl md:px-4">
       <CardHeader>

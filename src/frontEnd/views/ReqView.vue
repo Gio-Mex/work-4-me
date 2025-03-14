@@ -20,7 +20,7 @@ import type { Job } from "../interfaces/job";
 import type { Offer } from "../interfaces/offer";
 import type { Chat } from "../interfaces/chat";
 import type { Message } from "../interfaces/message";
-
+// ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -58,7 +58,7 @@ import {
   NumberFieldInput,
 } from "../components/ui/number-field";
 import { Progress } from "../components/ui/progress";
-
+// ----
 const appStore = useAppStore();
 const userStore = useUserStore();
 const jobStore = useJobStore();
@@ -75,6 +75,7 @@ let message = ref({} as Message);
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let rate = ref(0);
+// Map options
 const mapOptions = ref({
   center: [0, 0],
   zoom: 15,
@@ -86,7 +87,7 @@ const tilesOptions = ref({
   attribution:
     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 });
-
+// Geocoding function
 const geocodeAddress = async () => {
   mapOptions.value.isLoading = true;
   mapOptions.value.notFound = true;
@@ -113,7 +114,7 @@ const geocodeAddress = async () => {
     console.error("Errore nella geocodifica:", error);
   }
 };
-
+// Format date function
 const formatDate = (date: number | string) => {
   const dateObject = new Date(date);
   const time =
@@ -138,11 +139,11 @@ const formatDate = (date: number | string) => {
       .replace(/\//g, "-");
   }
 };
-
+// Worker rate function
 const workerRate = (ratings: number[]) => {
   return (rate.value = (userStore.ratingsAvg(ratings)! / 5) * 100);
 };
-
+// Set offer function
 const setOffer = async () => {
   const offer = (document.getElementById("price") as HTMLInputElement)
     .value as unknown as number;
@@ -161,31 +162,29 @@ const setOffer = async () => {
   await jobStore.newOffer(job);
   router.push("/jobs");
 };
-
+// Accept offer function
 const acceptOffer = async (id: number) => {
   const selectedOffer = job.offers!.find((offer) => offer.id === id)!;
   job.workerId = selectedOffer.workerId;
   job.amount = selectedOffer.amount;
   selectedOffer.accepted = true;
   job.status = "Accettato";
-  await jobStore.updateJob(job)
+  await jobStore.updateJob(job);
   await jobStore.fetchActiveJobs();
   router.push("/jobs");
-  
-  console.log(job);
 };
-
+// Start job function
 const startJob = async () => {
   job.status = "In corso";
   await jobStore.updateJob(job);
 };
-
+// Close job function
 const closeJob = async () => {
   job.status = "Chiuso";
   await jobStore.updateJob(job);
   router.push("/jobs");
 };
-
+// Rate worker function
 const setRate = async () => {
   qualityRate.value = (document.getElementById("quality") as HTMLInputElement)
     .value as unknown as number;
@@ -200,6 +199,7 @@ const setRate = async () => {
   });
   router.push("/jobs");
 };
+// New chat function
 const newChat = () => {
   chat.jobId = job._id as string;
   chat.userId = job.userId as string;
@@ -207,7 +207,7 @@ const newChat = () => {
   chat.messages = [];
   return chat;
 };
-
+// Send message function
 const sendMessage = async () => {
   const chatInput = document.getElementById("message") as HTMLInputElement;
   if (message.value.content.trim()) {
@@ -222,7 +222,7 @@ const sendMessage = async () => {
     message.value.content = "";
   }
 };
-
+// Scroll to bottom function
 const scrollToBottom = () => {
   nextTick(() => {
     if (chatContainer.value) {
@@ -240,7 +240,7 @@ watch(
   },
   { deep: true }
 );
-
+// Delete request function
 const deleteReq = async () => {
   await jobStore.deleteJob(job._id as string);
   router.push("/jobs");
@@ -248,38 +248,29 @@ const deleteReq = async () => {
 
 onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-
-  console.log("🟢 Job trovato:", job);
-  console.log("📌 userDetails:", job?.userDetails);
-  console.log("📌 Chat:", chat);
-
-  if (!job?.userDetails || !chat) {
-    console.warn("⚠️ Job trovato, ma userDetails o chat sono assenti. Ricarico i dati...");
-    await jobStore.fetchActiveJobs();
-    job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-
-    console.log("🔄 Dopo fetchActiveJobs -> Job:", job);
-    console.log("📌 userDetails dopo aggiornamento:", job?.userDetails);
-    console.log("📌 Chat dopo aggiornamento:", chat);
-  }
-
   if (!job) {
-    console.error("⛔ Job ancora non trovato, uscita dal componente.");
     return;
   }
-
+  // If user details or chat still do not exist re-fetch to make sure
+  if (!job?.userDetails || !chat) {
+    await jobStore.fetchActiveJobs();
+    job = jobStore.jobs.find((job) => job._id === jobId) as Job;
+  }
+  // Fetch chat
   if (job.status !== "Aperto" && job.status !== "Offerta") {
-    await jobStore.fetchChat(job._id as string).then(async (fetchedChat: Chat) => {
-      if (!fetchedChat) {
-        console.warn("⚠️ Chat non trovata, creo nuova...");
-        const newChatData = newChat();
-        Object.assign(chat, newChatData);
-        await jobStore.updateChat(chat);
-      } else {
-        console.log("✅ Chat trovata:", fetchedChat);
-        Object.assign(chat, fetchedChat);
-      }
-    });
+    await jobStore
+      .fetchChat(job._id as string)
+      .then(async (fetchedChat: Chat) => {
+        // If chat doesn't exist create new
+        if (!fetchedChat) {
+          console.warn("⚠️ Chat non trovata, creo nuova...");
+          const newChatData = newChat();
+          Object.assign(chat, newChatData);
+          await jobStore.updateChat(chat);
+        } else {
+          Object.assign(chat, fetchedChat);
+        }
+      });
   }
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
@@ -367,6 +358,7 @@ onMounted(() => {
           >
             Ricerca indirizzo...🔍
           </span>
+          <!-- Map -->
           <LMap
             v-if="!mapOptions.notFound"
             :zoom="mapOptions.zoom"
@@ -402,6 +394,7 @@ onMounted(() => {
             @click="$router.push(`/jobs/edit/${job._id}`)"
             >Modifica</Button
           >
+          <!-- Alert Dialog -->
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
@@ -467,6 +460,7 @@ onMounted(() => {
           Non ci sono ancora offerte, fai tu la prima proposta!
         </p>
         <div>
+          <!-- Offers Table -->
           <div v-if="job.offers!.length > 0">
             <Table class="text-xs sm:text-sm">
               <TableCaption
@@ -566,7 +560,7 @@ onMounted(() => {
                       class="material-symbols-outlined text-sky-900 ms-2"
                       >handshake</span
                     >
-
+                    <!-- Accept Offer Dialog -->
                     <AlertDialog>
                       <AlertDialogTrigger as-child>
                         <Button
@@ -649,6 +643,7 @@ onMounted(() => {
               Inserisci una proposta di pagamento e inviala all'utente
             </p>
           </div>
+          <!-- Chat -->
           <div
             v-if="job.status !== 'Aperto' && job.status !== 'Offerta'"
             class="mt-10"
@@ -733,10 +728,9 @@ onMounted(() => {
                 ></Button
               >
             </div>
+            <!-- JOB CODE section -->
             <div
-              v-if="
-                job.status === 'Accettato' || job.status === 'In corso'
-              "
+              v-if="job.status === 'Accettato' || job.status === 'In corso'"
               class="flex flex-col items-center mt-10 text-center text-sm text-opacity-60 text-sky-950"
             >
               <p
@@ -750,8 +744,7 @@ onMounted(() => {
               <p
                 v-if="
                   job.workerId === userStore.user?._id &&
-                  (job.status === 'Accettato' ||
-                    job.status === 'In corso')
+                  (job.status === 'Accettato' || job.status === 'In corso')
                 "
               >
                 <b>JOB CODE</b> da presentare a
@@ -810,6 +803,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
+        <!-- Ratings section -->
         <div
           v-if="
             job.status === 'Chiuso' &&

@@ -28,95 +28,120 @@ export const useJobStore = defineStore("job", {
     notifications: [] as string[],
   }),
   actions: {
+    // Fetch active jobs function
     async fetchActiveJobs() {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
+      // Fetch data
       try {
         const url = `${baseUrl}/jobs`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {
         console.error("Errore durante il recupero dei lavori:", error);
+        // Show message
         if (this.jobs.length !== 0) {
           appStore.showToast(error.response.data.message);
           return;
         }
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Fetch archived jobs function
     async fetchArchivedJobs(id: string) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/${id}/archived`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {
         console.error("Errore durante il recupero dell'archivio:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Create job function
     async createJob(job: Job) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/new`;
         const response = await axios.post(url, job);
         this.jobs.push(response.data);
+        // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la creazione della richiesta:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
-    async findJob(jobToFind: Job) {
-      const index = this.jobs.findIndex((job) => job._id === jobToFind._id);
-      if (index !== -1) {
-        return this.jobs[index];
-      }
-    },
+    // async findJob(jobToFind: Job) {
+    //   const index = this.jobs.findIndex((job) => job._id === jobToFind._id);
+    //   if (index !== -1) {
+    //     return this.jobs[index];
+    //   }
+    // },
+    // Update job function
     async updateJob(job: Job) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/edit/${job._id}`;
         const response = await axios.put(url, job);
         job = response.data;
-        //this.updateJobStore(response.data);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,
           message: response.statusText,
         });
+        // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la modifica della richiesta:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Update job store function
     async updateJobStore(updatedJob: Job) {
       const index = this.jobs.findIndex((job) => job._id === updatedJob._id);
       if (index !== -1) {
         this.jobs[index] = updatedJob;
       } else {
-        this.jobs.push(updatedJob); 
+        this.jobs.push(updatedJob);
       }
     },
+    // Set new offer function
     async newOffer(job: Job) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/${job._id}`;
         const response = await axios.patch(url, job);
         const status = response.status;
@@ -124,24 +149,30 @@ export const useJobStore = defineStore("job", {
           status,
           message: response.statusText,
         });
+        // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la proposta:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
-    
+    // Delete notification function
     deleteNotification(notificationId: string) {
-      return this.notifications = this.notifications.filter(
+      return (this.notifications = this.notifications.filter(
         (notification) => notification !== notificationId
-      )
+      ));
     },
+    // Delete job function
     async deleteJob(jobId: string) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/${jobId}`;
         const response = await axios.delete(url);
         const status = response.status;
@@ -149,21 +180,26 @@ export const useJobStore = defineStore("job", {
           status,
           message: response.statusText,
         });
+        // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error(
           "Errore durante la cancellazione della richiesta:",
           error
         );
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Update chat function
     async updateChat(chat: Chat) {
       const appStore = useAppStore();
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/${chat.jobId}`;
         const response = await axios.post(url, chat);
         const status = response.status;
@@ -173,12 +209,15 @@ export const useJobStore = defineStore("job", {
         });
       } catch (error: any) {
         console.error("Errore durante la creazione della chat:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       }
     },
+    // Fetch chat function
     async fetchChat(jobId: string) {
       try {
+        // Fetch data
         const url = `${baseUrl}/jobs/${jobId}`;
         const response = await axios.get(url);
         return response.data;
@@ -191,10 +230,13 @@ export const useJobStore = defineStore("job", {
         throw error;
       }
     },
+    // Rate worker function
     async rateWorker(workerId: string, ratings: Object) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/user/ratings/${workerId}`;
         const response = await axios.patch(url, { ratings });
         console.log(response.data);
@@ -203,15 +245,19 @@ export const useJobStore = defineStore("job", {
           status,
           message: response,
         });
+        // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la valutazione:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
   },
+  // Persist state
   persist: true,
 });

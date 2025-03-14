@@ -8,7 +8,7 @@ const socketInstance: Socket = io(baseUrl, { transports: ["websocket"] });
 
 export const useAppStore = defineStore("app", {
   state: () => ({
-    socket: socketInstance, 
+    socket: socketInstance,
     isLoading: false,
   }),
   actions: {
@@ -18,6 +18,7 @@ export const useAppStore = defineStore("app", {
     stopLoading() {
       this.isLoading = false;
     },
+    // Show message via toast
     showToast(description: string) {
       toast({
         description: description,

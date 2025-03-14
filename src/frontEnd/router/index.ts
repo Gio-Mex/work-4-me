@@ -73,9 +73,15 @@ const router = createRouter({
     return { top: 0 };
   },
 });
-
+// Router guard
 router.beforeEach((to, _, next) => {
-  if (!localStorage.getItem("authToken") && to.name !== "home" && to.name !== "login" && to.name !== "signup" && to.name !== "notFound") {
+  if (
+    !localStorage.getItem("authToken") &&
+    to.name !== "home" &&
+    to.name !== "login" &&
+    to.name !== "signup" &&
+    to.name !== "notFound"
+  ) {
     next({ name: "home" });
   } else {
     next();

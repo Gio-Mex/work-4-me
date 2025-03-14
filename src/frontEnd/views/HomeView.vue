@@ -14,13 +14,13 @@ const currentImage = ref(0);
 const imageLoaded = ref(true);
 const workerQualityRate = ref(0);
 const workerReliabilityRate = ref(0);
-
+// Hero images
 const heroImgs = Object.values(
   import.meta.glob<{ default: string }>("@/frontEnd/assets/img/hero/*.jpg", {
     eager: true,
   })
 ).map((img) => img.default);
-
+// Show hero images function
 const showImg = () => {
   setInterval(() => {
     imageLoaded.value = false;
@@ -30,7 +30,7 @@ const showImg = () => {
     }, 800);
   }, 3200);
 };
-
+// Create steps function
 const createSteps = (
   stepsData: Array<{ title: string; description: string; icon: string }>
 ) =>
@@ -39,7 +39,7 @@ const createSteps = (
     selected: index === 0,
     ...step,
   }));
-
+// Homepage user steps
 const userSteps = reactive(
   createSteps([
     { title: "Registrati", description: "Crea un account", icon: "person" },
@@ -65,7 +65,7 @@ const userSteps = reactive(
     },
   ])
 );
-
+// Homepage worker steps
 const workerSteps = reactive(
   createSteps([
     { title: "Cerca", description: "Scegli la richiesta adatta", icon: "list" },
@@ -83,7 +83,7 @@ const workerSteps = reactive(
     { title: "Completa", description: "Completa il lavoro", icon: "task_alt" },
   ])
 );
-
+// Select step function
 const selectStep = (steps: typeof userSteps, step: number) => {
   const selectedStep = steps.find((s) => s.step === step);
   if (selectedStep) {
@@ -91,16 +91,16 @@ const selectStep = (steps: typeof userSteps, step: number) => {
     selectedStep.selected = true;
   }
 };
-
+// Call to action function
 const goToNextPage = () => {
   router.push(userStore.user === null ? "/user/signup" : "/jobs");
 };
 
 onMounted(async () => {
   showImg();
+  // Fetch user data
   if (userStore.user) {
     await userStore.fetchUser();
-    console.log(userStore.user);
     if (userStore.user.ratings) {
       workerQualityRate.value = Number(
         userStore
@@ -118,6 +118,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- Loader -->
   <div
     v-if="appStore.isLoading"
     class="flex flex-col justify-center items-center h-96"
@@ -130,6 +131,7 @@ onMounted(async () => {
       un lungo periodo di inattività le performance potrebbero variare.</span
     >
   </div>
+  <!-- Hero section -->
   <div v-else class="flex flex-row">
     <div
       class="relative w-full h-[300px] md:h-[450px] xl:h-[800px] overflow-hidden mt-20 md:mt-24 mb-4"
@@ -160,7 +162,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-
+  <!-- Worker rating section -->
   <div
     v-if="userStore.user?.isWorker"
     class="md:w-10/12 xl:w-8/12 p-5 my-6 mx-auto bg-sky-50 text-center shadow rounded"
@@ -205,8 +207,8 @@ onMounted(async () => {
   </div>
 
   <hr class="mt-12 mb-4 md:mt-14 md:mb-10 w-3/5 mx-auto border-sky-400" />
-
   <div class="md:grid grid-cols-2">
+    <!-- Why Work4Me section -->
     <div class="p-5 md:p-8 mt-4">
       <h2 class="text-2xl font-semibold mb-4">Perché Work4Me?</h2>
       <p class="md:text-lg">
@@ -217,6 +219,7 @@ onMounted(async () => {
         che sarà visibile agli altri utenti 🤗.
       </p>
     </div>
+    <!-- What type of help section -->
     <div class="p-5 md:p-8 mt-4 bg-sky-50">
       <h2 class="text-2xl font-semibold mb-4">Che tipo di aiuto?</h2>
       <p class="md:text-lg">
@@ -230,13 +233,14 @@ onMounted(async () => {
       </p>
     </div>
   </div>
-
+  <!-- How it works section -->
   <div class="p-5 md:p-8 md:mt-8 text-center">
     <h2 class="text-2xl font-semibold">Come funziona Work4Me?</h2>
     <p class="md:text-lg mt-3">
       <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile!</span>
       Consulta i seguenti passi.
     </p>
+    <!-- Step list -->
     <StepList
       :steps="userSteps"
       :selectStep="(step : number) => selectStep(userSteps, step)"
@@ -244,7 +248,7 @@ onMounted(async () => {
   </div>
 
   <hr class="mt-7 mb-11 md:mt-3 md:mb-14 w-3/5 mx-auto border-sky-400" />
-
+  <!-- Become a worker section -->
   <div class="relative md:h-[400px] overflow-hidden my-6">
     <div class="absolute w-full h-full bg-sky-950 opacity-75"></div>
     <h2
@@ -259,8 +263,8 @@ onMounted(async () => {
       alt="Shake hands"
     />
   </div>
-
   <div class="md:grid grid-cols-2 md:mt-8">
+    <!-- What is a worker section -->
     <div class="p-5 md:p-8 mt-4 bg-sky-50">
       <h2 class="text-2xl font-semibold mb-4">Cos'è un Worker?</h2>
       <p class="md:text-lg">
@@ -273,6 +277,7 @@ onMounted(async () => {
         attivare la funzionalità e selezionare le tue abilità 💪.
       </p>
     </div>
+    <!-- Can a worker make money section -->
     <div class="p-5 md:p-8 mt-4">
       <h2 class="text-2xl font-semibold mb-4">Posso guadagnare come Worker?</h2>
       <p class="md:text-lg">
@@ -284,7 +289,7 @@ onMounted(async () => {
       </p>
     </div>
   </div>
-
+  <!-- How a worker uses the platform section -->
   <div
     class="p-5 md:p-8 mt-6 mb-12 md:mb-0 text-center"
     :class="userStore.user !== null ? 'mb-12' : 'mb-4'"
@@ -294,6 +299,7 @@ onMounted(async () => {
       <span class="text-sky-400 font-semibold text-lg md:text-xl">Facile</span>
       anche questo. Consulta questi passi.
     </p>
+    <!-- Step list -->
     <StepList
       :steps="workerSteps"
       :selectStep="(step : number) => selectStep(workerSteps, step)"

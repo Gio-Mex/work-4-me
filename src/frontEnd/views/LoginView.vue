@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import router from "../router";
-
 import { useAppStore } from "../stores/appStore";
 import { useUserStore } from "../stores/userStore";
-
+// ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -15,32 +14,39 @@ import {
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-
+// ----
 const userStore = useUserStore();
 const appStore = useAppStore();
 const form = reactive({
   email: "",
   password: "",
 });
-
+// Handle submit function
 const handleSubmit = async () => {
   await userStore.login(form as any).then(() => {
-      router.push({ path: "/" });
-  })
-}
+    router.push({ path: "/" });
+  });
+};
 </script>
 
 <template>
-  <div v-if="appStore.isLoading" class="flex flex-col justify-center items-center h-96">
+  <div
+    v-if="appStore.isLoading"
+    class="flex flex-col justify-center items-center h-96"
+  >
     <div
       class="animate-spin rounded-full h-10 w-10 border-t-4 border-sky-800"
     ></div>
     <span class="text-sky-950 text-center mt-10 mx-3"
-      >Questa piattaforma si avvale di servizi basilari di terze parti.<br/> Dopo un lungo periodo di inattività le performance potrebbero variare.</span
+      >Questa piattaforma si avvale di servizi basilari di terze parti.<br />
+      Dopo un lungo periodo di inattività le performance potrebbero
+      variare.</span
     >
   </div>
   <form v-else class="pt-20 md:pt-24" @submit.prevent="handleSubmit">
-    <h1 v-if ="userStore.user" class="text-4xl font-normal text-center mb-4">Sessione scaduta</h1>
+    <h1 v-if="userStore.user" class="text-4xl font-normal text-center mb-4">
+      Sessione scaduta
+    </h1>
     <Card class="m-2 md:mx-auto md:mt-5 max-w-md">
       <CardHeader>
         <CardTitle class="text-2xl text-sky-950"> Login </CardTitle>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "../stores/userStore";
 import router from "../router";
-
+// ---- ShadCn Components
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import {
@@ -15,11 +15,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../components/ui/alert-dialog'
-
+// ----
 const userStore = useUserStore();
 const user = userStore.user;
 console.log(user);
-
+// Delete account function
 const handleDeleteAccount = async () => {
   await userStore.deleteUser().then(() => {
     router.push('/')
@@ -54,6 +54,7 @@ const handleDeleteAccount = async () => {
   <p>
     Vuoi eliminare il tuo account? 
   </p>
+  <!-- Alert Dialog -->
   <AlertDialog>
     <AlertDialogTrigger as-child>
        <Button  class="w-[160px] text-sky-950" variant="destructive">Elimina account</Button>

@@ -12,11 +12,14 @@ export const useUserStore = defineStore("user", {
     isLoggedIn: false,
   }),
   actions: {
+    // Login function
     async login(form: User) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       const socket = appStore.socket;
       try {
+        // Fetch data
         const url = `${baseUrl}/user/login`;
         const response = await axios.post(url, form);
         const { user, token } = response.data;
@@ -25,24 +28,33 @@ export const useUserStore = defineStore("user", {
           status,
           message: response.statusText,
         });
+        // Show message
         appStore.showToast(response.data.message);
         this.user = user;
+        // Save auth token in local storage
         localStorage.setItem("authToken", token);
         this.isLoggedIn = true;
+        // Connect socket
         socket.connect();
+        // Emit registerUser event
         socket.emit("registerUser", user._id);
       } catch (error: any) {
         console.error("Errore durante il login:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Signup function
     async signup(form: User) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/user/signup`;
         const response = await axios.post(url, form);
         console.log("Risposta dal server:", {
@@ -50,35 +62,47 @@ export const useUserStore = defineStore("user", {
           messaggio: response.statusText,
         });
         if (response.status === 201) {
+          // Show message
           appStore.showToast("Account creato con successo");
         }
       } catch (error: any) {
         console.error("Errore durante la registrazione:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Logout function
     logout() {
       const appStore = useAppStore();
       const socket = appStore.socket;
+      // Disconnect socket
       socket.disconnect();
+      // Remove user
       this.resetUser();
+      // Show message
       appStore.showToast("Logout effettuato");
     },
+    // Fetch user function
     async fetchUser() {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/user/${this.user!._id}`;
         const response = await axios.get(url);
         this.user = response.data as User;
       } catch (error) {
         console.error(error);
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Ratings average function
     ratingsAvg(ratings: number[]) {
       const rate = ref(0);
       if (ratings.length > 0) {
@@ -88,10 +112,13 @@ export const useUserStore = defineStore("user", {
         return;
       }
     },
+    // Update user function
     async updateUser(user: User) {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/user/${this.user!._id}`;
         const response = await axios.put(url, user);
         const { updatedUser } = response.data as { updatedUser: User };
@@ -100,19 +127,23 @@ export const useUserStore = defineStore("user", {
           status,
           message: response.statusText,
         });
+        // Show message
         appStore.showToast(response.data.message);
         this.user = updatedUser;
       } catch (error: any) {
         console.error("Errore durante l'aggiornamento:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
-
+    // Delete notifications function
     async deleteNotifications(jobId: string) {
       try {
+        // Fetch data
         const url = `${baseUrl}/user/notifications/${this.user!._id}/${jobId}`;
         const response = await axios.delete(url);
         const status = response.status;
@@ -128,10 +159,13 @@ export const useUserStore = defineStore("user", {
         throw error;
       }
     },
+    // Delete user function
     async deleteUser() {
+      // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
+        // Fetch data
         const url = `${baseUrl}/user`;
         const response = await axios.delete(url, {
           params: {
@@ -143,21 +177,27 @@ export const useUserStore = defineStore("user", {
           status,
           message: response.statusText,
         });
+        // Remove user
         this.resetUser();
+        // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la cancellazione:", error);
+        // Show message
         appStore.showToast(error.response.data.message);
         throw error;
       } finally {
+        // Stop loader
         appStore.stopLoading();
       }
     },
+    // Reset user function
     resetUser() {
       this.isLoggedIn = false;
       this.user = null;
       localStorage.clear();
     },
   },
+  // Persist state
   persist: true,
 });

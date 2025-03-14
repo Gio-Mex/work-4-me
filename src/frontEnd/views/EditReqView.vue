@@ -4,7 +4,7 @@ import router from "../router";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import type { Job } from "../interfaces/job";
-
+// ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-
+// ----
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const categories = jobStore.categories;
@@ -33,9 +33,9 @@ const jobId = router.currentRoute.value.params?.id;
 let job = reactive(jobStore.jobs.find((job) => job._id === jobId) ?? {}) as Job;
 
 onBeforeMount(() => {
+  // This component is used to create a new job or to edit an existing one
   if (router.currentRoute.value.path.includes("edit")) {
     if (job) {
-      console.log("Dati inviati:", form);
       Object.assign(form, job);
     }
   } else {
@@ -53,14 +53,13 @@ onBeforeMount(() => {
     });
   }
 });
-
+// Handle submit function both for create and update job
 const handleSubmit = async () => {
   if (router.currentRoute.value.path.includes("edit")) {
       await jobStore.updateJob(form).then(() => {
         router.replace({ path: "/jobs" });
       });
   } else {
-    console.log(form);
     await jobStore.createJob(form).then(async () => {
       await jobStore.updateJobStore(form).then(() => {
         router.replace({ path: "/jobs" });
@@ -80,7 +79,7 @@ const handleSubmit = async () => {
   <h2 v-else class="text-4xl font-normal text-center p-1 pt-20 md:pt-24 mb-4">
     Nuova richiesta
   </h2>
-
+  <!-- Form -->
   <form class="" @submit.prevent="handleSubmit">
     <Card class="mx-2 md:mx-4 lg:mx-auto mb-20 lg:mb-10 max-w-4xl">
       <CardHeader class="text-center">

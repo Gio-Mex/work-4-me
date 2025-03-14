@@ -5,7 +5,7 @@ import { useAppStore } from "../stores/appStore";
 import { onMounted, watch, computed, ref, onUnmounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
-
+// ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
@@ -32,7 +32,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
-
+// ----
 const router = useRouter();
 const jobStore = useJobStore();
 const userStore = useUserStore();
@@ -46,6 +46,7 @@ const archivedUrl = computed(() =>
 let searchCity = ref("" as string);
 let searchCategory = ref("" as string);
 
+// Status details
 const statusItems = [
   { name: "Aperto", icon: "pending" },
   { name: "Offerta", icon: "currency_exchange" },
@@ -117,13 +118,16 @@ let jobsList = computed(() => {
     }
   }
 });
-
+// Filter jobs function
 const searchJobs = () => {
   const results = jobStore.jobs.filter(
     (job) =>
       job.userId !== userStore.user!._id &&
       job.category.includes(searchCategory.value) &&
-      job.city.toLowerCase().includes(searchCity.value.toLowerCase()) && (job.workerId === userStore.user?._id || job.status === "Aperto" || job.status === "Offerta")
+      job.city.toLowerCase().includes(searchCity.value.toLowerCase()) &&
+      (job.workerId === userStore.user?._id ||
+        job.status === "Aperto" ||
+        job.status === "Offerta")
   );
   filteredJobs.value = results;
 };
@@ -133,7 +137,7 @@ const clearSearch = () => {
   searchCategory.value = "";
   filteredJobs.value = null;
 };
-
+// Select request function (delete notification and redirect to request or job page)
 const selectRequest = async (job: Job) => {
   if (jobStore.notifications.includes(job._id!)) {
     jobStore.deleteNotification(job._id!);
@@ -153,7 +157,7 @@ watch(
     await handleRouteChange();
   }
 );
-
+// Handle route change function (fetch active or archived jobs depending on the route)
 const handleRouteChange = async () => {
   if (archivedUrl.value) {
     await jobStore.fetchArchivedJobs(userStore.user!._id);
@@ -164,22 +168,16 @@ const handleRouteChange = async () => {
 
 onMounted(async () => {
   await handleRouteChange();
-  console.log(jobStore.jobs);
-
   if (userStore.user) {
-    console.log("🟢 Socket attivo?", socket.connected);
-
     socket.on("jobUpdated", async (job) => {
-      console.log("📡 Ricevuto jobUpdated:", job);
-
-      // 1️⃣ Salva la posizione dello scroll
+      // Save the scroll position
       const scrollPosition =
         document.documentElement.scrollTop || document.body.scrollTop;
 
       jobStore.updateJobStore(job);
-      await jobStore.fetchActiveJobs(); // Esegue il fetch
+      await jobStore.fetchActiveJobs();
 
-      // 2️⃣ Ripristina la posizione dello scroll
+      // Restore the scroll position
       nextTick(() => {
         document.documentElement.scrollTop = scrollPosition;
         document.body.scrollTop = scrollPosition;
@@ -194,6 +192,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!-- Loader -->
   <div
     v-if="appStore.isLoading"
     class="flex flex-col justify-center items-center h-96"
@@ -217,6 +216,7 @@ onUnmounted(() => {
           Richieste
         </h2>
       </div>
+      <!-- Requests table -->
       <Table v-if="reqsList.length > 0" class="mt-0 table-fixed w-full">
         <TableCaption class="bg-sky-900 rounded-b mt-0">
           <Accordion
@@ -297,7 +297,7 @@ onUnmounted(() => {
           <h3 class="text-xl font-extralight text-center text-sky-200 my-3">
             Cerca un lavoro
           </h3>
-
+          <!-- Search bar -->
           <div class="flex flex-col md:flex-row gap-2 md:gap-0">
             <Input
               v-model="searchCity"
@@ -343,6 +343,7 @@ onUnmounted(() => {
         </div>
       </div>
       <div>
+        <!-- Jobs table -->
         <Table v-if="jobsList.length > 0" class="table-fixed w-full">
           <TableCaption
             class="text-xs text-sky-200 text-opacity-60 bg-sky-950 rounded-b mt-0"

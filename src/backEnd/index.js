@@ -38,38 +38,34 @@ const server = http.createServer(app);
 // Socket.IO configuration
 export const io = new Server(server, {
   cors: {
-    origin: ["https://work-4-me.netlify.app", "http://localhost:5173"], // Configurare secondo le necessità
+    origin: ["https://work-4-me.netlify.app", "http://localhost:5173"],
     methods: ["GET", "POST"],
   },
 });
 
-// Socket.IO event handler
+// New WebSocket connection handler
 io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
-
+  // Register user event handler
   socket.on("registerUser", (userId) => {
-    console.log(`📌 registerUser event received for userId: ${userId} with socket ${socket.id}`);
-  
-    // Rimuoviamo eventuali connessioni precedenti
+    // Remove old socket
     if (userSockets.has(userId)) {
       const oldSocketId = userSockets.get(userId);
       if (oldSocketId !== socket.id) {
-        console.log(`🔄 Removing previous socket ${oldSocketId} for user ${userId}`);
         io.sockets.sockets.get(oldSocketId)?.disconnect(true);
       }
     }
-  
-    // Registriamo la nuova socket
+    // Add new socket
     userSockets.set(userId, socket.id);
     console.log(`✅ User ${userId} registered with socket ${socket.id}`);
   });
-  // Quando riceviamo un messaggio
+
+  // Message event handler
   socket.on("message", (message) => {
-    console.log("📩 Message received:", message);
     socket.broadcast.emit("message", message);
   });
 
-  // Quando un utente si disconnette
+  // Disconnect event handler
   socket.on("disconnect", () => {
     for (const [userId, socketId] of userSockets.entries()) {
       if (socketId === socket.id) {
@@ -81,34 +77,28 @@ io.on("connection", (socket) => {
   });
 });
 
+// Get user socketId function
 export const getUserSocketId = (userId) => {
-  const userIdStr = String(userId); 
-
+  const userIdStr = String(userId);
   if (userSockets.has(userIdStr)) {
     const socketId = userSockets.get(userIdStr);
     console.log(`✅ Found socket ${socketId} for user ${userIdStr}`);
-  return socketId;
-} else {
-  console.log(`❌ User ${userIdStr} not found in userSockets.`);
-}
-}
+    return socketId;
+  } else {
+    console.log(`❌ User ${userIdStr} not found in userSockets.`);
+  }
+};
 
-// Funzione per notificare un utente specifico
+// Notify user function
 export const notifyUser = (userId, job) => {
-  console.log(`📢 Trying to notify user ${userId}`);
-  console.log("🔍 Current userSockets map:", userSockets);
-  console.log("🟢 Connected sockets:", Array.from(io.sockets.sockets.keys()));
-  console.log("🔍 Checking userSockets keys:", Array.from(userSockets.keys()));
-
-    const socketId = getUserSocketId(userId);
-
-    if (io.sockets.sockets.has(socketId)) {
-      console.log(`🚀 Sending notification to ${socketId}`);
-      io.to(socketId).emit("jobNotification", job);
-    } else {
-      console.log(`⚠️ Socket ${socketId} found in map but not in connected sockets!`);
-    }
-  };
+  const socketId = getUserSocketId(userId);
+  if (io.sockets.sockets.has(socketId)) {
+    // Emit a jobNotification event for the user
+    io.to(socketId).emit("jobNotification", job);
+  } else {
+    console.log(`⚠️ Socket ${socketId} not found for user ${userId}`);
+  }
+};
 
 // Start HTTP server
 const PORT = process.env.PORT || 3000;

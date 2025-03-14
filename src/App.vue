@@ -15,7 +15,7 @@ const jobStore = useJobStore();
 const userStore = useUserStore();
 const socket = appStore.socket;
 let tokenCheckInterval: any;
-
+// Check if token is expired
 const isTokenExpired = (token: string | null) => {
   if (!token) return true;
   const decodedToken = jwtDecode(token);
@@ -25,7 +25,7 @@ const isTokenExpired = (token: string | null) => {
   }
   const currentTime = Date.now() / 1000;
   return decodedToken.exp < currentTime;
-}
+};
 
 onMounted(() => {
   // AuthToken validity check every 15 minutes
@@ -42,18 +42,16 @@ onMounted(() => {
     console.warn("⚠️ Socket not initialized!");
     return;
   }
-
   console.log("✅ Socket connected, listening for events");
-
+  // Emit registerUser event
   if (userStore.user) {
     socket.emit("registerUser", userStore.user._id);
   }
-
+  // Listen for jobUpdated event
   socket.on("jobNotification", (job) => {
-    console.log("📩 New job notification:", job);
     jobStore.notifications.push(job._id);
   });
-
+  // Listen for disconnect event
   socket.on("disconnect", () => {
     if (userStore.user) {
       console.log("Socket disconnected! Attempting to reconnect...");
