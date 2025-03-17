@@ -342,7 +342,7 @@ onMounted(() => {
         </div>
         <div
           v-if="
-            job.userId !== userStore.user?._id && job.status === 'Accettato'
+            job.userId !== userStore.user?._id && (job.status === 'Accettato'|| job.status === 'In corso')
           "
           class="grid bg-sky-50 gap-2 p-4 md:p-5 rounded-md shadow-sm"
         >
