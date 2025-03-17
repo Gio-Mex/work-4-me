@@ -93,12 +93,6 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
-    // async findJob(jobToFind: Job) {
-    //   const index = this.jobs.findIndex((job) => job._id === jobToFind._id);
-    //   if (index !== -1) {
-    //     return this.jobs[index];
-    //   }
-    // },
     // Update job function
     async updateJob(job: Job) {
       // Start loader
