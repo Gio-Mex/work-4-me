@@ -79,7 +79,7 @@ const menuLinks = computed(() => [
     id: 2,
     path: "/jobs",
     icon: "work",
-    label: "Richieste",
+    label: "Requests",
     notifications: totalNotifications.value,
   },
   {
