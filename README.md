@@ -44,20 +44,29 @@ Navigate to http://localhost:5173
 To use the platform you must first create an account (please use dummy data).  
 In your account you can choose whether to be only a user of the platform or also a Worker, indicating your skills.
 On the requests page you will see your job requests, and if you are a Worker also those of other users that match your skills.  
-To insert a new job request go to the requests page and click on the appropriate button.  
-Workers who have a skill that matches the category of that request will be able to see it in their list of jobs and by opening it they will be able to read its details, including a map indicating the approximate area where the user who made the request lives: here the worker can make a proposal for their compensation, and if it is accepted by the user they will be able to see the exact address where to go and will also be able to use the chat to communicate with the user.  
-When the Worker is ready to start the job, he can report it to the user with the appropriate button found on the request page, in this way he will receive the JOB CODE to share with the user (so that upon arrival the Worker can be recognized).   
-Once the Worker finishes the job, he can report it, again with the appropriate button, and at that point on the request page the user will be able to view the evaluations section, so as to leave a score for the Worker.   
-Once this is done, the job will be closed and can be viewed in the archive (on the personal account page), while the Worker will see his score updated on the homepage.
+To insert a new job request go to the requests page and click on the appropriate button.
 
-![Screenshot of cart](public/cart-img.png)
+![Screenshot requests page](public/reqs-page-img.png)
+
+Workers who have a skill that matches the category of that request will be able to see it in their list of jobs and by opening it they will be able to read its details, including a map indicating the approximate area where the user who made the request lives: here the worker can make a proposal for their compensation, and if it is accepted by the user they will be able to see the exact address where to go and will also be able to use the chat to communicate with the user.
+
+![Screenshot request details page](public/req-details-img.png)
+
+When the Worker is ready to start the job, he can report it to the user with the appropriate button found on the request page, in this way he will receive the JOB CODE to share with the user (so that upon arrival the Worker can be recognized).   
+Once the Worker finishes the job, he can report it, again with the appropriate button, and at that point on the request page the user will be able to view the evaluations section, so as to leave a score for the Worker.
+
+![Screenshot job evaluation page](public/ratins-img.png)
+
+Once this is done, the job will be closed and can be viewed in the archive (on the personal account page), while the Worker will see his score updated on the homepage.
 
 ## Features
 
-- Registration and login
-- Live updates with notifications
-- Chat
-- MongoDB database connection
+- Authentication with JWT
+- Session management
+- Hash password encryption with Bcrypt
+- Live updates and notifications with Socket.io
+- Live chat
+- MongoDB database
 - Responsive design
 
 ## Demo
