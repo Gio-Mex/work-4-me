@@ -71,4 +71,4 @@ Once this is done, the job will be closed and can be viewed in the archive (on t
 
 ## Demo
 
-Try the platform [here](https://vwork-4-me.netlify.app).
+Try the platform [here](https://work-4-me.netlify.app).
