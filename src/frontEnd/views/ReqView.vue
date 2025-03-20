@@ -342,7 +342,8 @@ onMounted(() => {
         </div>
         <div
           v-if="
-            job.userId !== userStore.user?._id && (job.status === 'Accettato' || job.status === 'In corso')
+            job.userId !== userStore.user?._id &&
+            (job.status === 'Accettato' || job.status === 'In corso')
           "
           class="grid bg-sky-50 gap-2 p-4 md:p-5 rounded-md shadow-sm"
         >
@@ -537,22 +538,22 @@ onMounted(() => {
                   <TableCell class="p-0 py-2 text-center">
                     <div v-if="offer.workerRatings">
                       <span>
-                      Qualità
-                      <Progress
-                        :model-value="workerRate(offer.workerRatings.quality)"
-                        class="scale-50 bg-sky-200 w-full"
-                      />
-                    </span>
+                        Qualità
+                        <Progress
+                          :model-value="workerRate(offer.workerRatings.quality)"
+                          class="scale-50 bg-sky-200 w-full"
+                        />
+                      </span>
 
-                    <span>
-                      Affidabilità
-                      <Progress
-                        :model-value="
-                          workerRate(offer.workerRatings.reliability)
-                        "
-                        class="scale-50 bg-sky-200"
-                      />
-                    </span> 
+                      <span>
+                        Affidabilità
+                        <Progress
+                          :model-value="
+                            workerRate(offer.workerRatings.reliability)
+                          "
+                          class="scale-50 bg-sky-200"
+                        />
+                      </span>
                     </div>
                     <span v-else>Nuovo Worker</span>
                   </TableCell>
