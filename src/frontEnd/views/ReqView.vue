@@ -535,7 +535,8 @@ onMounted(() => {
                     offer.worker
                   }}</TableCell>
                   <TableCell class="p-0 py-2 text-center">
-                    <span>
+                    <div v-if="offer.workerRatings">
+                      <span>
                       Qualità
                       <Progress
                         :model-value="workerRate(offer.workerRatings.quality)"
@@ -551,7 +552,9 @@ onMounted(() => {
                         "
                         class="scale-50 bg-sky-200"
                       />
-                    </span>
+                    </span> 
+                    </div>
+                    <span v-else>Nuovo Worker</span>
                   </TableCell>
                   <TableCell class="pt-6 md:pt-3 px-4 text-center">
                     {{ offer.amount }}.00
