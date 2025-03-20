@@ -172,8 +172,8 @@ onMounted(async () => {
     </h2>
     <div
       v-if="
-        userStore.user?.ratings.quality.length > 0 &&
-        userStore.user?.ratings.reliability.length > 0
+        userStore.user?.ratings?.quality.length > 0 &&
+        userStore.user?.ratings?.reliability.length > 0
       "
       class="grid grid-cols-2 mt-4 md:mt-6"
     >
