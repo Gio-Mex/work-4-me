@@ -55,9 +55,11 @@ Workers who have a skill that matches the category of that request will be able 
 When the Worker is ready to start the job, he can report it to the user with the appropriate button found on the request page, in this way he will receive the JOB CODE to share with the user (so that upon arrival the Worker can be recognized).   
 Once the Worker finishes the job, he can report it, again with the appropriate button, and at that point on the request page the user will be able to view the evaluations section, so as to leave a score for the Worker.
 
-![Screenshot job evaluation page](public/ratings-img.png)
+![Screenshot job evaluation](public/ratings-img.png)
 
-Once this is done, the job will be closed and can be viewed in the archive (on the personal account page), while the Worker will see his score updated on the homepage.
+Once this is done, the job will be closed and can be viewed in the archive (on the personal account page), while the Worker will see his score updated in the homepage.
+
+![Screenshot worker ratings](public/home-ratings-img.png)
 
 ## Features
 

@@ -77,11 +77,9 @@ const handleFileUpload = (event: Event) => {
 const uploadOnCloudinary = async () => {
   isUploaded.value = false;
   uploadProgress.value = 0;
-
   const formData = new FormData();
   formData.append("file", form.avatar);
   formData.append("upload_preset", "W4M_preset");
-
   try {
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
@@ -96,12 +94,10 @@ const uploadOnCloudinary = async () => {
         },
       }
     );
-
     form.avatar = response.data.secure_url;
     avatarId.value = response.data.public_id;
     isUploaded.value = true;
     uploadProgress.value = 100;
-
     console.log("Upload riuscito:", response.data);
   } catch (error) {
     console.error("Errore nell'upload:", error);
