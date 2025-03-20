@@ -104,12 +104,12 @@ onMounted(async () => {
     if (userStore.user.ratings) {
       workerQualityRate.value = Number(
         userStore
-          .ratingsAvg(userStore.user.ratings?.quality as number[])
+          .ratingsAvg(userStore.user.ratings.quality as number[])
           ?.toFixed(1)
       );
       workerReliabilityRate.value = Number(
         userStore
-          .ratingsAvg(userStore.user.ratings?.reliability as number[])
+          .ratingsAvg(userStore.user.ratings.reliability as number[])
           ?.toFixed(1)
       );
     }
