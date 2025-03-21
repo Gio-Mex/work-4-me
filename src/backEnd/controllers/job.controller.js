@@ -252,10 +252,11 @@ const notifyAllUsers = async (workers, job) => {
 // Send notification to a specific user function
 const notifySingleUser = async (userId, job) => {
   const user = await User.findById(userId);
-  // Notify the user via socket
-  notifyUser(userId, job);
+  // Add notification in database
   user.notifications.push(job._id);
   await user.save();
+  // Notify the user via socket
+  notifyUser(userId, job);
 };
 
 // Delete job
