@@ -170,7 +170,7 @@ const acceptOffer = async (id: number) => {
   selectedOffer.accepted = true;
   job.status = "Accettato";
   await jobStore.updateJob(job);
-  await jobStore.fetchActiveJobs();
+  //await jobStore.fetchActiveJobs();
   router.push("/jobs");
 };
 // Start job function
