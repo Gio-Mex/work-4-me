@@ -146,10 +146,10 @@ const updateJob = async (req, res) => {
       );
 
       // Emit a deleteNotifications event for other workers via socket
-      io.emit("deleteNotifications", updatedJob);
+      io.emit("deleteNotifications", updatedJob._id);
     }
 
-    if (props.status === "In corso" || props.status === "Chiuso") {
+    if (props.status === "In corso" || (props.status === "Chiuso" && updatedJob.evaluated === false)) {
       // Notify the user
       notifySingleUser(updatedJob.userId, updatedJob);
     }
