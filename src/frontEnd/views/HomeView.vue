@@ -100,7 +100,7 @@ onMounted(async () => {
   showImg();
   // Fetch user data
   if (userStore.user) {
-    await userStore.getRatings();
+    await userStore.fetchRatings();
     if (userStore.user.ratings) {
       workerQualityRate.value = Number(
         userStore

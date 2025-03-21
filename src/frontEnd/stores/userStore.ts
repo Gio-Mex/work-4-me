@@ -103,9 +103,15 @@ export const useUserStore = defineStore("user", {
       }
     },
     // Fetch ratings function
-    async getRatings() {
-      await this.fetchUser();
-      return this.user!.ratings;
+    async fetchRatings() {
+      try {
+        // Fetch data
+        const url = `${baseUrl}/user/ratings/${this.user!._id}`;
+        const response = await axios.get(url);
+        this.user!.ratings = response.data as { quality: number[]; reliability: number[] };
+      } catch (error) {
+        console.error(error);
+      } 
     },
     // Ratings average function
     ratingsAvg(ratings: number[]) {

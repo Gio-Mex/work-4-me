@@ -84,6 +84,20 @@ const getUser = async (req, res) => {
   }
 };
 
+// Get ratings function
+const getRatings = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res.status(404).json({ message: "Utente non trovato" });
+    }
+    res.status(200).json(user.ratings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Update user function
 const updateUser = async (req, res) => {
   try {
@@ -173,6 +187,7 @@ const deleteUser = async (req, res) => {
 export {
   createUser,
   getUser,
+  getRatings,
   loginUser,
   updateUser,
   rateWorker,
