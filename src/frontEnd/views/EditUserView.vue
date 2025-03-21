@@ -64,6 +64,7 @@ const cldImg = computed(() => {
     .resize(fill().width(120).height(120).gravity(Gravity.autoGravity()));
 });
 // ----
+
 // Upload avatar handler
 const handleFileUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
@@ -72,6 +73,7 @@ const handleFileUpload = (event: Event) => {
     uploadOnCloudinary();
   }
 };
+
 // Upload avatar on cloudinary function
 const uploadOnCloudinary = async () => {
   isUploaded.value = false;
@@ -104,10 +106,12 @@ const uploadOnCloudinary = async () => {
     console.error("Errore nell'upload:", error);
   }
 };
+
 // Toggle worker function
 const toggleWorker = () => {
   form.isWorker = !form.isWorker;
 };
+
 // Toggle skill function
 const toggleSkill = (skill: string) => {
   if (form.skills.includes(skill)) {
@@ -116,6 +120,7 @@ const toggleSkill = (skill: string) => {
     form.skills.push(skill);
   }
 };
+
 // Handle submit function
 const handleSubmit = async () => {
   await userStore.updateUser(form).then(() => {
