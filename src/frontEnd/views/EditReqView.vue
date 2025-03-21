@@ -53,6 +53,7 @@ onBeforeMount(() => {
     });
   }
 });
+
 // Handle submit function both for create and update job
 const handleSubmit = async () => {
   if (router.currentRoute.value.path.includes("edit")) {

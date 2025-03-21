@@ -21,6 +21,7 @@ const form = reactive({
   email: "",
   password: "",
 });
+
 // Handle submit function
 const handleSubmit = async () => {
   await userStore.login(form as any).then(() => {

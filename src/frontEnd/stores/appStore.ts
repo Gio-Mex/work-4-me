@@ -15,9 +15,11 @@ export const useAppStore = defineStore("app", {
     startLoading() {
       this.isLoading = true;
     },
+
     stopLoading() {
       this.isLoading = false;
     },
+    
     // Show message via toast
     showToast(description: string) {
       toast({

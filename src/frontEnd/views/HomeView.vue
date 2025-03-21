@@ -14,12 +14,14 @@ const currentImage = ref(0);
 const imageLoaded = ref(true);
 const workerQualityRate = ref(0);
 const workerReliabilityRate = ref(0);
+
 // Hero images
 const heroImgs = Object.values(
   import.meta.glob<{ default: string }>("@/frontEnd/assets/img/hero/*.jpg", {
     eager: true,
   })
 ).map((img) => img.default);
+
 // Show hero images function
 const showImg = () => {
   setInterval(() => {
@@ -30,6 +32,7 @@ const showImg = () => {
     }, 800);
   }, 3200);
 };
+
 // Create steps function
 const createSteps = (
   stepsData: Array<{ title: string; description: string; icon: string }>
@@ -39,6 +42,7 @@ const createSteps = (
     selected: index === 0,
     ...step,
   }));
+
 // Homepage user steps
 const userSteps = reactive(
   createSteps([
@@ -65,6 +69,7 @@ const userSteps = reactive(
     },
   ])
 );
+
 // Homepage worker steps
 const workerSteps = reactive(
   createSteps([
@@ -83,6 +88,7 @@ const workerSteps = reactive(
     { title: "Completa", description: "Completa il lavoro", icon: "task_alt" },
   ])
 );
+
 // Select step function
 const selectStep = (steps: typeof userSteps, step: number) => {
   const selectedStep = steps.find((s) => s.step === step);
@@ -91,6 +97,7 @@ const selectStep = (steps: typeof userSteps, step: number) => {
     selectedStep.selected = true;
   }
 };
+
 // Call to action function
 const goToNextPage = () => {
   router.push(userStore.user === null ? "/user/signup" : "/jobs");

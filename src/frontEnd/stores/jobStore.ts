@@ -51,6 +51,7 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
+
     // Fetch archived jobs function
     async fetchArchivedJobs(id: string) {
       // Start loader
@@ -71,6 +72,7 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
+
     // Create job function
     async createJob(job: Job) {
       // Start loader
@@ -93,6 +95,7 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
+
     // Update job function
     async updateJob(job: Job) {
       // Start loader
@@ -120,6 +123,7 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
+
     // Update job store function
     async updateJobStore(updatedJob: Job) {
       const index = this.jobs.findIndex((job) => job._id === updatedJob._id);
@@ -129,6 +133,7 @@ export const useJobStore = defineStore("job", {
         this.jobs.push(updatedJob);
       }
     },
+
     // Set new offer function
     async newOffer(job: Job) {
       // Start loader
@@ -154,12 +159,14 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
+
     // Delete notification function
     deleteNotification(notificationId: string) {
       return (this.notifications = this.notifications.filter(
         (notification) => notification !== notificationId
       ));
     },
+
     // Delete job function
     async deleteJob(jobId: string) {
       // Start loader
@@ -189,6 +196,7 @@ export const useJobStore = defineStore("job", {
         appStore.stopLoading();
       }
     },
+
     // Update chat function
     async updateChat(chat: Chat) {
       const appStore = useAppStore();
@@ -208,6 +216,7 @@ export const useJobStore = defineStore("job", {
         throw error;
       }
     },
+
     // Fetch chat function
     async fetchChat(jobId: string) {
       try {
@@ -224,6 +233,7 @@ export const useJobStore = defineStore("job", {
         throw error;
       }
     },
+    
     // Rate worker function
     async rateWorker(workerId: string, ratings: Object) {
       // Start loader

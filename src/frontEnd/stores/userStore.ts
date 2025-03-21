@@ -48,6 +48,7 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
+
     // Signup function
     async signup(form: User) {
       // Start loader
@@ -74,6 +75,7 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
+
     // Logout function
     logout() {
       const appStore = useAppStore();
@@ -102,6 +104,7 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
+
     // Fetch ratings function
     async fetchRatings() {
       try {
@@ -113,6 +116,7 @@ export const useUserStore = defineStore("user", {
         console.error(error);
       } 
     },
+
     // Ratings average function
     ratingsAvg(ratings: number[]) {
       const rate = ref(0);
@@ -123,6 +127,7 @@ export const useUserStore = defineStore("user", {
         return;
       }
     },
+
     // Update user function
     async updateUser(user: User) {
       // Start loader
@@ -151,6 +156,7 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
+
     // Delete notifications function
     async deleteNotifications(jobId: string) {
       try {
@@ -170,6 +176,7 @@ export const useUserStore = defineStore("user", {
         throw error;
       }
     },
+
     // Delete user function
     async deleteUser() {
       // Start loader
@@ -202,6 +209,7 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
+    
     // Reset user function
     resetUser() {
       this.isLoggedIn = false;

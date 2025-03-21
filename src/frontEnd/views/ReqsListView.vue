@@ -118,6 +118,7 @@ let jobsList = computed(() => {
     }
   }
 });
+
 // Filter jobs function
 const searchJobs = () => {
   const results = jobStore.jobs.filter(
@@ -137,6 +138,7 @@ const clearSearch = () => {
   searchCategory.value = "";
   filteredJobs.value = null;
 };
+
 // Select request function (delete notification and redirect to request or job page)
 const selectRequest = async (job: Job) => {
   if (jobStore.notifications.includes(job._id!)) {
@@ -157,6 +159,7 @@ watch(
     await handleRouteChange();
   }
 );
+
 // Handle route change function (fetch active or archived jobs depending on the route)
 const handleRouteChange = async () => {
   if (archivedUrl.value) {

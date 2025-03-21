@@ -23,6 +23,7 @@ import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
 // ----
+
 type SignUpForm = Omit<
   User,
   "_id" | "isWorker" | "skills" | "ratings" | "notifications"
@@ -49,6 +50,7 @@ const avatarContent = computed(() => {
 });
 const isUploaded = ref<boolean>(true);
 const uploadProgress = ref<number>(0);
+
 // Cloudinary details
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const cld = new Cloudinary({
@@ -65,6 +67,7 @@ const cldImg = computed(() => {
     .format("auto")
     .resize(fill().width(120).height(120).gravity(Gravity.autoGravity()));
 });
+
 // Upload file function
 const handleFileUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
@@ -73,6 +76,7 @@ const handleFileUpload = (event: Event) => {
     uploadOnCloudinary();
   }
 };
+
 // Upload on cloudinary function
 const uploadOnCloudinary = async () => {
   isUploaded.value = false;
@@ -103,6 +107,7 @@ const uploadOnCloudinary = async () => {
     console.error("Errore nell'upload:", error);
   }
 };
+
 // Submit function
 const handleSubmit = async () => {
   if (!form.avatar) {

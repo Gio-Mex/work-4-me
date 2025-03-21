@@ -59,6 +59,7 @@ import {
 } from "../components/ui/number-field";
 import { Progress } from "../components/ui/progress";
 // ----
+
 const appStore = useAppStore();
 const userStore = useUserStore();
 const jobStore = useJobStore();
@@ -75,6 +76,7 @@ let message = ref({} as Message);
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let rate = ref(0);
+
 // Map options
 const mapOptions = ref({
   center: [0, 0],
@@ -87,6 +89,7 @@ const tilesOptions = ref({
   attribution:
     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 });
+
 // Geocoding function
 const geocodeAddress = async () => {
   mapOptions.value.isLoading = true;
@@ -114,6 +117,7 @@ const geocodeAddress = async () => {
     console.error("Errore nella geocodifica:", error);
   }
 };
+
 // Format date function
 const formatDate = (date: number | string) => {
   const dateObject = new Date(date);
@@ -139,10 +143,12 @@ const formatDate = (date: number | string) => {
       .replace(/\//g, "-");
   }
 };
+
 // Worker rate function
 const workerRate = (ratings: number[]) => {
   return (rate.value = (userStore.ratingsAvg(ratings)! / 5) * 100);
 };
+
 // Set offer function
 const setOffer = async () => {
   const offer = (document.getElementById("price") as HTMLInputElement)
@@ -162,6 +168,7 @@ const setOffer = async () => {
   await jobStore.newOffer(job);
   router.push("/jobs");
 };
+
 // Accept offer function
 const acceptOffer = async (id: number) => {
   const selectedOffer = job.offers!.find((offer) => offer.id === id)!;
@@ -173,17 +180,20 @@ const acceptOffer = async (id: number) => {
   await jobStore.fetchActiveJobs();
   router.push("/jobs");
 };
+
 // Start job function
 const startJob = async () => {
   job.status = "In corso";
   await jobStore.updateJob(job);
 };
+
 // Close job function
 const closeJob = async () => {
   job.status = "Chiuso";
   await jobStore.updateJob(job);
   router.push("/jobs");
 };
+
 // Rate worker function
 const setRate = async () => {
   qualityRate.value = (document.getElementById("quality") as HTMLInputElement)
@@ -207,6 +217,7 @@ const newChat = () => {
   chat.messages = [];
   return chat;
 };
+
 // Send message function
 const sendMessage = async () => {
   const chatInput = document.getElementById("message") as HTMLInputElement;
@@ -222,6 +233,7 @@ const sendMessage = async () => {
     message.value.content = "";
   }
 };
+
 // Scroll to bottom function
 const scrollToBottom = () => {
   nextTick(() => {
@@ -240,6 +252,7 @@ watch(
   },
   { deep: true }
 );
+
 // Delete request function
 const deleteReq = async () => {
   await jobStore.deleteJob(job._id as string);
