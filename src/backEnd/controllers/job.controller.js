@@ -134,8 +134,6 @@ const updateJob = async (req, res) => {
     }
 
     if (props.status === "Accettato") {
-      // Emit a jobUpdated event via socket
-      io.emit("jobUpdated", updatedJob);
       // Notify only the worker who made the offer
       notifySingleUser(updatedJob.workerId, updatedJob);
 
