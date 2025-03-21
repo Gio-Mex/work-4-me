@@ -43,7 +43,7 @@ onMounted(() => {
 
   socket.on("deleteNotifications", async (jobId: string) => {
     jobStore.deleteNotification(jobId);
-    await userStore.fetchUser();
+    //await userStore.fetchUser();
   });
 });
 
