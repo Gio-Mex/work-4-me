@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "../stores/appStore";
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
+import type { Job } from "../interfaces/job";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
@@ -40,10 +41,11 @@ const closeMenuOnClickOutside = (event: Event) => {
 onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
-
-  socket.on("deleteNotifications", async (jobId: string) => {
-    jobStore.deleteNotification(jobId);
-    //await userStore.fetchUser();
+  socket.on("deleteNotifications", async (job: Job) => {
+    if (userStore.user?._id !== job.workerId) {
+      jobStore.deleteNotification(job._id!);
+    }
+    await userStore.fetchUser();
   });
 });
 
