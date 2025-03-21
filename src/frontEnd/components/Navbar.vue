@@ -45,7 +45,7 @@ onMounted(() => {
     if (userStore.user?._id !== job.workerId) {
       jobStore.deleteNotification(job._id!);
     }
-    await userStore.fetchUser();
+    //await userStore.fetchUser();
   });
 });
 

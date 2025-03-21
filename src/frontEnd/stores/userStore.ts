@@ -102,6 +102,11 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
+    // Fetch ratings function
+    async getRatings() {
+      await this.fetchUser();
+      return this.user!.ratings;
+    },
     // Ratings average function
     ratingsAvg(ratings: number[]) {
       const rate = ref(0);
