@@ -149,7 +149,7 @@ const updateJob = async (req, res) => {
       io.emit("deleteNotifications", updatedJob);
     }
 
-    if (props.status === "In corso" || (props.status === "Chiuso" && updatedJob.evaluated === false)) {
+    if (props.status === "In corso" || props.status === "Chiuso") {
       // Notify the user
       notifySingleUser(updatedJob.userId, updatedJob);
     }
