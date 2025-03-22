@@ -139,16 +139,16 @@ const clearSearch = () => {
   filteredJobs.value = null;
 };
 
-// Select request function (delete notification and redirect to request or job page)
+// Select request function (delete notification on store and database, and redirect to request or job page)
 const selectRequest = async (job: Job) => {
   if (jobStore.notifications.includes(job._id!)) {
     jobStore.deleteNotification(job._id!);
   }
   if (userStore.user!.notifications?.includes(job._id!)) {
+    await userStore.deleteNotifications(job._id!);
     userStore.user!.notifications = userStore.user!.notifications.filter(
       (notificationId) => notificationId !== job._id
     );
-    await userStore.deleteNotifications(job._id!);
   }
   router.push(`/jobs/${job._id}`);
 };
