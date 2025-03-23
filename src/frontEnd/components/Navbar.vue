@@ -118,7 +118,7 @@ const menuLinks = computed(() => [
           jobStore.notifications.length > 0 ||
           (userStore.user?.notifications &&
             userStore.user.notifications.length > 0 &&
-            userStore.isLoggedIn)
+            userStore.isLoggedIn === true)
         "
         class="notification !-translate-y-2.5 !translate-x-2 z-30 transition-all duration-300 ease-in-out"
         :class="{ '!opacity-0': menuOpen }"
