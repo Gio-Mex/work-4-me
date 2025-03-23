@@ -103,7 +103,6 @@ const geocodeAddress = async () => {
     );
     const data = response.data;
     if (data.length !== 0) {
-      console.log(data);
       mapOptions.value.center = [
         parseFloat(data[0].lat),
         parseFloat(data[0].lon),

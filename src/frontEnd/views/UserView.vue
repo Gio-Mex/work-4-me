@@ -18,7 +18,6 @@ import {
 // ----
 const userStore = useUserStore();
 const user = userStore.user;
-console.log(user);
 
 // Delete account function
 const handleDeleteAccount = async () => {

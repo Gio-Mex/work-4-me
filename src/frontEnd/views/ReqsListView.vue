@@ -141,8 +141,6 @@ const clearSearch = () => {
 
 // Select request function (delete notification on store and database, and redirect to request or job page)
 const selectRequest = async (job: Job) => {
-  console.log(jobStore.notifications);
-  console.log(userStore.user!.notifications);
   if (jobStore.notifications.includes(job._id!)) {
     jobStore.deleteNotification(job._id!);
     await userStore.deleteNotifications(job._id!);

@@ -233,7 +233,7 @@ export const useJobStore = defineStore("job", {
         throw error;
       }
     },
-    
+
     // Rate worker function
     async rateWorker(workerId: string, ratings: Object) {
       // Start loader
@@ -243,7 +243,6 @@ export const useJobStore = defineStore("job", {
         // Fetch data
         const url = `${baseUrl}/user/ratings/${workerId}`;
         const response = await axios.patch(url, { ratings });
-        console.log(response.data);
         const status = response.status;
         console.log("Risposta dal server:", {
           status,

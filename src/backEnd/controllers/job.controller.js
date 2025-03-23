@@ -202,7 +202,6 @@ const updateChat = async (req, res) => {
     const { jobId } = req.body;
     const existingChat = await Chat.findOne({ jobId });
     if (existingChat) {
-      console.log(existingChat);
       const updatedChat = await Chat.updateOne(
         { jobId: jobId },
         { $set: chat },
