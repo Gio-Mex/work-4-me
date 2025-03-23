@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onBeforeMount } from "vue";
+import { ref, computed, reactive } from "vue";
 import router from "../router";
 import axios from "axios";
 import { Cloudinary } from "@cloudinary/url-gen";
@@ -26,10 +26,6 @@ import { Switch } from "../components/ui/switch";
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const skills = jobStore.categories;
-
-onBeforeMount(async () => {
-  await userStore.fetchUser();
-});
 
 const form = reactive({
   _id: userStore.user!._id,
