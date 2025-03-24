@@ -158,6 +158,7 @@ const setOffer = async () => {
     workerId: userStore.user!._id,
     worker:
       userStore.user!.name + " " + userStore.user!.lastName.slice(0, 1) + ".",
+    workerSkills: userStore.user!.skills,
     workerRatings: userStore.user!.ratings,
     amount: offer,
     date: Date.now(),
