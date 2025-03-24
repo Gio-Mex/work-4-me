@@ -149,7 +149,10 @@ const updateJob = async (req, res) => {
       io.emit("deleteNotifications", updatedJob);
     }
 
-    if (props.status === "In corso" || (props.status === "Chiuso" && updatedJob.evaluated === false)) {
+    if (
+      props.status === "In corso" ||
+      (props.status === "Chiuso" && updatedJob.evaluated === false)
+    ) {
       // Notify the user
       notifySingleUser(updatedJob.userId, updatedJob);
     }
@@ -173,9 +176,11 @@ const setOffer = async (req, res) => {
       const offer = props.offers[props.offers.length - 1];
       updatedJob.offers.push(offer);
       await updatedJob.save();
-
+      console.log(offer);
       // Notify the user who made the offer via socket
-      notifyUser(updatedJob.userId, updatedJob);
+      if (offer.worker.category !== updatedJob.category) {
+        notifyUser(updatedJob.userId, updatedJob);
+      }
 
       // Notify all other workers via socket
       const workers = await User.find({
