@@ -178,7 +178,7 @@ onMounted(async () => {
         document.documentElement.scrollTop || document.body.scrollTop;
 
       jobStore.updateJobStore(job);
-      //await jobStore.fetchActiveJobs();
+      await jobStore.fetchActiveJobs();
 
       // Restore the scroll position
       nextTick(() => {
