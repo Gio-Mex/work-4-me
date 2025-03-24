@@ -65,6 +65,7 @@ const toggleMenu = () => {
 // Logout e redirect function
 const logout = () => {
   userStore.logout();
+  jobStore.notifications = [];
   router.push("/");
 };
 
