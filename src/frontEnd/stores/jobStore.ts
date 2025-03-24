@@ -33,13 +33,13 @@ export const useJobStore = defineStore("job", {
       // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
-      // Reset store notifications (to leave only those already saved in database)
-      this.notifications = [];
       // Fetch data
       try {
         const url = `${baseUrl}/jobs`;
         const response = await axios.get(url);
         this.jobs = response.data;
+        // Reset store notifications (to leave only those already saved in database)
+        this.notifications = [];
       } catch (error: any) {
         console.error("Errore durante il recupero dei lavori:", error);
         // Show message

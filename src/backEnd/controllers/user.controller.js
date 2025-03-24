@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, "secret", {
       expiresIn: "30m",
     });
-    console.log("Token generato:", token);
+    console.log("Generated token:", token);
     res.status(200).json({ message: `Ciao ${user.name}!`, user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
