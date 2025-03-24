@@ -33,6 +33,8 @@ export const useJobStore = defineStore("job", {
       // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
+      // Reset store notifications (to leave only those already saved in database)
+      this.notifications = [];
       // Fetch data
       try {
         const url = `${baseUrl}/jobs`;
