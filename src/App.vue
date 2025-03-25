@@ -45,7 +45,7 @@ onMounted(() => {
   console.log("✅ Socket connected, listening for events");
   // Emit registerUser event
   if (userStore.user) {
-    socket.emit("registerUser", userStore.user._id);
+    socket.emit("registerUser", userStore.user?._id);
 
     // Listen for jobUpdated event
     socket.on("jobNotification", (job) => {
