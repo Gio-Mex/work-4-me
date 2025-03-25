@@ -44,23 +44,22 @@ onMounted(() => {
   }
   console.log("✅ Socket connected, listening for events");
   // Emit registerUser event
-  if (userStore.user) {
-    socket.emit("registerUser", userStore.user?._id);
-
-    // Listen for jobUpdated event
-    socket.on("jobNotification", (job) => {
-      jobStore.notifications.push(job._id);
-    });
-    // Listen for disconnect event
-    socket.on("disconnect", () => {
-      if (userStore.user) {
-        console.log("Socket disconnected! Attempting to reconnect...");
-        setTimeout(() => {
-          appStore.socket.emit("registerUser", userStore.user?._id);
-        }, 3000);
-      }
-    });
-  }
+  // if (userStore.user) {
+  //   socket.emit("registerUser", userStore.user._id);
+  // }
+  // Listen for jobUpdated event
+  socket.on("jobNotification", (job) => {
+    jobStore.notifications.push(job._id);
+  });
+  // Listen for disconnect event
+  socket.on("disconnect", () => {
+    if (userStore.user) {
+      console.log("Socket disconnected! Attempting to reconnect...");
+      setTimeout(() => {
+        appStore.socket.emit("registerUser", userStore.user?._id);
+      }, 3000);
+    }
+  });
 });
 
 onUnmounted(() => {

@@ -37,7 +37,7 @@ export const useUserStore = defineStore("user", {
         // Connect socket
         socket.connect();
         // Emit registerUser event
-        //socket.emit("registerUser", user._id);
+        socket.emit("registerUser", user._id);
       } catch (error: any) {
         console.error("Errore durante il login:", error);
         // Show message
