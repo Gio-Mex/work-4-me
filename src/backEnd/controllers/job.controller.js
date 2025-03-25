@@ -178,7 +178,7 @@ const setOffer = async (req, res) => {
       await updatedJob.save();
       
       // Notify the user who made the offer via socket
-      if (!offer.workerSkills.includes(updatedJob.category)) {
+      if (!updatedJob.userDetails.skills.includes(updateJob.category)) {
         notifyUser(updatedJob.userId, updatedJob);
       }
 
