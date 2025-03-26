@@ -177,16 +177,17 @@ const setOffer = async (req, res) => {
       updatedJob.offers.push(offer);
       await updatedJob.save();
 
-      // Notify the user who made the offer via socket
       const user = await User.findById(updatedJob.userId);
+      const workers = await User.find({
+        skills: { $in: updatedJob.category },
+        _id: { $ne: offer.workerId },
+      });
+
+      // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category)) {
         notifyUser(updatedJob.userId, updatedJob);
       } else {
         // Avoid notifications duplication for users with the same skill
-        const workers = await User.find({
-          skills: { $in: updatedJob.category },
-          _id: { $ne: offer.workerId },
-        });
         notifySingleUser(updatedJob.userId, updatedJob);
         workers.splice(workers.indexOf(user), 1);
       }
