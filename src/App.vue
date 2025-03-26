@@ -46,8 +46,6 @@ onMounted(() => {
 
   // Listen for jobUpdated event
   socket.on("jobNotification", (job) => {
-    // Check if the current route is /jobs to avoid duplicate notifications (this page fetches jobs and receives notifications from database)
-    if (router.currentRoute.value.path === "/jobs") return;
     jobStore.notifications.push(job._id);
   });
   // Listen for disconnect event

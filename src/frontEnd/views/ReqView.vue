@@ -298,9 +298,7 @@ onMounted(() => {
 
   onUnmounted(() => {
     socket.off("message", messageListener);
-    socket.off("jobUpdated");
   });
-
   scrollToBottom();
 });
 </script>
