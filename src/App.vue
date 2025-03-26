@@ -44,7 +44,7 @@ onMounted(() => {
   }
   console.log("✅ Socket connected, listening for events");
 
-  // Listen for jobUpdated event
+  // Listen for jobNotification event
   socket.on("jobNotification", (job) => {
     jobStore.notifications.push(job._id);
   });
@@ -61,7 +61,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearInterval(tokenCheckInterval);
-  socket.off("jobUpdated");
+  socket.off("jobNotification");
   socket.disconnect();
 });
 </script>
