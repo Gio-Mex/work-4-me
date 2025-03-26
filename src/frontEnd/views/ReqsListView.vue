@@ -172,12 +172,12 @@ const handleRouteChange = async () => {
 onMounted(async () => {
   await handleRouteChange();
   if (userStore.user) {
-    socket.on("jobUpdated", async () => {
+    socket.on("jobUpdated", async (job) => {
       // Save the scroll position
       const scrollPosition =
         document.documentElement.scrollTop || document.body.scrollTop;
 
-      //jobStore.updateJobStore(job);
+      jobStore.updateJobStore(job);
       //await jobStore.fetchActiveJobs();
 
       // Restore the scroll position
