@@ -299,7 +299,6 @@ onMounted(() => {
   onUnmounted(() => {
     socket.off("message", messageListener);
     socket.off("jobUpdated");
-    jobStore.deleteNotification(job._id!);
   });
 
   scrollToBottom();
