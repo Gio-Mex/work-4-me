@@ -176,18 +176,20 @@ const setOffer = async (req, res) => {
       const offer = props.offers[props.offers.length - 1];
       updatedJob.offers.push(offer);
       await updatedJob.save();
-      
-      // Notify the user who made the offer via socket
-      const user = await User.findById(updatedJob.userId);
-      if (!user.skills.includes(updateJob.category)) {
-        notifyUser(updatedJob.userId, updatedJob);
-      }
 
-      // Notify all other workers via socket
+      const user = await User.findById(updatedJob.userId);
       const workers = await User.find({
         skills: { $in: updatedJob.category },
         _id: { $ne: offer.workerId },
       });
+
+      // Notify the user who made the offer via socket
+      if (!user.skills.includes(updateJob.category)) {
+        notifyUser(updatedJob.userId, updatedJob);
+        workers.splice(workers.indexOf(user), 1);
+      }
+
+      // Notify all other workers via socket
       notifyAllUsers(workers, updatedJob);
       res.status(200).json({ message: "Proposta inviata" });
     }
