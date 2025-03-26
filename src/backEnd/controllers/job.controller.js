@@ -251,11 +251,22 @@ const findChat = async (req, res) => {
 
 // Send notification to all users (workers) function
 const notifyAllUsers = async (workers, job) => {
-  // Notify all workers via socket
+  // Notify all workers via socket except the creator of the request
   workers.forEach((worker) => {
-    notifyUser(worker._id, job);
-    worker.notifications.push(job._id);
+    if (worker._id !== job.userId) {
+      notifyUser(worker._id, job);
+      worker.notifications.push(job._id);
+    }
   });
+
+  // Notify the creator only once
+  if (job.userId && !workers.some(worker => worker._id === job.userId)) {
+    const user = await User.findById(job.userId);
+    notifyUser(user._id, job);
+    user.notifications.push(job._id);
+    await user.save();
+  }
+
   await Promise.all(workers.map((worker) => worker.save()));
   // Emit a jobUpdated event for workers via socket
   io.emit("jobUpdated", job);
