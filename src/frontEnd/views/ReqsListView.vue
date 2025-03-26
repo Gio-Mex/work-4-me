@@ -165,6 +165,7 @@ const handleRouteChange = async () => {
   if (archivedUrl.value) {
     await jobStore.fetchArchivedJobs(userStore.user!._id);
   } else {
+    jobStore.notifications = [];
     await jobStore.fetchActiveJobs();
   }
 };
