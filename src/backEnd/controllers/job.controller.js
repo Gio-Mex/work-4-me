@@ -166,7 +166,7 @@ const setOffer = async (req, res) => {
       await updatedJob.save();
 
       const user = await User.findById(updatedJob.userId);
-      const workers = await User.find({
+      let workers = await User.find({
           skills: { $in: updatedJob.category },
           _id: { $ne: offer.workerId },
         });
