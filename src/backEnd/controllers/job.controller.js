@@ -176,11 +176,10 @@ const setOffer = async (req, res) => {
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category.toString())) {
         notifyUser(updatedJob.userId, updatedJob);
-        console.log("User notified", user);
       } else {
         //   // Avoid notifications duplication for users with the same skill
         //   notifySingleUser(updatedJob.userId, updatedJob);
-        workers = workers.filter(worker => worker._id !== user._id);
+        workers = workers.filter((worker) => worker._id.toString() !== user._id.toString());
         console.log("Filtered workers:", workers);
       }
 
