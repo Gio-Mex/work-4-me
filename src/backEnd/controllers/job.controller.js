@@ -174,10 +174,11 @@ const setOffer = async (req, res) => {
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category)) {
         notifyUser(updatedJob.userId, updatedJob);
-         } else {
+      } else {
         //   // Avoid notifications duplication for users with the same skill
         //   notifySingleUser(updatedJob.userId, updatedJob);
-          workers = workers.splice(workers.indexOf(user), 1);
+        workers.splice(workers.indexOf(user), 1);
+        console.log(workers);
       }
 
       // Notify all other workers via socket
@@ -258,8 +259,8 @@ const findChat = async (req, res) => {
 const notifyAllUsers = async (workers, job) => {
   // Notify all workers via socket
   workers.forEach((worker) => {
-      notifyUser(worker._id, job);
-      worker.notifications.push(job._id);
+    notifyUser(worker._id, job);
+    worker.notifications.push(job._id);
   });
 
   // Notify the creator only once
