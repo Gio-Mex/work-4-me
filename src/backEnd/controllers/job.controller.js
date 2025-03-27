@@ -180,8 +180,8 @@ const setOffer = async (req, res) => {
         //   // Avoid notifications duplication for users with the same skill
         //   notifySingleUser(updatedJob.userId, updatedJob);
         workers.splice(workers.indexOf(user), 1);
-        console.log("Filtered workers:", workers);
       }
+        console.log("Filtered workers:", workers);
 
       // Notify all other workers via socket
       notifyAllUsers(workers, updatedJob);
