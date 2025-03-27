@@ -166,7 +166,7 @@ const setOffer = async (req, res) => {
       await updatedJob.save();
 
       const user = await User.findById(updatedJob.userId);
-      let workers = await User.find({
+      const workers = await User.find({
           skills: { $in: updatedJob.category },
           _id: { $ne: offer.workerId },
         });
@@ -266,7 +266,7 @@ const notifyAllUsers = async (workers, job) => {
   });
 
   // Notify the creator only once
-  if (!workers.some((worker) => worker._id === job.userId)) {
+  if (!workers.some((worker) => worker._id.toString() === job.userId.toString())) {
     const user = await User.findById(job.userId);
     notifyUser(user._id, job);
     user.notifications.push(job._id);
