@@ -176,6 +176,7 @@ const setOffer = async (req, res) => {
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category)) {
         notifyUser(updatedJob.userId, updatedJob);
+        console.log("User notified", updatedJob.userId);
       } else {
         //   // Avoid notifications duplication for users with the same skill
         //   notifySingleUser(updatedJob.userId, updatedJob);
