@@ -106,11 +106,7 @@ export const useJobStore = defineStore("job", {
         const url = `${baseUrl}/jobs/edit/${job._id}`;
         const response = await axios.put(url, job);
         job = response.data;
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
@@ -143,11 +139,7 @@ export const useJobStore = defineStore("job", {
         // Fetch data
         const url = `${baseUrl}/jobs/${job._id}`;
         const response = await axios.patch(url, job);
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
@@ -176,11 +168,7 @@ export const useJobStore = defineStore("job", {
         // Fetch data
         const url = `${baseUrl}/jobs/${jobId}`;
         const response = await axios.delete(url);
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
@@ -204,11 +192,7 @@ export const useJobStore = defineStore("job", {
         // Fetch data
         const url = `${baseUrl}/jobs/${chat.jobId}`;
         const response = await axios.post(url, chat);
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
       } catch (error: any) {
         console.error("Errore durante la creazione della chat:", error);
         // Show message
@@ -243,11 +227,7 @@ export const useJobStore = defineStore("job", {
         // Fetch data
         const url = `${baseUrl}/user/ratings/${workerId}`;
         const response = await axios.patch(url, { ratings });
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response,
-        });
+        console.log("Risposta dal server:", response.status);
         // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {

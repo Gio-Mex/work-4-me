@@ -102,7 +102,6 @@ const uploadOnCloudinary = async () => {
     avatarId.value = response.data.public_id;
     isUploaded.value = true;
     uploadProgress.value = 100;
-    console.log("Upload riuscito:", response.data);
   } catch (error) {
     console.error("Errore nell'upload:", error);
   }

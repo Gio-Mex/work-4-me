@@ -82,7 +82,6 @@ export const getUserSocketId = (userId) => {
   const userIdStr = String(userId);
   if (userSockets.has(userIdStr)) {
     const socketId = userSockets.get(userIdStr);
-    console.log(`✅ Found socket ${socketId} for user ${userIdStr}`);
     return socketId;
   } else {
     console.log(`❌ User ${userIdStr} not found in userSockets.`);

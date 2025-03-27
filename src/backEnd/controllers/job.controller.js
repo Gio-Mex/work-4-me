@@ -171,22 +171,21 @@ const setOffer = async (req, res) => {
         _id: { $ne: offer.workerId },
       });
 
-      console.log("Workers from DB:", workers);
-      console.log("User from DB:", user._id.toString());
-      console.log("User skills:", user.skills);
-      console.log("Category from job:", updatedJob.category);
       // Notify the user who made the offer via socket
-      if (!user.skills.some(skill => skill.toLowerCase() === updatedJob.category.toLowerCase())) {
+      if (
+        !user.skills.some(
+          (skill) => skill.toLowerCase() === updatedJob.category.toLowerCase()
+        )
+      ) {
         notifyUser(updatedJob.userId, updatedJob);
-        console.log("User notified", updatedJob.userId);
       } else {
-        //   // Avoid notifications duplication for users with the same skill
-        //   notifySingleUser(updatedJob.userId, updatedJob);
-        workers = workers.filter(worker => worker._id.toString() !== user._id.toString());
-        console.log("Filtered workers:", workers);
+        // Remove the user from the list of workers if he has the same skill as the job category (he can't be notified twice)
+        workers = workers.filter(
+          (worker) => worker._id.toString() !== user._id.toString()
+        );
       }
 
-      // Notify all other workers via socket
+      // Notify all workers via socket
       notifyAllUsers(workers, updatedJob);
       res.status(200).json({ message: "Proposta inviata" });
     }
@@ -264,11 +263,13 @@ const findChat = async (req, res) => {
 const notifyAllUsers = async (workers, job) => {
   // Notify all workers via socket
   workers.forEach((worker) => {
-    notifyUser(worker._id, job);
-    worker.notifications.push(job._id);
+    if (worker._id !== job.userId) {
+      notifyUser(worker._id, job);
+      worker.notifications.push(job._id);
+    }
   });
 
-  // Notify the creator only once
+  // Notify the user who made the offer (he is not in the list of workers because he is a worker and has the same skill as the job category)
   if (!workers.some((worker) => worker._id === job.userId)) {
     const user = await User.findById(job.userId);
     notifyUser(user._id, job);

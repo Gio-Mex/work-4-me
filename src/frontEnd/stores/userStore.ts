@@ -23,11 +23,7 @@ export const useUserStore = defineStore("user", {
         const url = `${baseUrl}/user/login`;
         const response = await axios.post(url, form);
         const { user, token } = response.data;
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         // Show message
         appStore.showToast(response.data.message);
         this.user = user;
@@ -58,10 +54,7 @@ export const useUserStore = defineStore("user", {
         // Fetch data
         const url = `${baseUrl}/user/signup`;
         const response = await axios.post(url, form);
-        console.log("Risposta dal server:", {
-          status: response.status,
-          messaggio: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         if (response.status === 201) {
           // Show message
           appStore.showToast("Account creato con successo");
@@ -138,11 +131,7 @@ export const useUserStore = defineStore("user", {
         const url = `${baseUrl}/user/${this.user!._id}`;
         const response = await axios.put(url, user);
         const { updatedUser } = response.data as { updatedUser: User };
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         // Show message
         appStore.showToast(response.data.message);
         this.user = updatedUser;
@@ -163,11 +152,7 @@ export const useUserStore = defineStore("user", {
         // Fetch data
         const url = `${baseUrl}/user/notifications/${this.user!._id}/${jobId}`;
         const response = await axios.delete(url);
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
       } catch (error: any) {
         console.error(
           "Errore durante la cancellazione delle notifiche:",
@@ -190,11 +175,7 @@ export const useUserStore = defineStore("user", {
             _id: this.user!._id,
           },
         });
-        const status = response.status;
-        console.log("Risposta dal server:", {
-          status,
-          message: response.statusText,
-        });
+        console.log("Risposta dal server:", response.status);
         // Remove user
         this.resetUser();
         // Show message
