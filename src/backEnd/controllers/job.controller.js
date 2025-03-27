@@ -167,21 +167,23 @@ const setOffer = async (req, res) => {
 
       const user = await User.findById(updatedJob.userId);
       let workers = await User.find({
-          skills: { $in: updatedJob.category },
-          _id: { $ne: offer.workerId },
-        });
-      
-        console.log("Workers from DB:", workers);
-        console.log("User from DB:", user._id.toString());
+        skills: { $in: updatedJob.category },
+        _id: { $ne: offer.workerId },
+      });
+
+      console.log("Workers from DB:", workers);
+      console.log("User from DB:", user._id.toString());
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category)) {
         notifyUser(updatedJob.userId, updatedJob);
       } else {
         //   // Avoid notifications duplication for users with the same skill
         //   notifySingleUser(updatedJob.userId, updatedJob);
-        workers = workers.filter(worker => worker._id.toString() !== user._id.toString());
-      }
+        workers = workers.filter(
+          (worker) => worker._id.toString() !== user._id.toString()
+        );
         console.log("Filtered workers:", workers);
+      }
 
       // Notify all other workers via socket
       notifyAllUsers(workers, updatedJob);
