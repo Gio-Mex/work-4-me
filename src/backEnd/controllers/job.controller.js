@@ -134,19 +134,7 @@ const updateJob = async (req, res) => {
     }
 
     if (props.status === "Accettato") {
-      // Emit a jobUpdated event via socket
-      io.emit("jobUpdated", updatedJob);
-      // Notify only the worker who made the offer
-      notifySingleUser(updatedJob.workerId, updatedJob);
-
-      // Clear unnecessary notifications for other workers
-      await User.updateMany(
-        { _id: { $ne: updatedJob.workerId } },
-        { $pull: { notifications: updatedJob._id } }
-      );
-
-      // Emit a deleteNotifications event for other workers via socket
-      io.emit("deleteNotifications", updatedJob);
+      acceptOffer(updatedJob);
     }
 
     if (
@@ -186,11 +174,11 @@ const setOffer = async (req, res) => {
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category)) {
         notifyUser(updatedJob.userId, updatedJob);
-      // } else {
-      //   // Avoid notifications duplication for users with the same skill
-      //   notifySingleUser(updatedJob.userId, updatedJob);
-      //   workers.splice(workers.indexOf(user), 1);
-       }
+         } else {
+        //   // Avoid notifications duplication for users with the same skill
+        //   notifySingleUser(updatedJob.userId, updatedJob);
+           workers.splice(workers.indexOf(user), 1);
+      }
 
       // Notify all other workers via socket
       notifyAllUsers(workers, updatedJob);
@@ -199,6 +187,23 @@ const setOffer = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Accept offer function
+const acceptOffer = async (updatedJob) => {
+  // Emit a jobUpdated event via socket
+  io.emit("jobUpdated", updatedJob);
+  // Notify only the worker who made the offer
+  notifySingleUser(updatedJob.workerId, updatedJob);
+
+  // Clear unnecessary notifications for other workers
+  await User.updateMany(
+    { _id: { $ne: updatedJob.workerId } },
+    { $pull: { notifications: updatedJob._id } }
+  );
+
+  // Emit a deleteNotifications event for other workers via socket
+  io.emit("deleteNotifications", updatedJob);
 };
 
 // Update chat function
@@ -251,16 +256,14 @@ const findChat = async (req, res) => {
 
 // Send notification to all users (workers) function
 const notifyAllUsers = async (workers, job) => {
-  // Notify all workers via socket except the creator of the request
+  // Notify all workers via socket
   workers.forEach((worker) => {
-    if (worker._id !== job.userId) {
       notifyUser(worker._id, job);
       worker.notifications.push(job._id);
-    }
   });
 
   // Notify the creator only once
-  if (!workers.some(worker => worker._id === job.userId)) {
+  if (!workers.some((worker) => worker._id === job.userId)) {
     const user = await User.findById(job.userId);
     notifyUser(user._id, job);
     user.notifications.push(job._id);
