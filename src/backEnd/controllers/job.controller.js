@@ -179,7 +179,7 @@ const setOffer = async (req, res) => {
       } else {
         //   // Avoid notifications duplication for users with the same skill
         //   notifySingleUser(updatedJob.userId, updatedJob);
-        workers.splice(workers.indexOf(user), 1);
+        workers = workers.filter(worker => worker._id.toString() !== user._id.toString());
       }
         console.log("Filtered workers:", workers);
 
