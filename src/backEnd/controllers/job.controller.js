@@ -166,10 +166,16 @@ const setOffer = async (req, res) => {
       await updatedJob.save();
 
       const user = await User.findById(updatedJob.userId);
-      const workers = await User.find({
-        skills: { $in: updatedJob.category },
-        _id: { $ne: offer.workerId },
-      });
+      try {
+        const workers = await User.find({
+          skills: { $in: updatedJob.category },
+          _id: { $ne: offer.workerId },
+        });
+      
+        console.log("Workers from DB:", workers);  // Verifica se effettivamente i lavoratori vengono trovati
+      } catch (error) {
+        console.error("Error finding workers:", error);  // Log di eventuali errori
+      }
 
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category)) {
