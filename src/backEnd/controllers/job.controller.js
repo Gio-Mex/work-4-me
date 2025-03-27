@@ -172,7 +172,7 @@ const setOffer = async (req, res) => {
         });
       
         console.log("Workers from DB:", workers);
-
+        console.log("User from DB:", user);
       // Notify the user who made the offer via socket
       if (!user.skills.includes(updateJob.category.toString())) {
         notifyUser(updatedJob.userId, updatedJob);
