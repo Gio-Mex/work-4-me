@@ -263,18 +263,22 @@ const findChat = async (req, res) => {
 const notifyAllUsers = async (workers, job) => {
   // Notify all workers via socket
   workers.forEach((worker) => {
-    if (worker._id !== job.userId) {
-      notifyUser(worker._id, job);
-      worker.notifications.push(job._id);
-    }
+    notifyUser(worker._id, job);
+    worker.notifications.push(job._id);
   });
 
-  // Notify the user who made the offer (he is not in the list of workers because he is a worker and has the same skill as the job category)
+  // Notify the user who made the offer (he is not in the list of workers because he is a worker and has the same skill as the job category: he can't be notified twice)
   if (!workers.some((worker) => worker._id === job.userId)) {
     const user = await User.findById(job.userId);
-    notifyUser(user._id, job);
-    user.notifications.push(job._id);
-    await user.save();
+    if (
+      !user.skills.some(
+        (skill) => skill.toLowerCase() === job.category.toLowerCase()
+      )
+    ) {
+      notifyUser(user._id, job);
+      user.notifications.push(job._id);
+      await user.save();
+    }
   }
 
   await Promise.all(workers.map((worker) => worker.save()));

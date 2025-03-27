@@ -145,11 +145,11 @@ const selectRequest = async (job: Job) => {
     jobStore.deleteNotification(job._id!);
     await userStore.deleteNotifications(job._id!);
   }
-  if (userStore.user!.notifications?.includes(job._id!)) {
-    userStore.user!.notifications = userStore.user!.notifications.filter(
-      (notificationId) => notificationId !== job._id
-    );
-  }
+  // if (userStore.user!.notifications?.includes(job._id!)) {
+  //   userStore.user!.notifications = userStore.user!.notifications.filter(
+  //     (notificationId) => notificationId !== job._id
+  //   );
+  // }
   router.push(`/jobs/${job._id}`);
 };
 
