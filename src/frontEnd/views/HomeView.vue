@@ -151,7 +151,7 @@ onMounted(async () => {
       >
         <h1 class="text-5xl md:text-7xl text-sky-500 font-semibold">Work</h1>
         <span
-          class="text-6xl md:text-8xl text-sky-700 font-semibold scale-125 ms-6 md:ms-16 lg:ms-28 xl:ms-80"
+          class="text-6xl md:text-8xl text-sky-700 font-semibold scale-125 ms-6 md:ms-16 lg:ms-28 xl:ms-72"
           >4</span
         >
         <h1

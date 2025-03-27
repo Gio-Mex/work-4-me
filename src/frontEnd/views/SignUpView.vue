@@ -251,17 +251,17 @@ const handleSubmit = async () => {
               class="w-1/2 scale-50 transition-all duration-150 ease-in-out bg-sky-200 my-8 mx-auto opacity-0"
               :class="{ 'opacity-100': uploadProgress > 0 }"
             />
-            <AdvancedImage
-              v-if="isUploaded && form.avatar"
-              :src="form.avatar"
-              :cldImg="cldImg"
-              class="avatar my-2 mx-auto"
-            />
-            <Avatar v-else class="avatar my-2 mx-auto">
-              <AvatarFallback class="content">
-                {{ avatarContent }}
-              </AvatarFallback>
-            </Avatar>
+              <AdvancedImage
+                v-if="isUploaded && form.avatar"
+                :src="form.avatar"
+                :cldImg="cldImg"
+                class="avatar my-2 mx-auto"
+              />
+              <Avatar v-if ="isUploaded && !form.avatar" class="avatar my-2 mx-auto">
+                <AvatarFallback class="content">
+                  {{ avatarContent }}
+                </AvatarFallback>
+              </Avatar>
             <span class="text-xs opacity-70 text-sky-950 leading-relaxed"
               >Questo e' il tuo avatar predefinito, puoi cambiarlo scegliendo
               un'immagine dalla tua galleria.
