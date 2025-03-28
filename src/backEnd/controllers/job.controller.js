@@ -176,9 +176,11 @@ const setOffer = async (req, res) => {
         !user.skills.some(
           (skill) => skill.toLowerCase() === updatedJob.category.toLowerCase()
         )
-      ) {
-        notifyUser(updatedJob.userId, updatedJob);
-      } else {
+       ) 
+      //{
+      //   notifyUser(updatedJob.userId, updatedJob);
+      // } else
+       {
         // Remove the user from the list of workers if he has the same skill as the job category (he can't be notified twice)
         workers = workers.filter(
           (worker) => worker._id.toString() !== user._id.toString()
