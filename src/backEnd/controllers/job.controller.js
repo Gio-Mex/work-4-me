@@ -271,7 +271,7 @@ const notifyAllUsers = async (workers, job) => {
   if (!workers.some((worker) => worker._id === job.userId)) {
     const user = await User.findById(job.userId);
     if (
-      !user.skills.some(
+      user.skills.some(
         (skill) => skill.toLowerCase() === job.category.toLowerCase()
       )
     ) {
