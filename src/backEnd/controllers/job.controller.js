@@ -171,7 +171,7 @@ const setOffer = async (req, res) => {
         _id: { $ne: offer.workerId },
       });
 
-      // Notify the user who made the offer via socket
+      // Notify the user who made the offer via socket if he is not a worker and doesn't have the same skill as the job category
       if (
         !user.skills.some(
           (skill) => skill.toLowerCase() === updatedJob.category.toLowerCase()
@@ -266,21 +266,12 @@ const notifyAllUsers = async (workers, job) => {
     notifyUser(worker._id, job);
     worker.notifications.push(job._id);
   });
-
-  // Notify the user who made the offer (he is not in the list of workers because he is a worker and has the same skill as the job category: he can't be notified twice)
+  // Notify single user (he is not in the list of workers because he has the same skill as the job category: he can't be notified twice)
   if (!workers.some((worker) => worker._id === job.userId)) {
-    const user = await User.findById(job.userId);
-    if (
-      user.skills.some(
-        (skill) => skill.toLowerCase() === job.category.toLowerCase()
-      )
-    ) {
-      notifyUser(user._id, job);
-      user.notifications.push(job._id);
-      await user.save();
+    if (job.status === "Offerta") {
+      notifySingleUser(job.userId, job);
     }
   }
-
   await Promise.all(workers.map((worker) => worker.save()));
   // Emit a jobUpdated event for workers via socket
   io.emit("jobUpdated", job);
