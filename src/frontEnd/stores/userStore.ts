@@ -104,10 +104,13 @@ export const useUserStore = defineStore("user", {
         // Fetch data
         const url = `${baseUrl}/user/ratings/${this.user!._id}`;
         const response = await axios.get(url);
-        this.user!.ratings = response.data as { quality: number[]; reliability: number[] };
+        this.user!.ratings = response.data as {
+          quality: number[];
+          reliability: number[];
+        };
       } catch (error) {
         console.error(error);
-      } 
+      }
     },
 
     // Ratings average function
@@ -152,7 +155,11 @@ export const useUserStore = defineStore("user", {
         // Fetch data
         const url = `${baseUrl}/user/notifications/${this.user!._id}/${jobId}`;
         const response = await axios.delete(url);
-        console.log("Risposta dal server:", response.status);
+        if (response !== null) {
+          console.log("Risposta dal server:", response.status);
+        } else {
+          return;
+        }
       } catch (error: any) {
         console.error(
           "Errore durante la cancellazione delle notifiche:",
@@ -190,7 +197,7 @@ export const useUserStore = defineStore("user", {
         appStore.stopLoading();
       }
     },
-    
+
     // Reset user function
     resetUser() {
       this.isLoggedIn = false;
