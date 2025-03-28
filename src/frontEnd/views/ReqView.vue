@@ -207,6 +207,7 @@ const setRate = async () => {
     quality: [qualityRate.value],
     reliability: [reliabilityRate.value],
   });
+  socket.emit("jobUpdated", job);
   router.push("/jobs");
 };
 // New chat function
