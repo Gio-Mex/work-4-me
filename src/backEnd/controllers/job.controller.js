@@ -173,7 +173,7 @@ const setOffer = async (req, res) => {
 
       // Notify the user who made the offer via socket if he is not a worker and doesn't have the same skill as the job category
       if (
-        !user.skills.some(
+        user.skills.some(
           (skill) => skill.toLowerCase() === updatedJob.category.toLowerCase()
         )
        ) 
