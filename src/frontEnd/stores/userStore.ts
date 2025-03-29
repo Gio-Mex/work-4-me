@@ -201,8 +201,9 @@ export const useUserStore = defineStore("user", {
     // Reset user function
     resetUser() {
       this.isLoggedIn = false;
-      this.user = null;
-      localStorage.clear();
+      localStorage.removeItem("user");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("job");
     },
   },
   // Persist state
