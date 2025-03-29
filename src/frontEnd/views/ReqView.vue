@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted, nextTick, watch, onUnmounted } from "vue";
+import { reactive, ref, onBeforeMount, onMounted, nextTick, watch, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -252,8 +252,9 @@ const deleteReq = async () => {
   router.push("/jobs");
 };
 
-onMounted(async () => {
+onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
+  console.log(job);
   if (!job) {
     return;
   }
@@ -280,7 +281,9 @@ onMounted(async () => {
   }
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
+});
 
+onMounted(() => {
   const messageListener = (message: Message) => {
     chat.messages.push(message);
   };
