@@ -212,8 +212,6 @@ export const useUserStore = defineStore("user", {
           },
         });
         console.log("Risposta dal server: Status", response.status);
-        // Show message
-        appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la cancellazione dei lavori:", error);
         // Show message

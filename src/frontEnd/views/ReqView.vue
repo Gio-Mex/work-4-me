@@ -315,7 +315,7 @@ onMounted(() => {
     Proposta di lavoro
   </h1>
 
-  <Card class="mx-2 md:mx-6 lg:mx-auto mb-4 max-w-4xl md:px-4">
+  <Card v-if="job || (job as Job).userId" class="mx-2 md:mx-6 lg:mx-auto mb-4 max-w-4xl md:px-4">
     <CardHeader>
       <CardDescription class="text-center text-lg font-normal">
         <h2>Dettagli richiesta</h2>
@@ -888,6 +888,11 @@ onMounted(() => {
       </div>
     </CardContent>
   </Card>
+  <div v-else class="flex justify-center items-center h-screen">
+    <p class="text-center text-lg text-sky-950">
+      Questa richiesta è stata eliminata.
+    </p>
+  </div>
   <div class="flex">
     <Button
       @click="router.push('/jobs')"
