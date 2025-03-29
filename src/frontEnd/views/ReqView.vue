@@ -308,7 +308,7 @@ onMounted(() => {
     Proposta di lavoro
   </h1>
 
-  <div v-if="job || (job as Job).userId">
+  <div v-if="job">
     <Card class="mx-2 md:mx-6 lg:mx-auto mb-4 max-w-4xl md:px-4">
       <CardHeader>
         <CardDescription class="text-center text-lg font-normal">

@@ -4,6 +4,7 @@ import Chat from "../models/chat.model.js";
 import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
+import { map } from "leaflet";
 
 // Create job function
 const createJob = async (req, res) => {
@@ -310,16 +311,24 @@ const deleteJob = async (req, res) => {
 const deleteAllUserJobs = async (req, res) => {
   try {
     const { userId } = req.params;
-    const deletedJobs = await Job.deleteMany({ userId: userId });
-    if (deletedJobs.deletedCount === 0) {
+    const jobs = await Job.find({ userId: userId });
+    if (jobs.length === 0) {
       return res.status(404).json({ message: "Nessun lavoro trovato" });
     }
-    res.status(200).json({ message: "Tutti i lavori eliminati", deletedJobs });
-    io.emit("deleteNotifications", deletedJobs);
+    await Job.deleteMany({ userId: userId });
+
+    // Emit a deleteNotifications event via socket
+    jobs.forEach(job => {
+      io.emit("deleteNotifications", job);
+      io.emit("jobUpdated", job);
+    });
+
+    res.status(200).json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export {
   createJob,
