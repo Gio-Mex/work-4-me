@@ -3,6 +3,7 @@ import axios from "axios";
 import { ref } from "vue";
 import type { User } from "../interfaces/user";
 import { useAppStore } from "./appStore";
+import { useJobStore } from "./jobStore";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -200,10 +201,11 @@ export const useUserStore = defineStore("user", {
 
     // Reset user function
     resetUser() {
+      const jobStore = useJobStore();
       this.isLoggedIn = false;
-      localStorage.removeItem("user");
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("job");
+      this.user = null;
+      jobStore.jobs = [];
+      localStorage.clear();
     },
   },
   // Persist state
