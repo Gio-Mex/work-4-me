@@ -202,10 +202,10 @@ export const useUserStore = defineStore("user", {
     // Reset user function
     resetUser() {
       const jobStore = useJobStore();
+      localStorage.removeItem("authToken");
       this.isLoggedIn = false;
       this.user = null;
       jobStore.jobs = [];
-      localStorage.clear();
     },
   },
   // Persist state

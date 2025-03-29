@@ -141,7 +141,7 @@ const clearSearch = () => {
 
 // Select request function (delete notification on store and database, and redirect to request or job page)
 const selectRequest = async (job: Job) => {
-  await appStore.deleteAllNotifications(job);
+  socket.emit("deleteNotifications", job);
   router.push(`/jobs/${job._id}`);
 };
 
@@ -162,6 +162,8 @@ const handleRouteChange = async () => {
 };
 
 onMounted(async () => {
+  console.log("User Nots: ", userStore.user?.notifications);
+  console.log("Job Nots: ", jobStore.notifications);
   await handleRouteChange();
   if (userStore.user) {
     socket.on("jobUpdated", async (job) => {
@@ -264,7 +266,7 @@ onUnmounted(() => {
       </p>
       <Button
         @click="$router.push('/jobs/new')"
-        class="w-full mx-auto mt-6 text-sky-200 bg-sky-700 hover:bg-sky-900"
+        class="w-full rounded-sm mx-auto mt-6 text-sky-200 bg-sky-700 hover:bg-sky-900"
         ><span class="material-symbols-outlined">add</span>Inserisci nuova
         richiesta</Button
       >
