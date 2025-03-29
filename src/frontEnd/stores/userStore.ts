@@ -175,7 +175,7 @@ export const useUserStore = defineStore("user", {
       // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
-      this.deleteAllUserJobs();
+      await this.deleteAllUserJobs();
       try {
         // Fetch data
         const url = `${baseUrl}/user`;

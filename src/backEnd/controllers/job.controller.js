@@ -298,6 +298,7 @@ const deleteJob = async (req, res) => {
     }
     res.status(200).json({ message: "Lavoro eliminato", deletedJob });
     io.emit("deleteNotifications", deletedJob);
+    io.emit("jobUpdated", deletedJob);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -306,8 +307,8 @@ const deleteJob = async (req, res) => {
 // Delete all jobs of a specific user
 const deleteAllUserJobs = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedJobs = await Job.deleteMany({ userId: id });
+    const { userId } = req.params;
+    const deletedJobs = await Job.deleteMany({ userId: userId });
     if (deletedJobs.deletedCount === 0) {
       return res.status(404).json({ message: "Nessun lavoro trovato" });
     }

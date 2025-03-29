@@ -162,8 +162,6 @@ const handleRouteChange = async () => {
 };
 
 onMounted(async () => {
-  console.log("User Nots: ", userStore.user?.notifications);
-  console.log("Job Nots: ", jobStore.notifications);
   await handleRouteChange();
   if (userStore.user) {
     socket.on("jobUpdated", async (job) => {

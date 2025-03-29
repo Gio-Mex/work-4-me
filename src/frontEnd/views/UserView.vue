@@ -64,7 +64,7 @@ const handleDeleteAccount = async () => {
         <AlertDialogTitle class="text-center">Confermi di voler eliminare il tuo account?</AlertDialogTitle>
         <AlertDialogDescription class="text-red-500 text-center">
           Attenzione, questa azione è irreversibile!<br />
-          I tuoi dati verranno eliminati dal database in maniera definitiva.
+          <span class="text-xs text-sky-950">Tutti i tuoi dati, incluse le tue richieste e i tuoi eventuali lavori, verranno eliminati dal database in maniera definitiva.</span>
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter class="grid grid-cols-2 space-x-2">
