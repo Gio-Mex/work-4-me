@@ -2,7 +2,6 @@
 import {
   reactive,
   ref,
-  onBeforeMount,
   onMounted,
   nextTick,
   watch,
@@ -260,7 +259,7 @@ const deleteReq = async () => {
   router.push("/jobs");
 };
 
-onBeforeMount(async () => {
+onMounted(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
   if (!job) {
     return;
@@ -288,9 +287,7 @@ onBeforeMount(async () => {
   }
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
-});
 
-onMounted(() => {
   const messageListener = (message: Message) => {
     chat.messages.push(message);
   };
