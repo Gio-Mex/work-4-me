@@ -175,6 +175,7 @@ export const useUserStore = defineStore("user", {
       // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
+      this.deleteAllUserJobs();
       try {
         // Fetch data
         const url = `${baseUrl}/user`;
@@ -189,7 +190,7 @@ export const useUserStore = defineStore("user", {
         // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
-        console.error("Errore durante la cancellazione:", error);
+        console.error("Errore durante la cancellazione dell'utente:", error);
         // Show message
         appStore.showToast(error.response.data.message);
         throw error;
@@ -199,6 +200,27 @@ export const useUserStore = defineStore("user", {
       }
     },
 
+    // Delete all user jobs function
+    async deleteAllUserJobs() {
+      const appStore = useAppStore();
+      try {
+        // Fetch data
+        const url = `${baseUrl}/jobs/user/${this.user!._id}`;
+        const response = await axios.delete(url, {
+          params: {
+            userId: this.user!._id,
+          },
+        });
+        console.log("Risposta dal server: Status", response.status);
+        // Show message
+        appStore.showToast(response.data.message);
+      } catch (error: any) {
+        console.error("Errore durante la cancellazione dei lavori:", error);
+        // Show message
+        appStore.showToast(error.response.data.message);
+        throw error;
+    }
+    },
     // Reset user function
     resetUser() {
       const jobStore = useJobStore();

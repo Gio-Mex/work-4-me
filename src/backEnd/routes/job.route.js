@@ -8,6 +8,7 @@ import {
   updateJob,
   setOffer,
   deleteJob,
+  deleteAllUserJobs,
 } from "../controllers/job.controller.js";
 
 const router = Router();
@@ -20,5 +21,6 @@ router.post("/:id", updateChat);
 router.put("/edit/:id", updateJob);
 router.patch("/:id", setOffer);
 router.delete("/:id", deleteJob);
+router.delete("/user/:userId", deleteAllUserJobs);
 
 export default router;

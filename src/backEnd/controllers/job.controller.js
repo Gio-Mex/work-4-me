@@ -303,6 +303,21 @@ const deleteJob = async (req, res) => {
   }
 };
 
+// Delete all jobs of a specific user
+const deleteAllUserJobs = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedJobs = await Job.deleteMany({ userId: id });
+    if (deletedJobs.deletedCount === 0) {
+      return res.status(404).json({ message: "Nessun lavoro trovato" });
+    }
+    res.status(200).json({ message: "Tutti i lavori eliminati", deletedJobs });
+    io.emit("deleteNotifications", deletedJobs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createJob,
   getArchivedJobs,
@@ -312,4 +327,5 @@ export {
   updateJob,
   setOffer,
   deleteJob,
+  deleteAllUserJobs,
 };
