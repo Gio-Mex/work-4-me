@@ -59,7 +59,7 @@ export const useJobStore = defineStore("job", {
       appStore.startLoading();
       try {
         // Fetch data
-        const url = `${baseUrl}/jobs/${id}/archived`;
+        const url = `${baseUrl}/jobs/archived/${id}`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {

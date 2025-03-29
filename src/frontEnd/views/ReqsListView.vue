@@ -141,6 +141,7 @@ const clearSearch = () => {
 
 // Select request function (delete notification on store and database, and redirect to request or job page)
 const selectRequest = async (job: Job) => {
+  await appStore.deleteAllNotifications(job);
   router.push(`/jobs/${job._id}`);
 };
 
