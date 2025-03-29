@@ -43,8 +43,7 @@ onMounted(() => {
   document.addEventListener("click", closeMenuOnClickOutside);
   socket.on("deleteNotifications", async (job: Job) => {
     if (userStore.user?._id !== job.workerId) {
-      jobStore.deleteNotification(job._id!);
-      await userStore.fetchUser();
+      await appStore.deleteAllNotifications(job);
     }
   });
 });
