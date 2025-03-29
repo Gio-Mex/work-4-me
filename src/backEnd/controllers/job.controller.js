@@ -297,6 +297,7 @@ const deleteJob = async (req, res) => {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
     res.status(200).json({ message: "Lavoro eliminato", deletedJob });
+    io.emit("deleteNotifications", deletedJob);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
