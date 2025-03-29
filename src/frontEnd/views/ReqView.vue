@@ -207,7 +207,6 @@ const setRate = async () => {
     quality: [qualityRate.value],
     reliability: [reliabilityRate.value],
   });
-  socket.emit("jobUpdated", job);
   router.push("/jobs");
 };
 // New chat function
@@ -257,6 +256,7 @@ watch(
 // Delete request function
 const deleteReq = async () => {
   await jobStore.deleteJob(job._id as string);
+  await appStore.deleteAllNotifications(job);
   router.push("/jobs");
 };
 
