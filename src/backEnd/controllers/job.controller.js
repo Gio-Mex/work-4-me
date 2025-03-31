@@ -4,7 +4,6 @@ import Chat from "../models/chat.model.js";
 import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
-import { deleteAllUsersJobNotifications } from "./user.controller.js";
 
 // Create job function
 const createJob = async (req, res) => {
@@ -160,6 +159,10 @@ const setOffer = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Un'altra proposta è stata già accettata" });
+    } else if (updatedJob === null) {
+      return res
+        .status(404)
+        .json({ message: "Questa richiesta è stata annullata" });
     } else {
       updatedJob.status = props.status;
       const offer = props.offers[props.offers.length - 1];
@@ -315,7 +318,7 @@ const deleteAllUserJobs = async (req, res) => {
     if (jobs.length === 0) {
       return res.status(404).json({ message: "Nessun lavoro trovato" });
     }
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       // Emit a deleteNotifications event via socket
       io.emit("deleteNotifications", job);
       // Delete all notifications of the job from the database
@@ -324,12 +327,13 @@ const deleteAllUserJobs = async (req, res) => {
 
     await Job.deleteMany({ userId: userId });
 
-    res.status(200).json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
+    res
+      .status(200)
+      .json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export {
   createJob,

@@ -19,8 +19,8 @@ router.post("/login", loginUser);
 router.post("/signup", createUser);
 router.put("/:id", updateUser);
 router.patch("/ratings/:id", rateWorker);
+router.patch("/notifications/:id", deleteAllUsersJobNotifications);
 router.delete("/notifications/:id/:jobId", deleteNotifications);
-router.delete("/notifications/:jobId", deleteAllUsersJobNotifications);
 router.delete("/", deleteUser);
 
 export default router;

@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Job from "../models/job.model.js";
 import { io } from "../index.js";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
@@ -171,11 +172,15 @@ const deleteNotifications = async (req, res) => {
 // Delete notifications of multiple users
 const deleteAllUsersJobNotifications = async (req, res) => {
   try {
-    const { jobId } = req.params;
+    const { userId } = req.params;
+    const jobs = await Job.find({ userId: userId });
+    if (jobs.length === 0) {
+      return res.status(404).json({ message: "Nessun lavoro trovato" });
+    }
+    const jobIds = jobs.map((job) => job._id);
     const users = await User.updateMany(
-      {},
-      { $pull: { notifications: jobId } },
-      { new: true }
+      { notifications: { $in: jobIds } },
+      { $pull: { notifications: { $in: jobIds } } }
     );
     res.status(200).json({
       message: `Notifiche della richiesta ${jobId} eliminate per tutti gli utenti`,

@@ -171,11 +171,11 @@ export const useUserStore = defineStore("user", {
     },
 
     // Delete other users notifications function
-    async deleteOtherUsersNotifications(jobId: string) {
+    async deleteOtherUsersNotifications() {
       try {
         // Fetch data
-        const url = `${baseUrl}/user/notifications/${jobId}`;
-        const response = await axios.delete(url);
+        const url = `${baseUrl}/user/notifications/${this.user!._id}`;
+        const response = await axios.patch(url);
         if (response !== null) {
           console.log("Risposta dal server: Status", response.status);
         } else {
@@ -197,6 +197,7 @@ export const useUserStore = defineStore("user", {
       const socket = appStore.socket;
       appStore.startLoading();
       await this.deleteAllUserJobs();
+      await this.deleteOtherUsersNotifications();
       try {
         // Fetch data
         const url = `${baseUrl}/user`;
