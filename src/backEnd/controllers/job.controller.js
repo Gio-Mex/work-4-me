@@ -4,6 +4,7 @@ import Chat from "../models/chat.model.js";
 import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
+import { deleteAllUsersJobNotifications } from "./user.controller.js";
 
 // Create job function
 const createJob = async (req, res) => {
@@ -314,9 +315,11 @@ const deleteAllUserJobs = async (req, res) => {
     if (jobs.length === 0) {
       return res.status(404).json({ message: "Nessun lavoro trovato" });
     }
-    // Emit a deleteNotifications event via socket
     jobs.forEach(job => {
+      // Emit a deleteNotifications event via socket
       io.emit("deleteNotifications", job);
+      // Delete all notifications of the job from the database
+      deleteAllUsersJobNotifications(job._id);
     });
 
     await Job.deleteMany({ userId: userId });

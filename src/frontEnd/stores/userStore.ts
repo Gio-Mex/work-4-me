@@ -170,6 +170,26 @@ export const useUserStore = defineStore("user", {
       }
     },
 
+    // Delete other users notifications function
+    async deleteOtherUsersNotifications(jobId: string) {
+      try {
+        // Fetch data
+        const url = `${baseUrl}/user/notifications/${jobId}`;
+        const response = await axios.delete(url);
+        if (response !== null) {
+          console.log("Risposta dal server: Status", response.status);
+        } else {
+          return;
+        }
+      } catch (error: any) {
+        console.error(
+          "Errore durante la cancellazione delle notifiche:",
+          error
+        );
+        throw error;
+      }
+    },
+
     // Delete user function
     async deleteUser() {
       // Start loader
@@ -220,7 +240,7 @@ export const useUserStore = defineStore("user", {
         // Show message
         appStore.showToast(error.response.data.message);
         throw error;
-    }
+      }
     },
     // Reset user function
     resetUser() {

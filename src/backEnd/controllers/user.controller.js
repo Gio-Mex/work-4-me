@@ -168,6 +168,24 @@ const deleteNotifications = async (req, res) => {
   }
 };
 
+// Delete notifications of multiple users
+export const deleteAllUsersJobNotifications = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const users = await User.updateMany(
+      {},
+      { $pull: { notifications: jobId } },
+      { new: true }
+    );
+    res.status(200).json({
+      message: `Notifiche della richiesta ${jobId} eliminate per tutti gli utenti`,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Delete user
 const deleteUser = async (req, res) => {
   try {
@@ -193,5 +211,6 @@ export {
   updateUser,
   rateWorker,
   deleteNotifications,
+  deleteAllUsersJobNotifications,
   deleteUser,
 };
