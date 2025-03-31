@@ -4,7 +4,6 @@ import Chat from "../models/chat.model.js";
 import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
-import { map } from "leaflet";
 
 // Create job function
 const createJob = async (req, res) => {
