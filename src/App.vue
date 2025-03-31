@@ -32,8 +32,7 @@ onMounted(() => {
   tokenCheckInterval = setInterval(() => {
     const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
-      jobStore.notifications = [];
-      userStore.logout();
+      localStorage.removeItem("authToken");
       router.push("/user/login");
     }
   }, 900000);
