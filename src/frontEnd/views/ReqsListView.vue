@@ -168,7 +168,7 @@ onMounted(async () => {
       jobStore.updateJobStore(job);
     });
   }
-  socket.on("deleteUser", async (userId: string) => async () => {
+  socket.on("deleteUser", async (userId: string) => {
     // Save the scroll position
     const scrollPosition =
       document.documentElement.scrollTop || document.body.scrollTop;
