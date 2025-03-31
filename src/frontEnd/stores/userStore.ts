@@ -174,6 +174,7 @@ export const useUserStore = defineStore("user", {
     async deleteUser() {
       // Start loader
       const appStore = useAppStore();
+      const socket = appStore.socket;
       appStore.startLoading();
       await this.deleteAllUserJobs();
       try {
@@ -185,6 +186,8 @@ export const useUserStore = defineStore("user", {
           },
         });
         console.log("Risposta dal server: Status", response.status);
+        // Emit deleteUser event
+        socket.emit("deleteUser", this.user!._id);
         // Remove user
         this.resetUser();
         // Show message
