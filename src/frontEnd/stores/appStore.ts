@@ -43,8 +43,8 @@ export const useAppStore = defineStore("app", {
         userStore.user!.notifications = userStore.user!.notifications.filter(
           (notificationId) => notificationId !== job._id
         );
-        await userStore.deleteNotifications(job._id!);
       }
-    }
+      await userStore.deleteNotifications(job._id!);
+    },
   },
 });

@@ -175,6 +175,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   appStore.socket.off("jobUpdated");
+  appStore.socket.off("deleteUser");
 });
 </script>
 

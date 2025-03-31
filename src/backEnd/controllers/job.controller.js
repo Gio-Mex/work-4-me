@@ -319,7 +319,6 @@ const deleteAllUserJobs = async (req, res) => {
     // Emit a deleteNotifications event via socket
     jobs.forEach(job => {
       io.emit("deleteNotifications", job);
-      io.emit("jobUpdated", job);
     });
 
     res.status(200).json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
