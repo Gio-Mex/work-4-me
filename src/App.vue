@@ -47,7 +47,7 @@ onMounted(() => {
   if (userStore.user) {
     socket.emit("registerUser", userStore.user._id);
   }
-  // Listen for jobUpdated event
+  // Listen for jobNotification event
   socket.on("jobNotification", (job) => {
     jobStore.notifications.push(job._id);
   });

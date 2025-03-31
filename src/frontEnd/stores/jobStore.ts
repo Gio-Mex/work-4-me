@@ -159,6 +159,11 @@ export const useJobStore = defineStore("job", {
       ));
     },
 
+    // Delete all user jobs from store function
+    deleteAllStoreUserJobs(userId: string) {
+      this.jobs = this.jobs.filter((job) => job.userId !== userId);
+    },
+
     // Delete job function
     async deleteJob(jobId: string) {
       // Start loader
