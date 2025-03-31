@@ -166,7 +166,7 @@ export const useJobStore = defineStore("job", {
 
     // Delete job from store function
     deleteJobFromStore(jobId: string) {
-      return (this.jobs = this.jobs.filter((job) => job._id !== jobId));
+      this.jobs = this.jobs.filter((job) => job._id !== jobId);
     },
 
     // Delete job function
@@ -179,8 +179,6 @@ export const useJobStore = defineStore("job", {
         const url = `${baseUrl}/jobs/${jobId}`;
         const response = await axios.delete(url);
         console.log("Risposta dal server: Status", response.status);
-        // Delete job from store
-        this.deleteJobFromStore(jobId);
         // Show message
         appStore.showToast(response.data.message);
       } catch (error: any) {
