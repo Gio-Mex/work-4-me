@@ -322,7 +322,6 @@ const deleteAllUserJobs = async (req, res) => {
       // Emit a deleteNotifications event via socket
       io.emit("deleteNotifications", job);
       // Delete all notifications of the job from the database
-      deleteAllUsersJobNotifications(job._id);
     });
 
     await Job.deleteMany({ userId: userId });
