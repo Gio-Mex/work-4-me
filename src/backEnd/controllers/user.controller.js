@@ -169,7 +169,7 @@ const deleteNotifications = async (req, res) => {
 };
 
 // Delete notifications of multiple users
-export const deleteAllUsersJobNotifications = async (req, res) => {
+const deleteAllUsersJobNotifications = async (req, res) => {
   try {
     const { jobId } = req.params;
     const users = await User.updateMany(
