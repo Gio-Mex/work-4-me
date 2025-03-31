@@ -300,7 +300,7 @@ const deleteJob = async (req, res) => {
     // Emit a deleteNotifications event via socket
     io.emit("deleteNotifications", deletedJob);
     // Emit a deleteJob event via socket
-    io.emit("deleteJob", deletedJob);
+    io.emit("deleteJob", deletedJob._id);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -314,12 +314,12 @@ const deleteAllUserJobs = async (req, res) => {
     if (jobs.length === 0) {
       return res.status(404).json({ message: "Nessun lavoro trovato" });
     }
-    await Job.deleteMany({ userId: userId });
-
     // Emit a deleteNotifications event via socket
     jobs.forEach(job => {
       io.emit("deleteNotifications", job);
     });
+
+    await Job.deleteMany({ userId: userId });
 
     res.status(200).json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
   } catch (error) {

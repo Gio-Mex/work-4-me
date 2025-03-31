@@ -173,6 +173,7 @@ export const useJobStore = defineStore("job", {
     async deleteJob(jobId: string) {
       // Start loader
       const appStore = useAppStore();
+      const socket = appStore.socket;
       appStore.startLoading();
       try {
         // Fetch data
@@ -181,6 +182,8 @@ export const useJobStore = defineStore("job", {
         console.log("Risposta dal server: Status", response.status);
         // Show message
         appStore.showToast(response.data.message);
+        // Emit a deleteJob event via socket
+        socket.emit("deleteJob", jobId);
       } catch (error: any) {
         console.error(
           "Errore durante la cancellazione della richiesta:",
