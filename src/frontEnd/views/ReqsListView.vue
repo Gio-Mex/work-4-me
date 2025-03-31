@@ -172,6 +172,7 @@ onMounted(async () => {
     // Save the scroll position
     const scrollPosition =
       document.documentElement.scrollTop || document.body.scrollTop;
+      console.log(userId);
     jobStore.deleteAllStoreUserJobs(userId);
     // Restore the scroll position
     nextTick(() => {
