@@ -168,6 +168,11 @@ onMounted(async () => {
       jobStore.updateJobStore(job);
     });
   }
+
+  socket.on("deleteJob", async (jobId: string) => {
+    jobStore.deleteJobFromStore(jobId);
+  });
+
   socket.on("deleteUser", async (userId: string) => {
     jobStore.deleteAllStoreUserJobs(userId);
   });
