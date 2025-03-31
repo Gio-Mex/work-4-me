@@ -42,9 +42,7 @@ onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
   document.addEventListener("click", closeMenuOnClickOutside);
   socket.on("deleteNotifications", async (job: Job) => {
-    if (userStore.user?._id !== job.workerId) {
       await appStore.deleteAllNotifications(job);
-    }
   });
 });
 

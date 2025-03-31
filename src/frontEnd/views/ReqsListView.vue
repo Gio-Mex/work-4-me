@@ -2,7 +2,7 @@
 import { useJobStore } from "../stores/jobStore";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";
-import { onMounted, watch, computed, ref, onUnmounted, nextTick } from "vue";
+import { onMounted, watch, computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import type { Job } from "../interfaces/job";
 // ---- ShadCn Components
@@ -169,16 +169,7 @@ onMounted(async () => {
     });
   }
   socket.on("deleteUser", async (userId: string) => {
-    // Save the scroll position
-    const scrollPosition =
-      document.documentElement.scrollTop || document.body.scrollTop;
-      console.log(userId);
     jobStore.deleteAllStoreUserJobs(userId);
-    // Restore the scroll position
-    nextTick(() => {
-      document.documentElement.scrollTop = scrollPosition;
-      document.body.scrollTop = scrollPosition;
-    });
   });
 });
 

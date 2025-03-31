@@ -1,6 +1,5 @@
 import User from "../models/user.model.js";
 import { config } from "dotenv";
-import { io } from "../index.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 const saltRounds = 10;
@@ -180,7 +179,6 @@ const deleteUser = async (req, res) => {
     res.status(200).json({
       message: `Utente ${deletedUser.name} ${deletedUser.lastName} eliminato con successo`,
     });
-    io.emit("deleteUser", deletedUser._id);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
