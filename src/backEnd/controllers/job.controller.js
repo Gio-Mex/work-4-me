@@ -315,20 +315,16 @@ const deleteAllUserJobs = async (req, res) => {
   try {
     const { userId } = req.params;
     const jobs = await Job.find({ userId: userId });
-    if (jobs.length === 0) {
-      return res.status(404).json({ message: "Nessun lavoro trovato" });
+    if (jobs.length !== 0) {
+      jobs.forEach((job) => {
+        // Emit a deleteNotifications event via socket
+        io.emit("deleteNotifications", job);
+      });
+      await Job.deleteMany({ userId: userId });
+      res
+        .status(200)
+        .json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
     }
-    jobs.forEach((job) => {
-      // Emit a deleteNotifications event via socket
-      io.emit("deleteNotifications", job);
-      // Delete all notifications of the job from the database
-    });
-
-    await Job.deleteMany({ userId: userId });
-
-    res
-      .status(200)
-      .json({ message: "Tutti i lavori eliminati", deletedJobs: jobs });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
