@@ -247,7 +247,6 @@ watch(
 
 // Delete request function
 const deleteReq = async () => {
-  await appStore.deleteAllNotifications(job);
   await jobStore.deleteJob(job._id as string);
   router.push("/jobs");
 };

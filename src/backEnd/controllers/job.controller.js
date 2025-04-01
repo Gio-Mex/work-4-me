@@ -302,6 +302,8 @@ const deleteJob = async (req, res) => {
       return res.status(404).json({ message: "Lavoro non trovato" });
     }
     res.status(200).json({ message: "Lavoro eliminato", deletedJob });
+    // Delete all notifications of the job from the database
+    deleteAllUsersJobNotifications(deletedJob._id);
     // Emit a deleteNotifications event via socket
     io.emit("deleteNotifications", deletedJob);
     // Emit a deleteJob event via socket
