@@ -136,8 +136,6 @@ const updateJob = async (req, res) => {
 
     if (props.status === "Accettato") {
       acceptOffer(updatedJob);
-      // Notify the user
-      notifySingleUser(updatedJob.workerId, updatedJob);
     }
 
     if (
@@ -200,17 +198,18 @@ const setOffer = async (req, res) => {
 
 // Accept offer function
 const acceptOffer = async (updatedJob) => {
-  // Emit a jobUpdated event via socket
-  io.emit("jobUpdated", updatedJob);
-
   // Clear unnecessary notifications for other workers
   await User.updateMany(
     { _id: { $ne: updatedJob.workerId } },
     { $pull: { notifications: updatedJob._id } }
   );
-
   // Emit a deleteNotifications event for other workers via socket
   io.emit("deleteNotifications", updatedJob);
+
+  // Emit a jobUpdated event via socket
+  io.emit("jobUpdated", updatedJob);
+  // Notify only the worker who made the offer
+  notifySingleUser(updatedJob.workerId, updatedJob);
 };
 
 // Update chat function
