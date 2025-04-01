@@ -158,7 +158,7 @@ export const useUserStore = defineStore("user", {
           return;
         }
         const url = `${baseUrl}/user/notifications/${this.user._id}/${jobId}`;
-        const response = await axios.delete(url);
+        const response = await axios.patch(url);
         if (response && response.status === 200) {
           console.log(
             "Notifica cancellata con successo. Status:",
