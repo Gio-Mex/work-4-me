@@ -34,6 +34,7 @@ onMounted(() => {
     const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
       localStorage.removeItem("authToken");
+      userStore.isLoggedIn = false;
       router.push("/user/login");
     }
   }, 900000);
