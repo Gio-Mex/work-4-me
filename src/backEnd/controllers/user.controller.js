@@ -170,23 +170,14 @@ const deleteNotifications = async (req, res) => {
 };
 
 // Delete notifications of multiple users
-const deleteAllUsersJobNotifications = async (req, res) => {
+const deleteAllUsersJobNotifications = async (jobId) => {
   try {
-    console.log(req.params);
-    const { id } = req.params;
-    const jobs = await Job.find({ userId: id });
-    if (jobs.length === 0) {
-      console.log("Non ci sono lavori da eliminare per l'utente:", id);
-      return;
-    }
-    const jobIds = jobs.map((job) => job._id);
     const users = await User.updateMany(
-      { notifications: { $in: jobIds } },
-      { $pull: { notifications: { $in: jobIds } } }
+      { notifications: { $in: [jobId] } },  
+      { $pull: { notifications: jobId } }   
     );
-    console.log(
-      `Notifiche eliminate per ${users.modifiedCount} utenti`
-    )
+
+    console.log(`Notifiche eliminate per ${users.modifiedCount} utenti`);
   } catch (error) {
     console.error("Errore nell'eliminazione delle notifiche:", error.message);
     throw error;
