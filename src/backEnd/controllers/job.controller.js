@@ -160,7 +160,7 @@ const setOffer = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Un'altra proposta è stata già accettata" });
-    } else if (updatedJob === null) {
+    } else if (updatedJob.status === null) {
       return res
         .status(404)
         .json({ message: "Questa richiesta è stata annullata" });
