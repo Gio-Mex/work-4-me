@@ -175,7 +175,7 @@ const deleteAllUsersJobNotifications = async (req, res) => {
     const { userId } = req.params;
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
-      res.status(200).json({ message: "Non ci sono lavori da eliminare" });
+      console.log("Non ci sono lavori da eliminare per l'utente:", userId);
       return;
     }
     const jobIds = jobs.map((job) => job._id);
@@ -183,12 +183,12 @@ const deleteAllUsersJobNotifications = async (req, res) => {
       { notifications: { $in: jobIds } },
       { $pull: { notifications: { $in: jobIds } } }
     );
-    res.status(200).json({
-      message: `Notifiche eliminate per tutti gli utenti`,
-      users,
-    });
+    console.log(
+      `Notifiche eliminate per ${users.modifiedCount} utenti`
+    )
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Errore nell'eliminazione delle notifiche:", error.message);
+    throw error;
   }
 };
 
