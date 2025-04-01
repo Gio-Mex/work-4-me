@@ -270,7 +270,7 @@ const notifyAllUsers = async (workers, job) => {
   });
   // Notify single user (he is not in the list of workers because he has the same skill as the job category: he can't be notified twice)
   if (!workers.some((worker) => worker._id === job.userId)) {
-    if (job.status === "Offerta") {
+    if (job.status === "Offerta" || job.status === "Accettato") {
       notifySingleUser(job.userId, job);
     }
   }
