@@ -320,20 +320,20 @@ const deleteAllUserJobs = async (req, res) => {
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
       console.log("Non ci sono lavori da eliminare per l'utente:", userId);
-      return;
-    } else {
-      jobs.forEach((job) => {
-        // Emit a deleteNotifications event via socket
-        io.emit("deleteNotifications", job);
-        // Delete all notifications of the job from the database
-        deleteAllUsersJobNotifications(job._id);
-      });
-      await Job.deleteMany({ userId: userId });
-      console.log("Tutti i lavori eliminati per l'utente:", userId);
+      return res.status(200).json({ message: "Nessun lavoro da eliminare per l'utente" });
     }
+    jobs.forEach((job) => {
+      // Emit a deleteNotifications event via socket
+      io.emit("deleteNotifications", job);
+      // Delete all notifications of the job from the database
+      deleteAllUsersJobNotifications(job._id);
+    });
+    await Job.deleteMany({ userId: userId });
+    console.log("Tutti i lavori eliminati per l'utente:", userId);
+    res.status(200).json({ message: "Lavori eliminati per l'utente", deletedJobs: jobs });
   } catch (error) {
     console.error("Errore nell'eliminazione dei lavori:", error.message);
-    throw error;
+    res.status(500).json({ message: error.message });
   }
 };
 
