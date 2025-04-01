@@ -172,6 +172,7 @@ const deleteNotifications = async (req, res) => {
 // Delete notifications of multiple users
 const deleteAllUsersJobNotifications = async (req, res) => {
   try {
+    console.log(req.params);
     const { id } = req.params;
     const jobs = await Job.find({ userId: id });
     if (jobs.length === 0) {
