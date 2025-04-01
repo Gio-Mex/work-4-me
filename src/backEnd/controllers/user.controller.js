@@ -175,7 +175,8 @@ const deleteAllUsersJobNotifications = async (req, res) => {
     const { userId } = req.params;
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
-      return res.status(404).json({ message: "Nessun lavoro trovato" });
+      res.status(200).json({ message: "Non ci sono lavori da eliminare" });
+      return;
     }
     const jobIds = jobs.map((job) => job._id);
     const users = await User.updateMany(
@@ -183,7 +184,7 @@ const deleteAllUsersJobNotifications = async (req, res) => {
       { $pull: { notifications: { $in: jobIds } } }
     );
     res.status(200).json({
-      message: `Notifiche della richiesta ${jobId} eliminate per tutti gli utenti`,
+      message: `Notifiche eliminate per tutti gli utenti`,
       users,
     });
   } catch (error) {
