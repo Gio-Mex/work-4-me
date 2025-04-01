@@ -160,27 +160,43 @@ export const useUserStore = defineStore("user", {
         const url = `${baseUrl}/user/notifications/${this.user._id}/${jobId}`;
         const response = await axios.delete(url);
         if (response && response.status === 200) {
-          console.log("Notifica cancellata con successo. Status:", response.status);
+          console.log(
+            "Notifica cancellata con successo. Status:",
+            response.status
+          );
         } else {
-          console.log("La risposta dal server non è corretta o la notifica non è stata trovata.");
+          console.log(
+            "La risposta dal server non è corretta o la notifica non è stata trovata."
+          );
         }
       } catch (error: any) {
         // Gestione degli errori
-        console.error("Errore durante la cancellazione delle notifiche:", error);
+        console.error(
+          "Errore durante la cancellazione delle notifiche:",
+          error
+        );
       }
     },
-    
 
     // Delete other users notifications function
     async deleteOtherUsersNotifications() {
       try {
+        if (!this.user) {
+          console.error("Utente non trovato");
+          return;
+        }
         // Fetch data
         const url = `${baseUrl}/user/notifications/${this.user!._id}`;
         const response = await axios.patch(url);
-        if (response !== null) {
-          console.log("Risposta dal server: Status", response.status);
+        if (response && response.status === 200) {
+          console.log(
+            "Notifiche cancellate con successo. Status:",
+            response.status
+          );
         } else {
-          return;
+          console.log(
+            "La risposta dal server non è corretta o non è stata cancellata nessuna notifica."
+          );
         }
       } catch (error: any) {
         console.error(
