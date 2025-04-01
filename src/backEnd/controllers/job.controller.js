@@ -4,7 +4,7 @@ import Chat from "../models/chat.model.js";
 import { io } from "../index.js";
 import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
-import { notifyAllUsers } from "../index.js";
+import { deleteAllUsersJobNotifications } from "./user.controller.js";
 
 // Create job function
 const createJob = async (req, res) => {
