@@ -136,6 +136,8 @@ const updateJob = async (req, res) => {
 
     if (props.status === "Accettato") {
       acceptOffer(updatedJob);
+      // Notify the user
+      notifySingleUser(updatedJob.workerId, updatedJob);
     }
 
     if (
@@ -200,8 +202,6 @@ const setOffer = async (req, res) => {
 const acceptOffer = async (updatedJob) => {
   // Emit a jobUpdated event via socket
   io.emit("jobUpdated", updatedJob);
-  // Notify only the worker who made the offer
-  notifySingleUser(updatedJob.workerId, updatedJob);
 
   // Clear unnecessary notifications for other workers
   await User.updateMany(
@@ -270,7 +270,7 @@ const notifyAllUsers = async (workers, job) => {
   });
   // Notify single user (he is not in the list of workers because he has the same skill as the job category: he can't be notified twice)
   if (!workers.some((worker) => worker._id === job.userId)) {
-    if (job.status === "Offerta" || job.status === "Accettato") {
+    if (job.status === "Offerta") {
       notifySingleUser(job.userId, job);
     }
   }
@@ -319,7 +319,9 @@ const deleteAllUserJobs = async (req, res) => {
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
       console.log("Non ci sono lavori da eliminare per l'utente:", userId);
-      return res.status(200).json({ message: "Nessun lavoro da eliminare per l'utente" });
+      return res
+        .status(200)
+        .json({ message: "Nessun lavoro da eliminare per l'utente" });
     }
     jobs.forEach((job) => {
       // Emit a deleteNotifications event via socket
@@ -329,7 +331,9 @@ const deleteAllUserJobs = async (req, res) => {
     });
     await Job.deleteMany({ userId: userId });
     console.log("Tutti i lavori eliminati per l'utente:", userId);
-    res.status(200).json({ message: "Lavori eliminati per l'utente", deletedJobs: jobs });
+    res
+      .status(200)
+      .json({ message: "Lavori eliminati per l'utente", deletedJobs: jobs });
   } catch (error) {
     console.error("Errore nell'eliminazione dei lavori:", error.message);
     res.status(500).json({ message: error.message });
