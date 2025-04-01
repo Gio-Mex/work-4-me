@@ -227,6 +227,7 @@ export const useUserStore = defineStore("user", {
         throw error;
       }
     },
+    
     // Reset user function
     resetUser() {
       const jobStore = useJobStore();

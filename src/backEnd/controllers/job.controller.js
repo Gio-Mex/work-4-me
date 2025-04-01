@@ -328,9 +328,9 @@ const deleteAllUserJobs = async (req, res) => {
         // Delete all notifications of the job from the database
         deleteAllUsersJobNotifications(job._id);
       });
+      await Job.deleteMany({ userId: userId });
+      console.log("Tutti i lavori eliminati per l'utente:", userId);
     }
-    await Job.deleteMany({ userId: userId });
-    console.log("Tutti i lavori eliminati per l'utente:", userId);
   } catch (error) {
     console.error("Errore nell'eliminazione dei lavori:", error.message);
     throw error;
