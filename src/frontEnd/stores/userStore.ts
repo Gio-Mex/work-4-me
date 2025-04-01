@@ -153,22 +153,23 @@ export const useUserStore = defineStore("user", {
     // Delete notifications function
     async deleteNotifications(jobId: string) {
       try {
-        // Fetch data
-        const url = `${baseUrl}/user/notifications/${this.user!._id}/${jobId}`;
-        const response = await axios.delete(url);
-        if (response !== null) {
-          console.log("Risposta dal server: Status", response.status);
-        } else {
+        if (!this.user) {
+          console.error("Utente non trovato");
           return;
         }
+        const url = `${baseUrl}/user/notifications/${this.user._id}/${jobId}`;
+        const response = await axios.delete(url);
+        if (response && response.status === 200) {
+          console.log("Notifica cancellata con successo. Status:", response.status);
+        } else {
+          console.log("La risposta dal server non è corretta o la notifica non è stata trovata.");
+        }
       } catch (error: any) {
-        console.error(
-          "Errore durante la cancellazione delle notifiche:",
-          error
-        );
-        throw error;
+        // Gestione degli errori
+        console.error("Errore durante la cancellazione delle notifiche:", error);
       }
     },
+    
 
     // Delete other users notifications function
     async deleteOtherUsersNotifications() {
