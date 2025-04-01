@@ -226,7 +226,6 @@ export const useUserStore = defineStore("user", {
 
     // Delete all user jobs function
     async deleteAllUserJobs() {
-      const appStore = useAppStore();
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/user/${this.user!._id}`;
@@ -238,8 +237,6 @@ export const useUserStore = defineStore("user", {
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la cancellazione dei lavori:", error);
-        // Show message
-        appStore.showToast(error.response.data.message);
         throw error;
       }
     },
