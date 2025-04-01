@@ -178,35 +178,6 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    // Delete other users notifications function
-    async deleteOtherUsersNotifications() {
-      try {
-        if (!this.user) {
-          console.error("Utente non trovato");
-          return;
-        }
-        // Fetch data
-        const url = `${baseUrl}/user/notifications/${this.user!._id}`;
-        const response = await axios.patch(url);
-        if (response && response.status === 200) {
-          console.log(
-            "Notifiche cancellate con successo. Status:",
-            response.status
-          );
-        } else {
-          console.log(
-            "La risposta dal server non è corretta o non è stata cancellata nessuna notifica."
-          );
-        }
-      } catch (error: any) {
-        console.error(
-          "Errore durante la cancellazione delle notifiche:",
-          error
-        );
-        throw error;
-      }
-    },
-
     // Delete user function
     async deleteUser() {
       // Start loader
@@ -214,7 +185,6 @@ export const useUserStore = defineStore("user", {
       const socket = appStore.socket;
       appStore.startLoading();
       await this.deleteAllUserJobs();
-      await this.deleteOtherUsersNotifications();
       try {
         // Fetch data
         const url = `${baseUrl}/user`;
