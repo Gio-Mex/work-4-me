@@ -189,6 +189,9 @@ const setOffer = async (req, res) => {
       res.status(200).json({ message: "Proposta inviata" });
     }
   } catch (error) {
+    if (error.message.includes("null")) {
+      error.message = "Questa richiesta non è più disponibile";
+    }
     res.status(500).json({ message: error.message });
   }
 };

@@ -139,9 +139,6 @@ export const useJobStore = defineStore("job", {
         // Fetch data
         const url = `${baseUrl}/jobs/${job._id}`;
         const response = await axios.patch(url, job);
-        if (response.data.message.includes("null")) {
-          response.data.message = "Questa richiesta non è più disponibile";
-        }
         console.log("Risposta dal server: Status", response.status);
         // Show message
         appStore.showToast(response.data.message);
