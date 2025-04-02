@@ -194,7 +194,6 @@ const setRate = async () => {
     document.getElementById("reliability") as HTMLInputElement
   ).value as unknown as number;
   job.evaluated = true;
-  await jobStore.updateJob(job);
   await jobStore.rateWorker(job.workerId!, {
     quality: [qualityRate.value],
     reliability: [reliabilityRate.value],
