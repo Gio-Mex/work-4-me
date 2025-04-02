@@ -100,7 +100,7 @@ const handleSubmit = async () => {
               <span v-if="!form.category" class="text-red-500">*</span>
             </Label>
             <Select id="categories" v-model="form.category" required>
-              <SelectTrigger class="w-[240px]">
+              <SelectTrigger class="w-[240px] !rounded-md">
                 <SelectValue placeholder="Seleziona una categoria" />
               </SelectTrigger>
               <SelectContent>

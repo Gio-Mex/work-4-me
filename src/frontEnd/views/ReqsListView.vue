@@ -300,7 +300,7 @@ onUnmounted(() => {
             />
             <Select id="categories" v-model="searchCategory">
               <SelectTrigger
-                class="md:w-6/12 h-9 md:rounded-none focus:ring-0 focus:ring-offset-0 focus:border-sky-600 focus:bg-sky-50"
+                class="md:w-6/12 h-9 md:rounded-none focus:ring-0 focus:ring-offset-0"
               >
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
