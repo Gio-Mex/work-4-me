@@ -241,8 +241,6 @@ export const useJobStore = defineStore("job", {
         const url = `${baseUrl}/user/ratings/${workerId}`;
         const response = await axios.patch(url, { ratings });
         console.log("Risposta dal server: Status", response.status);
-        // Show message
-        appStore.showToast(response.data.message);
       } catch (error: any) {
         console.error("Errore durante la valutazione:", error);
         // Show message

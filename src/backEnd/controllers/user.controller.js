@@ -136,7 +136,10 @@ const rateWorker = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "Utente non trovato" });
     }
-    res.status(200).send();
+    res.status(200).json({
+      message: "Valutazioni inviate",
+      data: updatedUser,
+    });
   } catch (error) {
     console.error("Errore durante l'aggiornamento delle valutazioni:", error);
     res.status(500).json({ message: "Errore del server" });
