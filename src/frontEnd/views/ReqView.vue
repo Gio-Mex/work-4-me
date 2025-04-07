@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref, onBeforeMount, onMounted, nextTick, watch, onUnmounted } from "vue";
+import {
+  reactive,
+  ref,
+  onBeforeMount,
+  onMounted,
+  nextTick,
+  watch,
+  onUnmounted,
+} from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -193,14 +201,15 @@ const setRate = async () => {
   reliabilityRate.value = (
     document.getElementById("reliability") as HTMLInputElement
   ).value as unknown as number;
-  job.evaluated = true;
-  await jobStore.updateJob(job);
   await jobStore.rateWorker(job.workerId!, {
     quality: [qualityRate.value],
     reliability: [reliabilityRate.value],
   });
+  job.evaluated = true;
+  await jobStore.updateJob(job);
   router.push("/jobs");
 };
+
 // New chat function
 const newChat = () => {
   chat.jobId = job._id as string;
