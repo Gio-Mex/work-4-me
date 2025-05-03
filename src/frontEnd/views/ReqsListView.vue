@@ -155,7 +155,7 @@ watch(
 // Handle route change function (fetch active or archived jobs depending on the route)
 const handleRouteChange = async () => {
   if (archivedUrl.value) {
-    await jobStore.fetchArchivedJobs(userStore.user!._id);
+    await jobStore.fetchArchivedJobs();
   } else {
     await jobStore.fetchActiveJobs();
   }
