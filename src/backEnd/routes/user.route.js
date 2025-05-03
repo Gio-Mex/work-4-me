@@ -13,13 +13,13 @@ import {
 
 const router = Router();
 
-router.get("/:id", authMiddleware, getUser);
-router.get("/ratings/:id", authMiddleware, getRatings);
+router.get("/", authMiddleware, getUser);
+router.get("/ratings/", authMiddleware, getRatings);
 router.post("/login", loginUser);
 router.post("/signup", createUser);
-router.put("/:id", authMiddleware, updateUser);
-router.patch("/ratings/:id", rateWorker);
-router.patch("/notifications/:id/:jobId", authMiddleware, deleteNotifications);
+router.put("/", authMiddleware, updateUser);
+router.patch("/ratings", rateWorker);
+router.patch("/notifications/:jobId", authMiddleware, deleteNotifications);
 router.delete("/", authMiddleware, deleteUser);
 
 export default router;
