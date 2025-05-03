@@ -45,7 +45,7 @@ const createJob = async (req, res) => {
 
     // Notify all matched workers
     notifyAllUsers(workers, newJob);
-    res.status(201).json({ message: "Job created", newJob });
+    res.status(201).json({ message: "Richiesta creata", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -128,7 +128,7 @@ const updateJob = async (req, res) => {
     });
 
     if (!updatedJob) {
-      return res.status(404).json({ message: "Job not found" });
+      return res.status(404).json({ message: "Richiesta non trovata" });
     }
 
     if (props.status === "Accettato") {
@@ -141,7 +141,7 @@ const updateJob = async (req, res) => {
     ) {
       notifySingleUser(updatedJob.userId, updatedJob);
     }
-    res.status(200).json({ message: "Action confirmed", updatedJob });
+    res.status(200).json({ message: "Azione confermata", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -155,7 +155,7 @@ const setOffer = async (req, res) => {
     if (updatedJob.status === "Accettato") {
       return res
         .status(400)
-        .json({ message: "Another proposal has already been accepted" });
+        .json({ message: "Un'altra offerta è già stata accettata" });
     } else {
       updatedJob.status = props.status;
       const offer = props.offers[props.offers.length - 1];
@@ -180,11 +180,11 @@ const setOffer = async (req, res) => {
       }
 
       notifyAllUsers(workers, updatedJob);
-      res.status(200).json({ message: "Offer sent" });
+      res.status(200).json({ message: "Offerta inviata" });
     }
   } catch (error) {
     if (error.message.includes("null")) {
-      error.message = "This job is no longer available";
+      error.message = "Questa richiesta non è più disponibile";
     }
     res.status(500).json({ message: error.message });
   }
@@ -218,7 +218,7 @@ const updateChat = async (req, res) => {
         { $set: chat },
         { new: true }
       );
-      res.status(200).json({ message: "Chat updated", updatedChat });
+      res.status(200).json({ message: "Messaggio inviato", updatedChat });
     } else {
       const newChat = new Chat({
         jobId: req.body.jobId,
@@ -227,7 +227,7 @@ const updateChat = async (req, res) => {
         messages: [],
       });
       await newChat.save();
-      res.status(201).json({ message: "Chat created", newChat });
+      res.status(201).json({ message: "Chat creata", newChat });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -240,7 +240,7 @@ const findChat = async (req, res) => {
     const { id } = req.params;
     const chat = await Chat.findOne({ jobId: id });
     if (!chat) {
-      return res.status(404).json({ message: "Chat not found" });
+      return res.status(404).json({ message: "Chat non trovata" });
     }
     res.status(200).json(chat);
   } catch (error) {
@@ -279,9 +279,9 @@ const deleteJob = async (req, res) => {
     const { id } = req.params;
     const deletedJob = await Job.findOneAndDelete({ _id: id });
     if (!deletedJob) {
-      return res.status(404).json({ message: "Job not found" });
+      return res.status(404).json({ message: "Richiesta non trovata" });
     }
-    res.status(200).json({ message: "Job deleted", deletedJob });
+    res.status(200).json({ message: "Richiesta eliminata", deletedJob });
     deleteAllUsersJobNotifications(deletedJob._id);
     io.emit("deleteNotifications", deletedJob);
     io.emit("deleteJob", deletedJob._id);
@@ -296,22 +296,22 @@ const deleteAllUserJobs = async (req, res) => {
     const userId = req.userId;
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
-      console.log("No jobs found for this user");
+      console.log("Non ci sono lavori per questo utente");
       return res
         .status(200)
-        .json({ message: "No jobs to delete for this user" });
+        .json({ message: "Non ci sono lavori per questo utente" });
     }
     jobs.forEach((job) => {
       io.emit("deleteNotifications", job);
       deleteAllUsersJobNotifications(job._id);
     });
     await Job.deleteMany({ userId: userId });
-    console.log("All jobs deleted for user:", userId);
+    console.log("Lavori utente eliminati");
     res
       .status(200)
-      .json({ message: "User jobs deleted", deletedJobs: jobs });
+      .json({ message: "Lavori utente eliminati", deletedJobs: jobs });
   } catch (error) {
-    console.error("Error deleting jobs:", error.message);
+    console.error("Errore durante l'eliminazione dei lavori:", error.message);
     res.status(500).json({ message: error.message });
   }
 };

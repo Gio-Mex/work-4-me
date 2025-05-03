@@ -163,10 +163,9 @@ const deleteAllUsersJobNotifications = async (jobId) => {
 const deleteUser = async (req, res) => {
   try {
     const userId = req.userId;
-
+    if (!userId) return res.status(404).json({ message: "Utente non trovato" });
+    
     const deletedUser = await User.findByIdAndDelete(userId);
-    if (!deletedUser) return res.status(404).json({ message: "Utente non trovato" });
-
     res.status(200).json({ message: `Utente ${deletedUser.name} ${deletedUser.lastName} eliminato con successo` });
     io.emit("deleteUser", deletedUser._id);
 
