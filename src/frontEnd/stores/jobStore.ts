@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import api from "../utils/axios";
 import { useAppStore } from "./appStore";
 import type { Job } from "../interfaces/job";
 import type { Chat } from "../interfaces/chat";
@@ -36,7 +36,7 @@ export const useJobStore = defineStore("job", {
       // Fetch data
       try {
         const url = `${baseUrl}/jobs`;
-        const response = await axios.get(url);
+        const response = await api.get(url);
         this.jobs = response.data;
       } catch (error: any) {
         console.error("Errore durante il recupero dei lavori:", error);
@@ -60,7 +60,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Now the userId is extracted from the token on the server
         const url = `${baseUrl}/jobs/archived`;
-        const response = await axios.get(url);
+        const response = await api.get(url);
         this.jobs = response.data;
       } catch (error: any) {
         console.error("Errore durante il recupero dell'archivio:", error);
@@ -81,7 +81,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/new`;
-        const response = await axios.post(url, job);
+        const response = await api.post(url, job);
         this.jobs.push(response.data);
         // Show message
         appStore.showToast(response.data.message);
@@ -104,7 +104,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/edit/${job._id}`;
-        const response = await axios.put(url, job);
+        const response = await api.put(url, job);
         job = response.data;
         console.log("Risposta dal server: Status", response.status);
         // Show message
@@ -138,7 +138,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/${job._id}`;
-        const response = await axios.patch(url, job);
+        const response = await api.patch(url, job);
         console.log("Risposta dal server: Status", response.status);
         // Show message
         appStore.showToast(response.data.message);
@@ -178,7 +178,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/${jobId}`;
-        const response = await axios.delete(url);
+        const response = await api.delete(url);
         console.log("Risposta dal server: Status", response.status);
         // Show message
         appStore.showToast(response.data.message);
@@ -204,7 +204,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/${chat.jobId}`;
-        const response = await axios.post(url, chat);
+        const response = await api.post(url, chat);
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la creazione della chat:", error);
@@ -219,7 +219,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/jobs/${jobId}`;
-        const response = await axios.get(url);
+        const response = await api.get(url);
         return response.data;
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
@@ -239,7 +239,7 @@ export const useJobStore = defineStore("job", {
       try {
         // Fetch data
         const url = `${baseUrl}/user/ratings/${workerId}`;
-        const response = await axios.patch(url, { ratings });
+        const response = await api.patch(url, { ratings });
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la valutazione:", error);

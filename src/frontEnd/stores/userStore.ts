@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import api from "../utils/axios";
 import { ref } from "vue";
 import type { User } from "../interfaces/user";
 import { useAppStore } from "./appStore";
@@ -22,7 +22,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data
         const url = `${baseUrl}/user/login`;
-        const response = await axios.post(url, form);
+        const response = await api.post(url, form);
         const { user, token } = response.data;
         console.log("Risposta dal server: Status", response.status);
         // Show message
@@ -54,7 +54,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data
         const url = `${baseUrl}/user/signup`;
-        const response = await axios.post(url, form);
+        const response = await api.post(url, form);
         console.log("Risposta dal server: Status", response.status);
         if (response.status === 201) {
           // Show message
@@ -90,7 +90,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/user`;
-        const response = await axios.get(url);
+        const response = await api.get(url);
         this.user = response.data as User;
       } catch (error) {
         console.error(error);
@@ -105,7 +105,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/user/ratings`;
-        const response = await axios.get(url);
+        const response = await api.get(url);
         this.user!.ratings = response.data as {
           quality: number[];
           reliability: number[];
@@ -134,7 +134,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/user`;
-        const response = await axios.put(url, user);
+        const response = await api.put(url, user);
         const { updatedUser } = response.data as { updatedUser: User };
         console.log("Risposta dal server: Status", response.status);
         // Show message
@@ -160,7 +160,7 @@ export const useUserStore = defineStore("user", {
         }
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/user/notifications/${jobId}`;
-        const response = await axios.patch(url);
+        const response = await api.patch(url);
         if (response && response.status === 200) {
           console.log(
             "Notifica cancellata con successo. Status:",
@@ -190,7 +190,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/user`;
-        const response = await axios.delete(url);
+        const response = await api.delete(url);
         console.log("Risposta dal server: Status", response.status);
         // Emit deleteUser event
         socket.emit("deleteUser", this.user!._id);
@@ -214,7 +214,7 @@ export const useUserStore = defineStore("user", {
       try {
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/jobs/user`;
-        const response = await axios.delete(url);
+        const response = await api.delete(url);
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la cancellazione dei lavori:", error);
