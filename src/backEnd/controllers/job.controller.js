@@ -293,10 +293,10 @@ const deleteJob = async (req, res) => {
 // Delete all jobs created by a specific user
 const deleteAllUserJobs = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = String(req.userId);
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
-      console.log("No jobs found for user:", userId);
+      console.log("No jobs found for this user:");
       return res
         .status(200)
         .json({ message: "No jobs to delete for this user" });
