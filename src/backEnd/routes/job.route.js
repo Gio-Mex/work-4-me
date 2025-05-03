@@ -22,6 +22,6 @@ router.post("/:id", authMiddleware, updateChat);
 router.put("/edit/:id", authMiddleware, updateJob);
 router.patch("/:id", authMiddleware, setOffer);
 router.delete("/:id", authMiddleware, deleteJob);
-router.delete("/user", authMiddleware, deleteAllUserJobs);
+router.delete("/", authMiddleware, deleteAllUserJobs);
 
 export default router;

@@ -313,8 +313,6 @@ const deleteAllUserJobs = async (req, res) => {
   } catch (error) {
     console.error("Error deleting jobs:", error.message);
     res.status(500).json({ message: error.message });
-  }finally{
-    console.log("Cancellazione utente" + req.userId);
   }
 };
 

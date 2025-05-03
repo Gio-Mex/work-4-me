@@ -213,8 +213,9 @@ export const useUserStore = defineStore("user", {
     async deleteAllUserJobs() {
       try {
         // Fetch data (userId will be extracted from token)
-        const url = `${baseUrl}/jobs/user`;
+        const url = `${baseUrl}/jobs`;
         const response = await api.delete(url);
+        console
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la cancellazione dei lavori:", error);
