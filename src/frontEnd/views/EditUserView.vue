@@ -28,7 +28,6 @@ const jobStore = useJobStore();
 const skills = jobStore.categories;
 
 const form = reactive({
-  _id: userStore.user!._id,
   name: userStore.user!.name,
   lastName: userStore.user!.lastName,
   address: userStore.user!.address,
