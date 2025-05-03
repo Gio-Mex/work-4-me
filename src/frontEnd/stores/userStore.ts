@@ -81,14 +81,15 @@ export const useUserStore = defineStore("user", {
       // Show message
       appStore.showToast("Logout effettuato");
     },
+
     // Fetch user function
     async fetchUser() {
       // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
-        // Fetch data
-        const url = `${baseUrl}/user/${this.user!._id}`;
+        // Fetch data (userId will be extracted from token)
+        const url = `${baseUrl}/user`;
         const response = await axios.get(url);
         this.user = response.data as User;
       } catch (error) {
@@ -102,8 +103,8 @@ export const useUserStore = defineStore("user", {
     // Fetch ratings function
     async fetchRatings() {
       try {
-        // Fetch data
-        const url = `${baseUrl}/user/ratings/${this.user!._id}`;
+        // Fetch data (userId will be extracted from token)
+        const url = `${baseUrl}/user/ratings`;
         const response = await axios.get(url);
         this.user!.ratings = response.data as {
           quality: number[];
@@ -131,8 +132,8 @@ export const useUserStore = defineStore("user", {
       const appStore = useAppStore();
       appStore.startLoading();
       try {
-        // Fetch data
-        const url = `${baseUrl}/user/${this.user!._id}`;
+        // Fetch data (userId will be extracted from token)
+        const url = `${baseUrl}/user`;
         const response = await axios.put(url, user);
         const { updatedUser } = response.data as { updatedUser: User };
         console.log("Risposta dal server: Status", response.status);
@@ -157,7 +158,8 @@ export const useUserStore = defineStore("user", {
           console.error("Utente non trovato");
           return;
         }
-        const url = `${baseUrl}/user/notifications/${this.user._id}/${jobId}`;
+        // Fetch data (userId will be extracted from token)
+        const url = `${baseUrl}/user/notifications/${jobId}`;
         const response = await axios.patch(url);
         if (response && response.status === 200) {
           console.log(
@@ -170,7 +172,7 @@ export const useUserStore = defineStore("user", {
           );
         }
       } catch (error: any) {
-        // Gestione degli errori
+        // Error handling
         console.error(
           "Errore durante la cancellazione delle notifiche:",
           error
@@ -186,13 +188,9 @@ export const useUserStore = defineStore("user", {
       appStore.startLoading();
       await this.deleteAllUserJobs();
       try {
-        // Fetch data
+        // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/user`;
-        const response = await axios.delete(url, {
-          params: {
-            _id: this.user!._id,
-          },
-        });
+        const response = await axios.delete(url);
         console.log("Risposta dal server: Status", response.status);
         // Emit deleteUser event
         socket.emit("deleteUser", this.user!._id);
@@ -214,20 +212,16 @@ export const useUserStore = defineStore("user", {
     // Delete all user jobs function
     async deleteAllUserJobs() {
       try {
-        // Fetch data
-        const url = `${baseUrl}/jobs/user/${this.user!._id}`;
-        const response = await axios.delete(url, {
-          params: {
-            userId: this.user!._id,
-          },
-        });
+        // Fetch data (userId will be extracted from token)
+        const url = `${baseUrl}/jobs/user`;
+        const response = await axios.delete(url);
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la cancellazione dei lavori:", error);
         throw error;
       }
     },
-    
+
     // Reset user function
     resetUser() {
       const jobStore = useJobStore();

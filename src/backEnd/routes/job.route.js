@@ -1,4 +1,5 @@
 import { Router } from "express";
+import authMiddleware from "../middleware/auth.middleware.js";
 import {
   getActiveJobs,
   getArchivedJobs,
@@ -13,14 +14,14 @@ import {
 
 const router = Router();
 
-router.get("/", getActiveJobs);
-router.get("/:id", findChat);
-router.get("/archived/:id", getArchivedJobs);
-router.post("/new", createJob);
-router.post("/:id", updateChat);
-router.put("/edit/:id", updateJob);
-router.patch("/:id", setOffer);
-router.delete("/:id", deleteJob);
-router.delete("/user/:userId", deleteAllUserJobs);
+router.get("/", authMiddleware, getActiveJobs);
+router.get("/:id", authMiddleware, findChat);
+router.get("/archived/:id", authMiddleware, getArchivedJobs);
+router.post("/new", authMiddleware, createJob);
+router.post("/:id", authMiddleware, updateChat);
+router.put("/edit/:id", authMiddleware, updateJob);
+router.patch("/:id", authMiddleware, setOffer);
+router.delete("/:id", authMiddleware, deleteJob);
+router.delete("/user/:userId", authMiddleware, deleteAllUserJobs);
 
 export default router;

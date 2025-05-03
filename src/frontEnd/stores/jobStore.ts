@@ -53,13 +53,13 @@ export const useJobStore = defineStore("job", {
     },
 
     // Fetch archived jobs function
-    async fetchArchivedJobs(id: string) {
+    async fetchArchivedJobs() {
       // Start loader
       const appStore = useAppStore();
       appStore.startLoading();
       try {
-        // Fetch data
-        const url = `${baseUrl}/jobs/archived/${id}`;
+        // Now the userId is extracted from the token on the server
+        const url = `${baseUrl}/jobs/archived`;
         const response = await axios.get(url);
         this.jobs = response.data;
       } catch (error: any) {

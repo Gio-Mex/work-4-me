@@ -1,6 +1,6 @@
 import express, { json, urlencoded } from "express";
 import { Server } from "socket.io";
-import http, { get } from "http";
+import http from "http";
 import cors from "cors";
 import { connect } from "mongoose";
 import { config } from "dotenv";

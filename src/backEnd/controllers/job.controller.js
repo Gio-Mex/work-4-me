@@ -6,7 +6,7 @@ import { notifyUser } from "../index.js";
 import { getUserSocketId } from "../index.js";
 import { deleteAllUsersJobNotifications } from "./user.controller.js";
 
-// Create job function
+// Create new job function
 const createJob = async (req, res) => {
   try {
     const {
@@ -17,10 +17,12 @@ const createJob = async (req, res) => {
       address,
       city,
       date,
-      userId,
       status,
       workerId,
     } = req.body;
+
+    const userId = req.userId;
+
     const newJob = new Job({
       title,
       description,
@@ -34,19 +36,22 @@ const createJob = async (req, res) => {
       workerId,
     });
     await newJob.save();
-    // Send notification to all workers with created job category
+
+    // Find workers who match the job category, excluding the job creator
     const workers = await User.find({
       skills: { $in: category },
       _id: { $ne: userId },
     });
+
+    // Notify all matched workers
     notifyAllUsers(workers, newJob);
-    res.status(201).json({ message: "Richiesta creata", newJob });
+    res.status(201).json({ message: "Job created", newJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get all active jobs (not evaluated) function. Use aggregate to get user, worker and chat details.
+// Get all active jobs (not yet evaluated)
 const getActiveJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
@@ -59,9 +64,7 @@ const getActiveJobs = async (req, res) => {
           as: "userDetails",
         },
       },
-      {
-        $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true },
-      },
+      { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           from: "users",
@@ -70,9 +73,7 @@ const getActiveJobs = async (req, res) => {
           as: "workerDetails",
         },
       },
-      {
-        $unwind: { path: "$workerDetails", preserveNullAndEmptyArrays: true },
-      },
+      { $unwind: { path: "$workerDetails", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           from: "chat",
@@ -88,7 +89,7 @@ const getActiveJobs = async (req, res) => {
   }
 };
 
-// Get all archived jobs (evaluated). Use aggregate to get user, worker and chat details.
+// Get all archived jobs (evaluated)
 const getArchivedJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
@@ -101,9 +102,7 @@ const getArchivedJobs = async (req, res) => {
           as: "userDetails",
         },
       },
-      {
-        $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true },
-      },
+      { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           from: "users",
@@ -112,9 +111,7 @@ const getArchivedJobs = async (req, res) => {
           as: "workerDetails",
         },
       },
-      {
-        $unwind: { path: "$workerDetails", preserveNullAndEmptyArrays: true },
-      },
+      { $unwind: { path: "$workerDetails", preserveNullAndEmptyArrays: true } },
     ]);
     res.status(200).json(jobs);
   } catch (error) {
@@ -122,7 +119,7 @@ const getArchivedJobs = async (req, res) => {
   }
 };
 
-// Update job function
+// Update job status and notify users based on status change
 const updateJob = async (req, res) => {
   try {
     const { _id, ...props } = req.body;
@@ -131,7 +128,7 @@ const updateJob = async (req, res) => {
     });
 
     if (!updatedJob) {
-      return res.status(404).json({ message: "Lavoro non trovato" });
+      return res.status(404).json({ message: "Job not found" });
     }
 
     if (props.status === "Accettato") {
@@ -142,16 +139,15 @@ const updateJob = async (req, res) => {
       props.status === "In corso" ||
       (props.status === "Chiuso" && updatedJob.evaluated === false)
     ) {
-      // Notify the user
       notifySingleUser(updatedJob.userId, updatedJob);
     }
-    res.status(200).json({ message: "Azione confermata", updatedJob });
+    res.status(200).json({ message: "Action confirmed", updatedJob });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Set offer function
+// Submit offer function
 const setOffer = async (req, res) => {
   try {
     const { _id, ...props } = req.body;
@@ -159,7 +155,7 @@ const setOffer = async (req, res) => {
     if (updatedJob.status === "Accettato") {
       return res
         .status(400)
-        .json({ message: "Un'altra proposta è stata già accettata" });
+        .json({ message: "Another proposal has already been accepted" });
     } else {
       updatedJob.status = props.status;
       const offer = props.offers[props.offers.length - 1];
@@ -172,52 +168,45 @@ const setOffer = async (req, res) => {
         _id: { $ne: offer.workerId },
       });
 
-      // Notify the user who made the offer via socket if he is not a worker and doesn't have the same skill as the job category
+      // Exclude the user from workers if their skill matches the job category
       if (
         user.skills.some(
           (skill) => skill.toLowerCase() === updatedJob.category.toLowerCase()
         )
       ) {
-        // Remove the user from the list of workers if he has the same skill as the job category (he can't be notified twice)
         workers = workers.filter(
           (worker) => worker._id.toString() !== user._id.toString()
         );
       }
 
-      // Notify all workers via socket
       notifyAllUsers(workers, updatedJob);
-      res.status(200).json({ message: "Proposta inviata" });
+      res.status(200).json({ message: "Offer sent" });
     }
   } catch (error) {
     if (error.message.includes("null")) {
-      error.message = "Questa richiesta non è più disponibile";
+      error.message = "This job is no longer available";
     }
     res.status(500).json({ message: error.message });
   }
 };
 
-// Accept offer function
+// Accept offer function (notify only the accepted worker, remove others)
 const acceptOffer = async (updatedJob) => {
-  // Clear unnecessary notifications for other workers
   await User.updateMany(
     { _id: { $ne: updatedJob.workerId } },
     { $pull: { notifications: updatedJob._id } }
   );
-  // Emit a deleteNotifications event for other workers via socket
   io.emit("deleteNotifications", updatedJob);
-
-  // Emit a jobUpdated event via socket
   io.emit("jobUpdated", updatedJob);
-  // Notify only the worker who made the offer
   notifySingleUser(updatedJob.workerId, updatedJob);
 };
 
-// Update chat function
+// Update or create a chat for a job
 const updateChat = async (req, res) => {
   try {
     const chat = {
       jobId: req.body.jobId,
-      userId: req.body.userId,
+      userId: req.userId,
       workerId: req.body.workerId,
       messages: req.body.messages,
     };
@@ -229,30 +218,29 @@ const updateChat = async (req, res) => {
         { $set: chat },
         { new: true }
       );
-      res.status(200).json({ message: "Chat aggiornata", updatedChat });
+      res.status(200).json({ message: "Chat updated", updatedChat });
     } else {
-      // Create new chat
       const newChat = new Chat({
         jobId: req.body.jobId,
-        userId: req.body.userId,
+        userId: req.userId,
         workerId: req.body.workerId,
         messages: [],
       });
       await newChat.save();
-      res.status(201).json({ message: "Chat creata", newChat });
+      res.status(201).json({ message: "Chat created", newChat });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Find chat function
+// Retrieve chat by job ID
 const findChat = async (req, res) => {
   try {
     const { id } = req.params;
     const chat = await Chat.findOne({ jobId: id });
     if (!chat) {
-      return res.status(404).json({ message: "Chat non trovata" });
+      return res.status(404).json({ message: "Chat not found" });
     }
     res.status(200).json(chat);
   } catch (error) {
@@ -260,81 +248,70 @@ const findChat = async (req, res) => {
   }
 };
 
-// Send notification to all users (workers) function
+// Notify all workers function
 const notifyAllUsers = async (workers, job) => {
-  // Notify all workers via socket
   workers.forEach((worker) => {
     notifyUser(worker._id, job);
     worker.notifications.push(job._id);
   });
-  // Notify single user (he is not in the list of workers because he has the same skill as the job category: he can't be notified twice)
   if (!workers.some((worker) => worker._id === job.userId)) {
     if (job.status === "Offerta") {
       notifySingleUser(job.userId, job);
     }
   }
   await Promise.all(workers.map((worker) => worker.save()));
-  // Emit a jobUpdated event for workers via socket
   io.emit("jobUpdated", job);
 };
 
-// Send notification to a specific user function
+// Notify a single user function
 const notifySingleUser = async (userId, job) => {
   const user = await User.findById(userId);
-  // Notify the user via socket
   notifyUser(userId, job);
   user.notifications.push(job._id);
   await user.save();
-  // Get the socketId of the user
   const socketUser = getUserSocketId(userId);
-  // Emit a jobUpdated event for the user via socket
   io.to(socketUser).emit("jobUpdated", job);
 };
 
-// Delete job
+// Delete single job function
 const deleteJob = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedJob = await Job.findOneAndDelete({ _id: id });
     if (!deletedJob) {
-      return res.status(404).json({ message: "Lavoro non trovato" });
+      return res.status(404).json({ message: "Job not found" });
     }
-    res.status(200).json({ message: "Lavoro eliminato", deletedJob });
-    // Delete all notifications of the job from the database
+    res.status(200).json({ message: "Job deleted", deletedJob });
     deleteAllUsersJobNotifications(deletedJob._id);
-    // Emit a deleteNotifications event via socket
     io.emit("deleteNotifications", deletedJob);
-    // Emit a deleteJob event via socket
     io.emit("deleteJob", deletedJob._id);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Delete all jobs of a specific user
+// Delete all jobs created by a specific user
 const deleteAllUserJobs = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.userId;
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
-      console.log("Non ci sono lavori da eliminare per l'utente:", userId);
+      console.log("No jobs found for user:", userId);
       return res
         .status(200)
-        .json({ message: "Nessun lavoro da eliminare per l'utente" });
+        .json({ message: "No jobs to delete for this user" });
     }
     jobs.forEach((job) => {
-      // Emit a deleteNotifications event via socket
       io.emit("deleteNotifications", job);
-      // Delete all notifications of the job from the database
       deleteAllUsersJobNotifications(job._id);
     });
     await Job.deleteMany({ userId: userId });
-    console.log("Tutti i lavori eliminati per l'utente:", userId);
+    console.log("All jobs deleted for user:", userId);
     res
       .status(200)
-      .json({ message: "Lavori eliminati per l'utente", deletedJobs: jobs });
+      .json({ message: "User jobs deleted", deletedJobs: jobs });
   } catch (error) {
-    console.error("Errore nell'eliminazione dei lavori:", error.message);
+    console.error("Error deleting jobs:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
