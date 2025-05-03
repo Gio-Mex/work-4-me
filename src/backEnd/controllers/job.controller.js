@@ -294,10 +294,9 @@ const deleteJob = async (req, res) => {
 const deleteAllUserJobs = async (req, res) => {
   try {
     const userId = req.userId;
-    console.log("Deleting jobs for userId:", req.userId);
     const jobs = await Job.find({ userId: userId });
     if (jobs.length === 0) {
-      console.log("No jobs found for this user:");
+      console.log("No jobs found for this user");
       return res
         .status(200)
         .json({ message: "No jobs to delete for this user" });
@@ -314,6 +313,8 @@ const deleteAllUserJobs = async (req, res) => {
   } catch (error) {
     console.error("Error deleting jobs:", error.message);
     res.status(500).json({ message: error.message });
+  }finally{
+    console.log("Cancellazione utente" + req.userId);
   }
 };
 
