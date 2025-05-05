@@ -16,6 +16,8 @@ const jobStore = useJobStore();
 const userStore = useUserStore();
 const socket = appStore.socket;
 let tokenCheckInterval: any;
+const currentToken = localStorage.getItem("authToken");
+
 // Check if token is expired
 const isTokenExpired = (token: string | null) => {
   if (!token) return true;
@@ -31,7 +33,6 @@ const isTokenExpired = (token: string | null) => {
 onMounted(() => {
   // AuthToken validity check every 15 minutes
   tokenCheckInterval = setInterval(() => {
-    const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
       localStorage.removeItem("authToken");
       userStore.isLoggedIn = false;
@@ -43,25 +44,36 @@ onMounted(() => {
     console.warn("⚠️ Socket not initialized!");
     return;
   }
-  console.log("✅ Socket connected, listening for events");
-  // Emit registerUser event
-  if (userStore.user) {
-    socket.emit("registerUser", userStore.user._id);
-  }
+
+  // Send token to the server after connection
+  socket.on("connect", () => {
+    socket.emit("authenticate", { currentToken });
+  });
+
+  // Listen for authentication result
+  socket.on("authenticated", (data) => {
+    console.log("✅ Socket authenticated:", data);
+  });
+  socket.on("unauthorized", (data) => {
+    console.warn("❌ Socket unauthorized:", data);
+  });
+
   // Listen for jobNotification event
   socket.on("jobNotification", (job) => {
     jobStore.notifications.push(job._id);
   });
+
   // Listen for deleteNotifications event
   socket.on("deleteNotifications", async (job: Job) => {
-      await appStore.deleteAllNotifications(job);
+    await appStore.deleteAllNotifications(job);
   });
+
   // Listen for disconnect event
   socket.on("disconnect", () => {
     if (userStore.user) {
       console.log("Socket disconnected! Attempting to reconnect...");
       setTimeout(() => {
-        appStore.socket.emit("registerUser", userStore.user?._id);
+        appStore.socket.emit("authenticate", { currentToken });
       }, 3000);
     }
   });

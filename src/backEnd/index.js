@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
 import { connect } from "mongoose";
+import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import userRoute from "./routes/user.route.js";
 import jobRoute from "./routes/job.route.js";
@@ -13,7 +14,10 @@ const app = express();
 const userSockets = new Map();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ["https://work-4-me.netlify.app", "http://localhost:5173"],
+  credentials: true
+}));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 
@@ -43,29 +47,42 @@ export const io = new Server(server, {
   },
 });
 
-// New WebSocket connection handler
+
+// Socket.IO connection handler
 io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
-  // Register user event handler
-  socket.on("registerUser", (userId) => {
-    // Remove old socket
-    if (userSockets.has(userId)) {
-      const oldSocketId = userSockets.get(userId);
-      if (oldSocketId !== socket.id) {
-        io.sockets.sockets.get(oldSocketId)?.disconnect(true);
+
+  // Wait for client to send the token
+  socket.on("authenticate", (data) => {
+    const { token } = data;
+
+    try {
+      // Verify the JWT token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.userId;
+
+      // Disconnect old socket if user was already connected
+      if (userSockets.has(userId)) {
+        const oldSocketId = userSockets.get(userId);
+        if (oldSocketId !== socket.id) {
+          io.sockets.sockets.get(oldSocketId)?.disconnect(true);
+        }
       }
+
+      // Store the new socket
+      userSockets.set(userId, socket.id);
+      console.log(`✅ Authenticated user ${userId} with socket ${socket.id}`);
+
+      // Send confirmation to the client
+      socket.emit("authenticated", { success: true });
+    } catch (err) {
+      console.warn("❌ Invalid token on socket connection");
+      socket.emit("unauthorized", { message: "Invalid token" });
+      socket.disconnect();
     }
-    // Add new socket
-    userSockets.set(userId, socket.id);
-    console.log(`✅ User ${userId} registered with socket ${socket.id}`);
   });
 
-  // Message event handler
-  socket.on("message", (message) => {
-    socket.broadcast.emit("message", message);
-  });
-
-  // Disconnect event handler
+  // Handle disconnection
   socket.on("disconnect", () => {
     for (const [userId, socketId] of userSockets.entries()) {
       if (socketId === socket.id) {
