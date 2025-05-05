@@ -47,14 +47,12 @@ export const io = new Server(server, {
   },
 });
 
-
 // Socket.IO connection handler
 io.on("connection", (socket) => {
   console.log("New WebSocket connection:", socket.id);
 
   // Wait for client to send the token
-  socket.on("authenticate", (data) => {
-    const { token } = data;
+  socket.on("authenticate", (token) => {
 
     try {
       // Verify the JWT token
