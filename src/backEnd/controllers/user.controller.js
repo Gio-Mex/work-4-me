@@ -100,11 +100,11 @@ const updateUser = async (req, res) => {
 // Rate worker function
 const rateWorker = async (req, res) => {
   try {
-    const { id } = req.params;  
+    const { workerId } = req.params;  
     const { ratings } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
-      id,
+      workerId,
       {
         $push: {
           "ratings.quality": { $each: ratings.quality || [] },
@@ -113,7 +113,7 @@ const rateWorker = async (req, res) => {
       },
       { new: true }
     );
-    if (!updatedUser) return res.status(404).json({ message: "Lavoratore non trovato" });
+    if (!updatedUser) return res.status(404).json({ message: "Worker non trovato" });
 
     res.status(200).json({ message: "Valutazioni inviate", data: updatedUser });
 
