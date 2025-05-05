@@ -18,7 +18,7 @@ router.get("/ratings/", authMiddleware, getRatings);
 router.post("/login", loginUser);
 router.post("/signup", createUser);
 router.put("/", authMiddleware, updateUser);
-router.patch("/ratings", rateWorker);
+router.patch("/ratings/:workerId", rateWorker);
 router.patch("/notifications/:jobId", authMiddleware, deleteNotifications);
 router.delete("/", authMiddleware, deleteUser);
 
