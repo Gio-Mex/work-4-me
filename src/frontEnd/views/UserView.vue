@@ -49,7 +49,7 @@ const handleDeleteAccount = async () => {
     Controlla lo storico delle tue richieste, o dei tuoi lavori
     da Worker.
   </p>
-  <Button @click="router.push(`jobs/archived/${ user!._id }`)" class="primary-btn w-[160px] ">Archivio</Button>
+  <Button @click="router.push(`jobs/archived`)" class="primary-btn w-[160px] ">Archivio</Button>
   <hr>
   <p>
     Vuoi eliminare il tuo account? 

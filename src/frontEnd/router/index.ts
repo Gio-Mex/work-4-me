@@ -59,7 +59,7 @@ const router = createRouter({
       component: EditReqView,
     },
     {
-      path: "/jobs/archived/:id",
+      path: "/jobs/archived",
       name: "archivedJobs",
       component: ReqsListView,
     },
