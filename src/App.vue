@@ -47,7 +47,9 @@ onMounted(() => {
 
   // Send token to the server after connection
   socket.on("connect", () => {
-    socket.emit("authenticate", currentToken.value);
+    if (currentToken.value && !isTokenExpired(currentToken.value)) {
+      socket.emit("authenticate", currentToken.value);
+    }
   });
 
   // Listen for authentication result
