@@ -45,11 +45,6 @@ onMounted(() => {
     return;
   }
 
-  // Send token to the server after connection
-  socket.on("connect", () => {
-    socket.emit("authenticate", { currentToken });
-  });
-
   // Listen for authentication result
   socket.on("authenticated", (data) => {
     console.log("✅ Socket authenticated:", data);
