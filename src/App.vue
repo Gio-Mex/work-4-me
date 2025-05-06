@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { RouterView } from "vue-router";
 import { jwtDecode } from "jwt-decode";
 import type { Job } from "./frontEnd/interfaces/job";
@@ -15,8 +15,8 @@ const appStore = useAppStore();
 const jobStore = useJobStore();
 const userStore = useUserStore();
 const socket = appStore.socket;
-const currentToken = ref(localStorage.getItem("authToken"));
 let tokenCheckInterval: any;
+const currentToken = localStorage.getItem("authToken");
 
 // Check if token is expired
 const isTokenExpired = (token: string | null) => {
@@ -33,7 +33,7 @@ const isTokenExpired = (token: string | null) => {
 onMounted(() => {
   // AuthToken validity check every 15 minutes
   tokenCheckInterval = setInterval(() => {
-    if (currentToken && isTokenExpired(currentToken.value)) {
+    if (currentToken && isTokenExpired(currentToken)) {
       localStorage.removeItem("authToken");
       userStore.isLoggedIn = false;
       router.push("/user/login");
@@ -47,9 +47,7 @@ onMounted(() => {
 
   // Send token to the server after connection
   socket.on("connect", () => {
-    if (currentToken.value && !isTokenExpired(currentToken.value)) {
-      socket.emit("authenticate", currentToken.value);
-    }
+    socket.emit("authenticate", { currentToken });
   });
 
   // Listen for authentication result
@@ -75,7 +73,7 @@ onMounted(() => {
     if (userStore.user) {
       console.log("Socket disconnected");
       setTimeout(() => {
-        appStore.socket.emit("authenticate", { currentToken });
+        appStore.socket.connect();
       }, 3000);
     }
   });

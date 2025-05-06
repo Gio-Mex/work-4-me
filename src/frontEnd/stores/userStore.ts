@@ -28,11 +28,14 @@ export const useUserStore = defineStore("user", {
         // Show message
         appStore.showToast(response.data.message);
         this.user = user;
-        // Save auth token in local storage
+        // Save auth token in local storage and in app store
         localStorage.setItem("authToken", token);
         this.isLoggedIn = true;
-        // Connect socket
+        // Connect socket and emit authenticate event
         socket.connect();
+        socket.on("connect", () => {
+          socket.emit("authenticate", token);
+        });
       } catch (error: any) {
         console.error("Errore durante il login:", error);
         // Show message
@@ -213,7 +216,7 @@ export const useUserStore = defineStore("user", {
         // Fetch data (userId will be extracted from token)
         const url = `${baseUrl}/jobs`;
         const response = await api.delete(url);
-        console
+        console;
         console.log("Risposta dal server: Status", response.status);
       } catch (error: any) {
         console.error("Errore durante la cancellazione dei lavori:", error);

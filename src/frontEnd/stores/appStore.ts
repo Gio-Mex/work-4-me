@@ -6,7 +6,6 @@ import type { Job } from "../interfaces/job";
 import { toast } from "../components/ui/toast";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-
 const socketInstance: Socket = io(baseUrl, { transports: ["websocket"] });
 
 export const useAppStore = defineStore("app", {
