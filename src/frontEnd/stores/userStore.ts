@@ -33,9 +33,9 @@ export const useUserStore = defineStore("user", {
         this.isLoggedIn = true;
         // Connect socket and emit authenticate event
         socket.connect();
-        socket.on("connect", () => {
+        if (token) {
           socket.emit("authenticate", token);
-        });
+        }
       } catch (error: any) {
         console.error("Errore durante il login:", error);
         // Show message
