@@ -72,9 +72,6 @@ onMounted(() => {
   socket.on("disconnect", () => {
     if (userStore.user) {
       console.log("Socket disconnected");
-      setTimeout(() => {
-        appStore.socket.connect();
-      }, 3000);
     }
   });
 });
