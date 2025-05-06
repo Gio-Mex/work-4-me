@@ -16,7 +16,6 @@ const jobStore = useJobStore();
 const userStore = useUserStore();
 const socket = appStore.socket;
 let tokenCheckInterval: any;
-const currentToken = localStorage.getItem("authToken");
 
 // Check if token is expired
 const isTokenExpired = (token: string | null) => {
@@ -33,6 +32,7 @@ const isTokenExpired = (token: string | null) => {
 onMounted(() => {
   // AuthToken validity check every 15 minutes
   tokenCheckInterval = setInterval(() => {
+    const currentToken = localStorage.getItem("authToken");
     if (currentToken && isTokenExpired(currentToken)) {
       localStorage.removeItem("authToken");
       userStore.isLoggedIn = false;
@@ -44,11 +44,6 @@ onMounted(() => {
     console.warn("⚠️ Socket not initialized!");
     return;
   }
-
-  // Send token to the server after connection
-  socket.on("connect", () => {
-    socket.emit("authenticate", { currentToken });
-  });
 
   // Listen for authentication result
   socket.on("authenticated", (data) => {
