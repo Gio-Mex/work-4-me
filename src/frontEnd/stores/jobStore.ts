@@ -60,8 +60,8 @@ export const useJobStore = defineStore("job", {
       try {
         // Now the userId is extracted from the token on the server
         const url = `${baseUrl}/jobs/archived`;
-        console.log("Fetching from:", url);
         const response = await api.get(url);
+        console.log("Risposta dal server:", response.data);
         this.jobs = response.data;
       } catch (error: any) {
         console.error("Errore durante il recupero dell'archivio:", error);
