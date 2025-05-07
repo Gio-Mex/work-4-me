@@ -90,9 +90,7 @@ const getActiveJobs = async (req, res) => {
 };
 
 // Get all archived jobs (evaluated)
-const getArchivedJobs = async (req, res) => {
-  console.log("✅ getArchivedJobs chiamato");
-  console.log("Utente autenticato con ID:", req.userId);  
+const getArchivedJobs = async (req, res) => { 
   try {
     const jobs = await Job.aggregate([
       { $match: { evaluated: true } },
@@ -114,6 +112,14 @@ const getArchivedJobs = async (req, res) => {
         },
       },
       { $unwind: { path: "$workerDetails", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "chat",
+          localField: "workerId",
+          foreignField: "_id",
+          as: "chat",
+        },
+      },
     ]);
     res.status(200).json(jobs);
   } catch (error) {

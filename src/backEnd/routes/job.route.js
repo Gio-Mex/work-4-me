@@ -16,7 +16,7 @@ const router = Router();
 
 router.get("/", authMiddleware, getActiveJobs);
 router.get("/:id", authMiddleware, findChat);
-router.get("/archived", getArchivedJobs);
+router.get("/archived", authMiddleware, getArchivedJobs);
 router.post("/new", authMiddleware, createJob);
 router.post("/:id", authMiddleware, updateChat);
 router.put("/edit/:id", authMiddleware, updateJob);
