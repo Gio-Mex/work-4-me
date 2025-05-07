@@ -242,7 +242,7 @@ const findChat = async (req, res) => {
     const { id } = req.params;
     const chat = await Chat.findOne({ jobId: id });
     if (!chat) {
-      return res.status(404).json({ message: "Chat non trovata" });
+      chat = null;
     }
     res.status(200).json(chat);
   } catch (error) {
