@@ -262,7 +262,6 @@ const deleteReq = async () => {
 
 onBeforeMount(async () => {
   job = jobStore.jobs.find((job) => job._id === jobId) as Job;
-  console.log(job);
   if (!job) {
     return;
   }

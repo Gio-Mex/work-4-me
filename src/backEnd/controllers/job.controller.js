@@ -240,7 +240,7 @@ const updateChat = async (req, res) => {
 const findChat = async (req, res) => {
   try {
     const { id } = req.params;
-    const chat = await Chat.findOne({ jobId: id });
+    let chat = await Chat.findOne({ jobId: id });
     if (!chat) {
       chat = null;
     }
