@@ -58,7 +58,6 @@ export const useJobStore = defineStore("job", {
       const appStore = useAppStore();
       appStore.startLoading();
       try {
-        // Now the userId is extracted from the token on the server
         const url = `${baseUrl}/jobs/archived`;
         const response = await api.get(url);
         console.log("Risposta dal server:", response.data);

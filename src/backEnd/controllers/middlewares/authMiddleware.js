@@ -5,7 +5,7 @@ const authMiddleware = (req, res, next) => {
   console.log("🔐 Chiamato middleware auth");
   console.log("Header ricevuto:", req.headers.authorization);
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Authentication invalid' });
+    return res.status(401).json({ message: 'Autenticazione non valida' });
   }
 
   const token = authHeader.split(' ')[1];
@@ -15,7 +15,7 @@ const authMiddleware = (req, res, next) => {
     req.userId = decoded.userId;
     return next();
   } catch (err) {
-    res.status(403).json({ message: 'Token not valid' });
+    res.status(403).json({ message: 'Token di autenticazione non valido' });
   }
 };
 
