@@ -211,7 +211,7 @@ onUnmounted(() => {
         </h2>
       </div>
       <!-- Requests table -->
-      <Table v-if="reqsList.length > 0" class="mt-0 table-fixed w-full">
+      <Table v-if="reqsList && reqsList.length > 0" class="mt-0 table-fixed w-full">
         <TableCaption class="bg-sky-900 rounded-b mt-0">
           <Accordion
             type="single"
