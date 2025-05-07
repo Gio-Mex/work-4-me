@@ -91,6 +91,7 @@ const getActiveJobs = async (req, res) => {
 
 // Get all archived jobs (evaluated)
 const getArchivedJobs = async (req, res) => {
+  console.log("📦 GET /jobs/archived hit");
   try {
     const jobs = await Job.aggregate([
       { $match: { evaluated: true } },
