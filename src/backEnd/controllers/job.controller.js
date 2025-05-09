@@ -249,8 +249,7 @@ const findChat = async (req, res) => {
     const { id } = req.params;
     let chat = await Chat.findOne({ jobId: id });
     if (!chat) {
-      chat = await Chat.create({ jobId: id, messages: [] });
-      return res.status(201).json(chat);
+      return
     }
     res.status(200).json(chat);
   } catch (error) {
