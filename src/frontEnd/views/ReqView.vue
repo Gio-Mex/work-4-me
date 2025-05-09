@@ -176,6 +176,8 @@ const acceptOffer = async (id: number) => {
   job.amount = selectedOffer.amount;
   selectedOffer.accepted = true;
   job.status = "Accettato";
+  const newChatData = newChat();
+  Object.assign(chat, newChatData);
   await jobStore.updateJob(job);
   await jobStore.fetchActiveJobs();
   router.push("/jobs");
