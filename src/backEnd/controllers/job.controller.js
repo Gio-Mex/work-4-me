@@ -246,8 +246,8 @@ const updateChat = async (req, res) => {
 // Retrieve chat by job ID
 const findChat = async (req, res) => {
   try {
-    const { jobId } = req.params;
-    let chat = await Chat.findById( jobId );
+    const { id } = req.params;
+    let chat = await Chat.findOne({ jobId: id });
     if (!chat) {
       return res.status(404).json({ message: "Chat non trovata" });
     }
