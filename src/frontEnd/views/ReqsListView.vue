@@ -86,6 +86,7 @@ const hasNotifications = computed(() => {
 
 let reqsList = computed(() => {
   if (archivedUrl.value) {
+    console.log(jobStore.jobs);
     return jobStore.jobs.filter(
       (job: Job) => job.userId === userStore.user?._id && job.evaluated === true
     );
