@@ -77,11 +77,12 @@ const getActiveJobs = async (req, res) => {
       {
         $lookup: {
           from: "chat",
-          localField: "workerId",
-          foreignField: "_id",
+          localField: "_id",
+          foreignField: "jobId",
           as: "chat",
         },
       },
+      { $unwind: { path: "$chat", preserveNullAndEmptyArrays: true } },
     ]);
     res.status(200).json(jobs);
   } catch (error) {
@@ -115,8 +116,8 @@ const getArchivedJobs = async (req, res) => {
       {
         $lookup: {
           from: "chat",
-          localField: "workerId",
-          foreignField: "_id",
+          localField: "_id",
+          foreignField: "jobId",
           as: "chat",
         },
       },
