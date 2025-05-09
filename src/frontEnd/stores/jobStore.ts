@@ -218,7 +218,7 @@ export const useJobStore = defineStore("job", {
     async fetchChat(jobId: string) {
       try {
         // Fetch data
-        const url = `${baseUrl}/jobs/${jobId}`;
+        const url = `${baseUrl}/jobs/chat/${jobId}`;
         const response = await api.get(url);
         return response.data;
       } catch (error: any) {
