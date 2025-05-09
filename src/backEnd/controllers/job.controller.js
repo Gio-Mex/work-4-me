@@ -91,7 +91,7 @@ const getActiveJobs = async (req, res) => {
 };
 
 // Get all archived jobs (evaluated)
-const getArchivedJobs = async (req, res) => { 
+const getArchivedJobs = async (req, res) => {
   try {
     const jobs = await Job.aggregate([
       { $match: { evaluated: true } },
@@ -249,7 +249,7 @@ const findChat = async (req, res) => {
     const { id } = req.params;
     let chat = await Chat.findOne({ jobId: id });
     if (!chat) {
-      return res.status(404).json({ message: "Chat non trovata" });
+      return null;
     }
     res.status(200).json(chat);
   } catch (error) {
