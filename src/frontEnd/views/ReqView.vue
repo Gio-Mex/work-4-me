@@ -279,14 +279,7 @@ onBeforeMount(async () => {
     await jobStore
       .fetchChat(job._id as string)
       .then(async (fetchedChat: Chat) => {
-        // If chat doesn't exist create new
-        if (!fetchedChat) {
-          const newChatData = newChat();
-          Object.assign(chat, newChatData);
-          await jobStore.updateChat(chat);
-        } else {
-          Object.assign(chat, fetchedChat);
-        }
+        Object.assign(chat, fetchedChat);
       });
   }
   formattedDate.value = formatDate(job.date);
