@@ -210,7 +210,7 @@ const acceptOffer = async (updatedJob) => {
   notifySingleUser(updatedJob.workerId, updatedJob);
 };
 
-// Update or create a chat for a job
+// Update chat for a job
 const updateChat = async (req, res) => {
   try {
     const chat = {
@@ -243,13 +243,14 @@ const updateChat = async (req, res) => {
   }
 };
 
-// Retrieve chat by job ID
+// Retrieve or create a chat for a job
 const findChat = async (req, res) => {
   try {
     const { id } = req.params;
     let chat = await Chat.findOne({ jobId: id });
     if (!chat) {
-      return null;
+      chat = await Chat.create({ jobId: id, messages: [] });
+      return res.status(201).json(chat);
     }
     res.status(200).json(chat);
   } catch (error) {
