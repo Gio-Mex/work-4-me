@@ -222,10 +222,6 @@ export const useJobStore = defineStore("job", {
         const response = await api.get(url);
         return response.data;
       } catch (error: any) {
-        if (error.response && error.response.status === 404) {
-          console.warn("Chat non trovata:", jobId);
-          return null;
-        }
         console.error("Errore durante il recupero della chat:", error);
         throw error;
       }

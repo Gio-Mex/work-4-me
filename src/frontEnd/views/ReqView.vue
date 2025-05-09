@@ -277,7 +277,6 @@ onBeforeMount(async () => {
       .then(async (fetchedChat: Chat) => {
         // If chat doesn't exist create new
         if (!fetchedChat) {
-          console.warn("⚠️ Chat non trovata, creo nuova...");
           const newChatData = newChat();
           Object.assign(chat, newChatData);
           await jobStore.updateChat(chat);

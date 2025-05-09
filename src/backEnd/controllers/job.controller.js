@@ -246,7 +246,7 @@ const updateChat = async (req, res) => {
 // Retrieve chat by job ID
 const findChat = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.userId;
     let chat = await Chat.findOne({ jobId: id });
     if (!chat) {
       chat = null;
