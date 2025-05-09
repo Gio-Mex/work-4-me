@@ -73,6 +73,7 @@ const chatContainer = ref(null);
 const socket = appStore.socket;
 let chat = reactive({} as Chat);
 let message = ref({} as Message);
+let messageListener: (message: Message) => void;
 let qualityRate = ref(1);
 let reliabilityRate = ref(1);
 let rate = ref(0);
@@ -287,16 +288,16 @@ onBeforeMount(async () => {
 });
 
 onMounted(() => {
-  const messageListener = (message: Message) => {
+  messageListener = (message: Message) => {
     chat.messages.push(message);
   };
 
   socket.on("message", messageListener);
-
-  onUnmounted(() => {
-    socket.off("message", messageListener);
-  });
   scrollToBottom();
+});
+
+onUnmounted(() => {
+  socket.off("message", messageListener);
 });
 </script>
 
