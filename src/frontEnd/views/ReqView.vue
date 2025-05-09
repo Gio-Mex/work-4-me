@@ -211,13 +211,13 @@ const setRate = async () => {
 };
 
 // New chat function
-const newChat = () => {
-  chat.jobId = job._id as string;
-  chat.userId = job.userId as string;
-  chat.workerId = job.workerId as string;
-  chat.messages = [];
-  return chat;
-};
+// const newChat = () => {
+//   chat.jobId = job._id as string;
+//   chat.userId = job.userId as string;
+//   chat.workerId = job.workerId as string;
+//   chat.messages = [];
+//   return chat;
+// };
 
 // Send message function
 const sendMessage = async () => {
@@ -273,17 +273,17 @@ onBeforeMount(async () => {
   // Fetch chat
   if (job.status !== "Aperto" && job.status !== "Offerta") {
     await jobStore
-      .fetchChat(job._id as string)
-      .then(async (fetchedChat: Chat) => {
-        // If chat doesn't exist create new
-        if (!fetchedChat) {
-          const newChatData = newChat();
-          Object.assign(chat, newChatData);
-          await jobStore.updateChat(chat);
-        } else {
-          Object.assign(chat, fetchedChat);
-        }
-      });
+      .updateChat(chat as Chat)
+      // .then(async (fetchedChat: Chat) => {
+      //   // If chat doesn't exist create new
+      //   if (!fetchedChat) {
+      //     const newChatData = newChat();
+      //     Object.assign(chat, newChatData);
+      //     await jobStore.updateChat(chat);
+      //   } else {
+      //     Object.assign(chat, fetchedChat);
+      //   }
+      // });
   }
   formattedDate.value = formatDate(job.date);
   geocodeAddress();
