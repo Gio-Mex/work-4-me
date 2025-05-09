@@ -71,7 +71,7 @@ let selectedOffer = ref({} as Offer);
 let formattedDate = ref("" as string);
 const chatContainer = ref(null);
 const socket = appStore.socket;
-let chat = reactive({} as Chat);
+let chat = ref({} as Chat);
 let message = ref({} as Message);
 let messageListener: (message: Message) => void;
 let qualityRate = ref(1);
@@ -178,9 +178,13 @@ const acceptOffer = async (id: number) => {
   selectedOffer.accepted = true;
   job.status = "Accettato";
   // Create new chat
-  const newChatData = newChat();
-  Object.assign(chat, newChatData);
-  await jobStore.updateChat(chat);
+  chat.value = {
+    jobId: job._id!,
+    userId: job.userId,
+    workerId: job.workerId,
+    messages: [],
+  }
+  await jobStore.updateChat(chat.value);
   await jobStore.updateJob(job);
   await jobStore.fetchActiveJobs();
   router.push("/jobs");
@@ -215,15 +219,6 @@ const setRate = async () => {
   router.push("/jobs");
 };
 
-// New chat function
-const newChat = () => {
-  chat.jobId = job._id as string;
-  chat.userId = job.userId as string;
-  chat.workerId = job.workerId as string;
-  chat.messages = [];
-  return chat;
-};
-
 // Send message function
 const sendMessage = async () => {
   const chatInput = document.getElementById("message") as HTMLInputElement;
@@ -234,8 +229,8 @@ const sendMessage = async () => {
       date: Date.now(),
     } as Message;
     socket.emit("message", newMessage);
-    chat.messages.push(newMessage);
-    await jobStore.updateChat(chat);
+    chat.value.messages.push(newMessage);
+    await jobStore.updateChat(chat.value);
     message.value.content = "";
   }
 };
@@ -252,7 +247,7 @@ const scrollToBottom = () => {
 };
 
 watch(
-  () => chat.messages,
+  () => chat.value.messages,
   () => {
     scrollToBottom();
   },
@@ -280,7 +275,7 @@ onBeforeMount(async () => {
     await jobStore
       .fetchChat(job._id as string)
       .then(async (fetchedChat: Chat) => {
-        Object.assign(chat, fetchedChat);
+        chat.value = fetchedChat;
       });
   }
   formattedDate.value = formatDate(job.date);
@@ -289,7 +284,7 @@ onBeforeMount(async () => {
 
 onMounted(() => {
   messageListener = (message: Message) => {
-    chat.messages.push(message);
+    chat.value.messages.push(message);
   };
 
   socket.on("message", messageListener);
