@@ -14,10 +14,12 @@ const app = express();
 const userSockets = new Map();
 
 // Middleware
-app.use(cors({
-  origin: ["https://work-4-me.netlify.app", "http://localhost:5173"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: ["https://work-4-me.netlify.app", "http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use((req, res, next) => {
@@ -56,7 +58,6 @@ io.on("connection", (socket) => {
 
   // Wait for client to send the token
   socket.on("authenticate", (token) => {
-
     try {
       // Verify the JWT token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -81,6 +82,11 @@ io.on("connection", (socket) => {
       socket.emit("unauthorized", { message: "Invalid token" });
       socket.disconnect();
     }
+  });
+
+  // Message event handler
+  socket.on("message", (message) => {
+    socket.broadcast.emit("message", message);
   });
 
   // Handle disconnection
