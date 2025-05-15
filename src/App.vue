@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from "vue";
 import { RouterView } from "vue-router";
-import { jwtDecode } from "jwt-decode";
 import type { Job } from "./frontEnd/interfaces/job";
 import { useAppStore } from "./frontEnd/stores/appStore";
 import { useJobStore } from "./frontEnd/stores/jobStore";
@@ -17,28 +16,43 @@ const userStore = useUserStore();
 const socket = appStore.socket;
 let tokenCheckInterval: any;
 
-// Check if token is expired
-const isTokenExpired = (token: string | null) => {
-  if (!token) return true;
-  const decodedToken = jwtDecode(token);
-  if (!decodedToken || !decodedToken.exp) {
-    console.error("AuthToken non valido");
-    return true;
+// Parse JWT
+const parseJwt = (token: string) => {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    return null;
   }
-  const currentTime = Date.now() / 1000;
-  return decodedToken.exp < currentTime;
-};
+}
 
-onMounted(() => {
-  // AuthToken validity check every 15 minutes
-  const currentToken = localStorage.getItem("authToken");
-  tokenCheckInterval = setInterval(() => {
-    if (currentToken && isTokenExpired(currentToken)) {
+// Schedule authToken expiration
+const scheduleTokenExpiration = (token: string) => {
+  const decoded = parseJwt(token);
+  if (!decoded?.exp) return;
+
+  const expTime = decoded.exp * 1000;
+  const now = Date.now();
+  const timeout = expTime - now;
+
+  if (timeout > 0) {
+    setTimeout(() => {
       localStorage.removeItem("authToken");
       userStore.isLoggedIn = false;
       router.push("/user/login");
-    }
-  }, 900000);
+    }, timeout);
+  } else {
+    localStorage.removeItem("authToken");
+    userStore.isLoggedIn = false;
+    router.push("/user/login");
+  }
+}
+
+onMounted(() => {
+  // AuthToken validity check
+  const currentToken = localStorage.getItem("authToken");
+  if (currentToken) {
+    scheduleTokenExpiration(currentToken);
+  }
 
   if (!socket) {
     console.warn("⚠️ Socket not initialized!");

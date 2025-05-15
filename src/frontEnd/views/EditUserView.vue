@@ -144,7 +144,7 @@ const handleSubmit = async () => {
           <Label for="avatar" class="text-sky-950">Avatar</Label>
           <Avatar v-if="isUploaded && !form.avatar" class="avatar my-2 mx-auto">
             <AvatarFallback class="content">
-              {{ userStore.user!.avatar }}
+              {{ form.avatar }}
             </AvatarFallback>
           </Avatar>
           <Progress

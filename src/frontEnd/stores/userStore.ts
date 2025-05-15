@@ -163,10 +163,7 @@ export const useUserStore = defineStore("user", {
         const url = `${baseUrl}/user/notifications/${jobId}`;
         const response = await api.patch(url);
         if (response && response.status === 200) {
-          console.log(
-            "Notifica cancellata con successo. Status:",
-            response.status
-          );
+          console.log("Status:", response.status);
         } else {
           console.log(
             "La risposta dal server non è corretta o la notifica non è stata trovata."
