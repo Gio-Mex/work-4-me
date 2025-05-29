@@ -9,6 +9,7 @@ import { Gravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { useAppStore } from "../stores/appStore";
 import { useUserStore } from "../stores/userStore";
 import type { User } from "../interfaces/user";
+import { useNominatim } from "../composables/useNominatim";
 // ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import {
@@ -23,6 +24,24 @@ import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
 // ----
+
+const appStore = useAppStore();
+const userStore = useUserStore();
+const emailPattern = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+const passwordPattern =
+  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+const emailValid = ref<boolean>(true);
+const passwordValid = ref<boolean>(true);
+const confirmPassword = ref<string>("");
+const confirmPasswordValid = ref<boolean>(true);
+const { cityQuery, suggestions, cityError, selectSuggestion, validateCity } =
+  useNominatim();
+const avatarId = ref<string>("");
+const avatarContent = computed(() => {
+  return form.name.slice(0, 1) + form.lastName.slice(0, 1);
+});
+const isUploaded = ref<boolean>(true);
+const uploadProgress = ref<number>(0);
 
 type SignUpForm = Omit<
   User,
@@ -39,17 +58,24 @@ const form = reactive<SignUpForm>({
   avatar: "",
 });
 
-const appStore = useAppStore();
-const userStore = useUserStore();
-const emailPattern = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-const emailValid = ref<boolean>(true);
-const confirmPassword = ref<string>("");
-const avatarId = ref<string>("");
-const avatarContent = computed(() => {
-  return form.name.slice(0, 1) + form.lastName.slice(0, 1);
+// Form validation
+const formValid = computed(() => {
+  return (
+    form.name.trim() !== "" &&
+    form.lastName.trim() !== "" &&
+    form.address.trim() !== "" &&
+    form.city.trim() !== "" &&
+    form.province.trim() !== "" &&
+    form.email.trim() !== "" &&
+    form.password !== "" &&
+    confirmPassword.value !== "" &&
+    !cityError.value &&
+    emailValid.value &&
+    passwordValid.value &&
+    confirmPasswordValid.value &&
+    form.password === confirmPassword.value
+  );
 });
-const isUploaded = ref<boolean>(true);
-const uploadProgress = ref<number>(0);
 
 // Cloudinary details
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -107,13 +133,33 @@ const uploadOnCloudinary = async () => {
   }
 };
 
+const onSelectSuggestion = (suggestion: any) => {
+  selectSuggestion(suggestion);
+  form.city = cityQuery.value;
+  form.province = suggestion.address["ISO3166-2-lvl6"]?.slice(-2) || "";
+};
+
+// Validate functions
+const validateEmail = () => {
+  emailValid.value = emailPattern.test(form.email);
+};
+
+const validatePassword = () => {
+  passwordValid.value = passwordPattern.test(form.password);
+};
+
+const validateConfirmPassword = () => {
+  confirmPasswordValid.value = form.password === confirmPassword.value;
+};
+
 // Submit function
 const handleSubmit = async () => {
   if (!form.avatar) {
     form.avatar = avatarContent.value;
   }
-  emailValid.value = emailPattern.test(form.email);
-  if (emailValid.value && form.password === confirmPassword.value) {
+  // emailValid.value = emailPattern.test(form.email);
+  // passwordValid.value = passwordPattern.test(form.password);
+  if (formValid.value) {
     form.province = form.province.toUpperCase();
     await userStore.signup(form as User).then(() => {
       router.push({ path: "/user/login" });
@@ -189,10 +235,31 @@ const handleSubmit = async () => {
               <Label for="city" class="text-sky-950">Città</Label>
               <Input
                 id="city"
-                v-model="form.city"
+                v-model="cityQuery"
+                @blur="validateCity"
                 placeholder="Milano"
                 required
               />
+              <ul
+                v-if="suggestions.length"
+                class="list-none max-h-[150px] p-0 mt-2 border border-sky-800 overflow-y-auto bg-white"
+              >
+                <li
+                  v-for="(suggestion, index) in suggestions"
+                  :key="index"
+                  class="p-4 hover:bg-sky-50 cursor-pointer"
+                  @click="onSelectSuggestion(suggestion)"
+                >
+                  {{
+                    suggestion.address.city ||
+                    suggestion.address.town ||
+                    suggestion.address.village
+                  }}
+                </li>
+              </ul>
+              <span v-if="cityError" class="text-red-500 text-xs">
+                Seleziona una città fra quelle suggerite.
+              </span>
             </div>
             <div class="grid gap-2">
               <Label for="province" class="text-sky-950">Provincia</Label>
@@ -211,6 +278,7 @@ const handleSubmit = async () => {
               id="email"
               v-model="form.email"
               type="email"
+              @blur="validateEmail"
               placeholder="m@example.com"
               required
             />
@@ -223,9 +291,14 @@ const handleSubmit = async () => {
             <Input
               id="password"
               v-model="form.password"
+              @blur="validatePassword"
               type="password"
               required
             />
+            <span v-if="!passwordValid" class="text-red-500 text-xs"
+              >La password deve contenere almeno 8 caratteri, di cui una lettera
+              maiuscola, un numero e un carattere speciale (!@#$%^&*()_+)</span
+            >
           </div>
           <div class="grid gap-2">
             <Label for="confirm-password" class="text-sky-950"
@@ -234,12 +307,11 @@ const handleSubmit = async () => {
             <Input
               id="confirm-password"
               v-model="confirmPassword"
+              @blur="validateConfirmPassword"
               type="password"
               required
             />
-            <span
-              v-if="form.password !== confirmPassword"
-              class="text-red-500 text-xs"
+            <span v-if="!confirmPasswordValid" class="text-red-500 text-xs"
               >Le password non corrispondono</span
             >
           </div>
@@ -251,17 +323,20 @@ const handleSubmit = async () => {
               class="w-1/2 scale-50 transition-all duration-150 ease-in-out bg-sky-200 my-8 mx-auto opacity-0"
               :class="{ 'opacity-100': uploadProgress > 0 }"
             />
-              <AdvancedImage
-                v-if="isUploaded && form.avatar"
-                :src="form.avatar"
-                :cldImg="cldImg"
-                class="avatar my-2 mx-auto"
-              />
-              <Avatar v-if ="isUploaded && !form.avatar" class="avatar my-2 mx-auto">
-                <AvatarFallback class="content">
-                  {{ avatarContent }}
-                </AvatarFallback>
-              </Avatar>
+            <AdvancedImage
+              v-if="isUploaded && form.avatar"
+              :src="form.avatar"
+              :cldImg="cldImg"
+              class="avatar my-2 mx-auto"
+            />
+            <Avatar
+              v-if="isUploaded && !form.avatar"
+              class="avatar my-2 mx-auto"
+            >
+              <AvatarFallback class="content">
+                {{ avatarContent }}
+              </AvatarFallback>
+            </Avatar>
             <span class="text-xs opacity-70 text-sky-950 leading-relaxed"
               >Questo e' il tuo avatar predefinito, puoi cambiarlo scegliendo
               un'immagine dalla tua galleria.
@@ -280,6 +355,7 @@ const handleSubmit = async () => {
             variant="default"
             type="submit"
             class="primary-btn w-auto mx-auto"
+            :disabled="!formValid"
           >
             Crea account
           </Button>

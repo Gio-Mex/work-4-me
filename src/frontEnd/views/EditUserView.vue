@@ -142,7 +142,10 @@ const handleSubmit = async () => {
       <CardContent>
         <div class="grid gap-2 text-center">
           <Label for="avatar" class="text-sky-950">Avatar</Label>
-          <Avatar v-if="isUploaded && !form.avatar" class="avatar my-2 mx-auto">
+          <Avatar
+            v-if="isUploaded && form.avatar.toString().length == 2"
+            class="avatar my-2 mx-auto"
+          >
             <AvatarFallback class="content">
               {{ form.avatar }}
             </AvatarFallback>
@@ -154,7 +157,7 @@ const handleSubmit = async () => {
             :class="{ 'opacity-100': uploadProgress > 0 }"
           />
           <AdvancedImage
-            v-if="isUploaded && form.avatar"
+            v-if="isUploaded && form.avatar.toString().length > 2"
             :src="form.avatar"
             :cldImg="cldImg"
             class="avatar my-2 mx-auto"
