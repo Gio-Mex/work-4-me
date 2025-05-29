@@ -6,6 +6,7 @@ export function useNominatim() {
   const suggestions = ref<NominatimCity[]>([]);
   const selectedCity = ref<NominatimCity | null>(null);
   const cityError = ref(false);
+  const suppressFetch = ref(false);
 
   // Debounce timer
   let debounceTimeout: ReturnType<typeof setTimeout>;
@@ -18,9 +19,7 @@ export function useNominatim() {
 
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&accept-language=it&countrycodes=it&city=${encodeURIComponent(
-          cityQuery.value
-        )}`
+        `/api/nominatim/search?city=${encodeURIComponent(cityQuery.value)}`
       );
       const data: NominatimCity[] = await response.json();
 
@@ -46,6 +45,10 @@ export function useNominatim() {
   };
 
   watch(cityQuery, () => {
+    if (suppressFetch.value) {
+      suppressFetch.value = false;
+      return;
+    }
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
       fetchCities();
@@ -54,6 +57,7 @@ export function useNominatim() {
 
   const selectSuggestion = (suggestion: NominatimCity) => {
     selectedCity.value = suggestion;
+    suppressFetch.value = true; // Block watcher to avoid duplicate requests
     cityQuery.value =
       suggestion.address.city ||
       suggestion.address.town ||
@@ -84,5 +88,6 @@ export function useNominatim() {
     fetchCities,
     selectSuggestion,
     validateCity,
+    suppressFetch,
   };
 }

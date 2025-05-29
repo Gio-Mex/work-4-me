@@ -9,6 +9,8 @@ import { Gravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { useUserStore } from "../stores/userStore";
 import { useJobStore } from "../stores/jobStore";
 import type { User } from "../interfaces/user";
+import { useNominatim } from "../composables/useNominatim";
+
 // ---- ShadCn Components
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Progress } from "../components/ui/progress";
@@ -26,6 +28,8 @@ import { Switch } from "../components/ui/switch";
 const userStore = useUserStore();
 const jobStore = useJobStore();
 const skills = jobStore.categories;
+const { cityQuery, suggestions, cityError, selectSuggestion, validateCity, suppressFetch } =
+  useNominatim();
 
 const form = reactive({
   name: userStore.user!.name,
@@ -38,6 +42,8 @@ const form = reactive({
   isWorker: userStore.user!.isWorker,
   skills: userStore.user!.skills,
 }) as User;
+suppressFetch.value = true;
+cityQuery.value = form.city || "";
 
 const avatarId = ref<string>("");
 const isUploaded = ref<boolean>(true);
@@ -99,6 +105,13 @@ const uploadOnCloudinary = async () => {
   } catch (error) {
     console.error("Errore nell'upload:", error);
   }
+};
+
+// On select city suggestion
+const onSelectSuggestion = (suggestion: any) => {
+  selectSuggestion(suggestion);
+  form.city = cityQuery.value;
+  form.province = suggestion.address["ISO3166-2-lvl6"]?.slice(-2) || "";
 };
 
 // Toggle worker function
@@ -198,13 +211,34 @@ const handleSubmit = async () => {
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="grid gap-2">
-              <Label for="city">Città</Label>
+              <Label for="city" class="text-sky-950">Città</Label>
               <Input
                 id="city"
-                v-model="form.city"
+                v-model="cityQuery"
+                @blur="validateCity"
                 placeholder="Milano"
                 required
               />
+              <ul
+                v-if="suggestions.length"
+                class="list-none max-h-[150px] p-0 mt-2 border border-sky-800 overflow-y-auto bg-white"
+              >
+                <li
+                  v-for="(suggestion, index) in suggestions"
+                  :key="index"
+                  class="p-4 hover:bg-sky-50 cursor-pointer"
+                  @click="onSelectSuggestion(suggestion)"
+                >
+                  {{
+                    suggestion.address.city ||
+                    suggestion.address.town ||
+                    suggestion.address.village
+                  }}
+                </li>
+              </ul>
+              <span v-if="cityError" class="text-red-500 text-xs">
+                Seleziona una città fra quelle suggerite.
+              </span>
             </div>
             <div class="grid gap-2">
               <Label for="province">Provincia</Label>
@@ -212,6 +246,8 @@ const handleSubmit = async () => {
                 id="province"
                 v-model="form.province"
                 placeholder="MI"
+                maxlength="2"
+                disabled
                 required
               />
             </div>

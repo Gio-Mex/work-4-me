@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import userRoute from "./routes/user.route.js";
 import jobRoute from "./routes/job.route.js";
+import nominatimRoute from "./routes/nominatim.route.js";
 
 config();
 
@@ -26,6 +27,7 @@ app.use(urlencoded({ extended: false }));
 // Routes
 app.use("/user", userRoute);
 app.use("/jobs", jobRoute);
+app.use("/api/nominatim", nominatimRoute);
 
 // Database connection
 const dbUrl = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=W4M`;

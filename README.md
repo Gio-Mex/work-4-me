@@ -67,7 +67,7 @@ Once this is done, the job will be closed and can be viewed in the archive (on t
 - Session management
 - Hash password encryption with Bcrypt
 - Live updates and notifications with Socket.io
-- Maps with Leaflet and OpenStreetMap
+- Maps and cities with Leaflet, OpenStreetMap and Nominatim
 - Live chat
 - MongoDB database
 - Responsive design

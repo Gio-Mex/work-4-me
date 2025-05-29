@@ -10,6 +10,7 @@ import { useAppStore } from "../stores/appStore";
 import { useUserStore } from "../stores/userStore";
 import type { User } from "../interfaces/user";
 import { useNominatim } from "../composables/useNominatim";
+
 // ---- ShadCn Components
 import { Button } from "../components/ui/button";
 import {
@@ -133,6 +134,7 @@ const uploadOnCloudinary = async () => {
   }
 };
 
+// On select city suggestion
 const onSelectSuggestion = (suggestion: any) => {
   selectSuggestion(suggestion);
   form.city = cityQuery.value;
@@ -268,6 +270,7 @@ const handleSubmit = async () => {
                 v-model="form.province"
                 placeholder="MI"
                 maxlength="2"
+                disabled
                 required
               />
             </div>
