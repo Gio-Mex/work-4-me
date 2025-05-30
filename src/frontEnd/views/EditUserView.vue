@@ -221,12 +221,16 @@ const handleSubmit = async () => {
               />
               <ul
                 v-if="suggestions.length"
-                class="list-none max-h-[150px] p-0 mt-2 border border-sky-800 overflow-y-auto bg-white"
+                class="list-none max-h-[150px] p-0 mt-0 border rounded-b-md border-sky-700 border-opacity-25 overflow-y-auto bg-white shadow-sm"
               >
                 <li
                   v-for="(suggestion, index) in suggestions"
                   :key="index"
-                  class="p-4 hover:bg-sky-50 cursor-pointer"
+                  class="text-xs p-3 hover:bg-sky-50 cursor-pointer"
+                  :class="{
+                    'border-b border-sky-700 border-opacity-15':
+                      index !== suggestions.length - 1,
+                  }"
                   @click="onSelectSuggestion(suggestion)"
                 >
                   {{

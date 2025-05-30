@@ -98,7 +98,7 @@ const geocodeAddress = async () => {
   const address = `${job.userDetails?.address}, ${job.userDetails?.city}`;
   try {
     const response = await axios.get(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+      `/api/nominatim/geolocalize?address=${encodeURIComponent(
         address
       )}`
     );
