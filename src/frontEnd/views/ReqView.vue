@@ -95,10 +95,11 @@ const tilesOptions = ref({
 const geocodeAddress = async () => {
   mapOptions.value.isLoading = true;
   mapOptions.value.notFound = true;
+  const baseURL = import.meta.env.VITE_BASE_URL;
   const address = `${job.userDetails?.address}, ${job.userDetails?.city}`;
   try {
     const response = await axios.get(
-      `/api/nominatim/geolocalize?address=${encodeURIComponent(
+      `${baseURL}/api/nominatim/geolocalize?address=${encodeURIComponent(
         address
       )}`
     );
